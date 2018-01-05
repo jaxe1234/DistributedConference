@@ -11,7 +11,7 @@ namespace ChatApp
     {
         public ChatTest(string[] args, SpaceRepository spaceRepo, string uri)
         {
-            new Chat(args[0].Equals("host"), args[0], spaceRepo, uri);
+            new Chat(args[0].Equals("host"), args[0], spaceRepo, uri, args[1]);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace ConferenceImageProcessing
         public ConferenceImageSender(string name, SpaceRepository repo)
         {
             ConferenceName = name.Replace(" ", "");
-            Space = new RemoteSpace(RepoUtility.GenerateUniqueSpaceUri(uri, name));
+            Space = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, name));
             repo.AddSpace(ConferenceName + "ImageStream", Space);
 
         }
