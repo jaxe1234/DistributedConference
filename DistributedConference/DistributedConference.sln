@@ -12,9 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceImageProcessing", "ConferenceImageProcessing\ConferenceImageProcessing.csproj", "{780AEFF9-1B3E-4627-B1F3-BF327C6F7ADF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "LoginServer\LoginServer.csproj", "{004F2EEC-9D5C-43FE-8E9A-FAE2E956F35B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{084EE1EC-45F0-446D-A48A-C4732986D8CC} = {084EE1EC-45F0-446D-A48A-C4732986D8CC}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
