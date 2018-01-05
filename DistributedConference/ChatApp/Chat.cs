@@ -7,6 +7,7 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
+using DistributedConference;
 
 namespace ChatApp
 {
@@ -14,17 +15,17 @@ namespace ChatApp
     {
 
         //string uri = "tcp://10.16.174.190:5002";
-        private string ConferenceName = "chat";
         private int K = 0;
         private string LockedInUser;
-        public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri)
+        public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
                 var ChatSpace = new SequentialSpace();
-                chatRepo.AddSpace(ConferenceName, ChatSpace);
+                Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
+                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
                 chatRepo.AddGate(uri);
                 Task.Run(() => ChatReader(ChatSpace));
                 Task.Run(() => ChatSender(ChatSpace));
@@ -33,7 +34,8 @@ namespace ChatApp
             else
             {
                 Console.WriteLine("You are a slave!");
-                var ChatSpace = new RemoteSpace(uri + "/" + ConferenceName);
+                Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                var ChatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 Task.Run(() => ChatReader(ChatSpace));
                 Task.Run(() => ChatSender(ChatSpace));
                 ChatSpace.Get("done");
