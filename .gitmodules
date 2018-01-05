@@ -1,0 +1,3 @@
+[submodule "DistributedConference/dotSpace"]
+	path = DistributedConference/dotSpace
+	url = https://github.com/Moeberg/dotSpace
