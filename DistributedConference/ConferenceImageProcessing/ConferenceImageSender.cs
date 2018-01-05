@@ -9,7 +9,7 @@ using dotSpace.Interfaces;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects;
 using dotSpace.Objects.Network;
-using DistributedConference;
+using dotSpaceUtilities;
 
 namespace ConferenceImageProcessing
 {

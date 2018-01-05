@@ -7,7 +7,8 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
-using DistributedConference;
+using dotSpaceUtilities;
+
 
 namespace ChatApp
 {
@@ -52,7 +53,7 @@ namespace ChatApp
             Console.WriteLine("Making chat-reader...");
             while (true)
             {
-                Console.WriteLine("Getting messages...");
+                //Console.WriteLine("Getting messages...");
                 var received = ChatSpace.Query((K + 1), typeof(string), typeof(string));
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
@@ -73,7 +74,7 @@ namespace ChatApp
                 {
                     string message = Console.ReadLine();
                     K++;
-                    Console.WriteLine("Your message was: " + message);
+                    //Console.WriteLine("Your message was: " + message);
                     ChatSpace.Put(K, LockedInUser, message);
 
                 }
