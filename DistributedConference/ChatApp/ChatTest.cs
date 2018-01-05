@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace DistributedConference
+namespace ChatApp
 {
-    class Program
+    public class ChatTest
     {
-        static void Main(string[] args)
+        public ChatTest(string[] args)
         {
-            new ChatApp.ChatTest(args);
+            new Chat(args[0].Equals("host"), args[0]);
         }
     }
 }
