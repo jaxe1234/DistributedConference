@@ -13,11 +13,11 @@ namespace ChatApp
     public class Chat
     {
 
-        string uri = "tcp://10.16.174.190:5002";
+        //string uri = "tcp://10.16.174.190:5002";
         private string ConferenceName = "chat";
         private int K = 0;
         private string LockedInUser;
-        public Chat(bool isHost, string name, SpaceRepository chatRepo)
+        public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri)
         {
             this.LockedInUser = name;
             if (isHost)
