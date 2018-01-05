@@ -54,6 +54,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dotSpaceUtilities\dotSpaceUtilities.csproj">
+      <Project>{040f98bf-e52c-4a0b-a0ce-0328dd67c94d}</Project>
+      <Name>dotSpaceUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
