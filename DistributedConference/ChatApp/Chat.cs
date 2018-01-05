@@ -7,7 +7,7 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
-using DistributedConference;
+using dotSpaceUtilities;
 
 namespace ChatApp
 {
