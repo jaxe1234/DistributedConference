@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotSpace, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\dotSpace.1.0.6\lib\net452\dotSpace.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Security" />
@@ -52,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChatApp\ChatApp.csproj">
@@ -61,10 +66,6 @@
     <ProjectReference Include="..\ConferenceImageProcessing\ConferenceImageProcessing.csproj">
       <Project>{780aeff9-1b3e-4627-b1f3-bf327c6f7adf}</Project>
       <Name>ConferenceImageProcessing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
-      <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
-      <Name>dotSpace</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,52 +5,64 @@ using System.Text;
 using System.Threading.Tasks;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
+using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
 
 namespace ChatApp
 {
     public class Chat
     {
-        private ISpace ChatSpace;
-        string uri = "tcp://127.0.0.1:5001";
-        private string ConferenceName = "room";
-        private int k = 0;
-        private string LockedInUser = "Bob";
-        public Chat(bool isHost, string name)
+
+        string uri = "tcp://10.16.174.190:5002";
+        private string ConferenceName = "chat";
+        private int K = 0;
+        private string LockedInUser;
+        public Chat(bool isHost, string name, SpaceRepository chatRepo)
         {
+            this.LockedInUser = name;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                ChatSpace = new SequentialSpace();
-                SpaceRepository chatRepo = new SpaceRepository();
+                var ChatSpace = new SequentialSpace();
                 chatRepo.AddSpace(ConferenceName, ChatSpace);
                 chatRepo.AddGate(uri);
+                Task.Run(() => ChatReader(ChatSpace));
+                Task.Run(() => ChatSender(ChatSpace));
+                ChatSpace.Get("done");
             }
             else
             {
                 Console.WriteLine("You are a slave!");
-                ChatSpace = new RemoteSpace(uri + "/" + ConferenceName);
+                var ChatSpace = new RemoteSpace(uri + "/" + ConferenceName);
+                Task.Run(() => ChatReader(ChatSpace));
+                Task.Run(() => ChatSender(ChatSpace));
+                ChatSpace.Get("done");
             }
 
-            Task.Run(() => ChatReader());
-            Task.Run(() => ChatSender());
-            }
 
 
-        public void ChatReader()
+
+        }
+
+
+        public void ChatReader(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-reader...");
             while (true)
             {
-                var recieved = ChatSpace.Query((k + 1), typeof(string), typeof(string));
-                string name = (string)recieved[1];
-                string message = (string)recieved[2];
-                k++;
-                Console.WriteLine(name + ": " + message);
+                Console.WriteLine("Getting messages...");
+                var received = ChatSpace.Query((K + 1), typeof(string), typeof(string));
+                string receivedName = (string)received[1];
+                string message = (string)received[2];
+                if (!receivedName.Equals(LockedInUser))
+                {
+                    K++;
+                }
+                Console.WriteLine(receivedName + ": " + message);
             }
         }
 
-        public void ChatSender()
+        public void ChatSender(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-sender...");
             while (true)
@@ -58,8 +70,10 @@ namespace ChatApp
                 try
                 {
                     string message = Console.ReadLine();
-                    ChatSpace.Put(k, LockedInUser, message);
-                    k++;
+                    K++;
+                    Console.WriteLine("Your message was: " + message);
+                    ChatSpace.Put(K, LockedInUser, message);
+
                 }
                 catch (Exception e)
                 {

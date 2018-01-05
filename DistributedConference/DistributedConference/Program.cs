@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using dotSpace.Objects.Network;
 
 
 namespace DistributedConference
@@ -11,7 +12,8 @@ namespace DistributedConference
     {
         static void Main(string[] args)
         {
-            new ChatApp.ChatTest(args);
+            SpaceRepository spaceRepo = new SpaceRepository();
+            new ChatApp.ChatTest(args, spaceRepo);
         }
     }
 }
