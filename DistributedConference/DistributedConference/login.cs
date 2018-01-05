@@ -37,10 +37,10 @@ namespace DistributedConference
 
 
             //attempt != null && attempt[1].Equals(account.generatePassHash(Encoding.UTF8.GetBytes(pass),attempt[2] as byte[]))) 
-          
 
 
 
+            return false;
         }
 
 
