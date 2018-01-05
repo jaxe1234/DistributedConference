@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceMain", "DistributedConference\ConferenceMain.csproj", "{084EE1EC-45F0-446D-A48A-C4732986D8CC}"
 EndProject
@@ -11,7 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotSpace", "dotSpace\dotSpa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceImageProcessing", "ConferenceImageProcessing\ConferenceImageProcessing.csproj", "{780AEFF9-1B3E-4627-B1F3-BF327C6F7ADF}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Playground-The-Highland-For-Shitty-Code", "Playground-The-Highland-For-Shitty-Code\Playground-The-Highland-For-Shitty-Code.shproj", "{D5A3DA63-301C-4AC8-B859-0424D2256882}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Playground-The-Highland-For-Shitty-Code\Playground-The-Highland-For-Shitty-Code.projitems*{d5a3da63-301c-4ac8-b859-0424d2256882}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
