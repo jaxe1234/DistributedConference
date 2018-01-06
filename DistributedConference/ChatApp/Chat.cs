@@ -81,9 +81,8 @@ namespace ChatApp
             }
             catch (Exception ex)
             {
-
+                // ignored
             }
-
 
 
             while (ContinueSession)
