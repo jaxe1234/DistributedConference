@@ -21,12 +21,13 @@ namespace ChatApp
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
+            ISpace chatSpace;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                var ChatSpace = new SequentialSpace();
+                chatSpace = new SequentialSpace();
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
                 if (Task.Run(() => ChatReader(ChatSpace)) == Task.FromResult(false) ||
                     Task.Run(() => ChatSender(ChatSpace)) == Task.FromResult(false))
