@@ -28,14 +28,14 @@ namespace ChatApp
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                if (Task.Run(() => ChatReader(chatSpace)) == Task.FromResult(false) ||
-                    Task.Run(() => ChatSender(chatSpace)) == Task.FromResult(false))
+                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
+                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
                 {
                     // https://stackoverflow.com/questions/31513409/async-method-to-return-true-or-false-in-a-task
                     // the idea of this if-statement is to run the sender and reader in a constant check for a return statement
                     // if either one returns false we can simply terminate the chat client altogether
                     // this can be done by putting "done" in the ChatSpace
-                    chatSpace.Put("done");
+                    return;
                 }
                 chatSpace.Get("done");
             }
@@ -45,10 +45,10 @@ namespace ChatApp
                 Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 var chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
 
-                if (Task.Run(() => ChatReader(chatSpace)) == Task.FromResult(false) ||
-                    Task.Run(() => ChatSender(chatSpace)) == Task.FromResult(false))
+                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
+                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
                 {
-                    chatSpace.Put("done");
+                    return;
                 }
 
                 chatSpace.Get("done");
@@ -57,7 +57,7 @@ namespace ChatApp
         }
 
 
-        public Task<bool> ChatReader(ISpace ChatSpace)
+        async public Task<bool> ChatReader(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-reader...");
             while (ContinueSession)
@@ -72,10 +72,10 @@ namespace ChatApp
                 }
                 Console.WriteLine(receivedName + ": " + message);
             }
-            return Task.FromResult(true);
+            return false;
         }
 
-        public Task<bool> ChatSender(ISpace ChatSpace)
+        async public Task<bool> ChatSender(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-sender...");
             while (ContinueSession)
@@ -97,8 +97,7 @@ namespace ChatApp
                 {
                     Console.WriteLine(e.Message);
                     ContinueSession = false;
-                    ChatSpace.Put("done");
-                    return Task.FromResult(false);
+                    return false;
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +105,7 @@ namespace ChatApp
                     throw;
                 }
             }
-            return Task.FromResult(true);
+            return false;
         }
     }
 }
