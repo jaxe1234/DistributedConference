@@ -121,7 +121,7 @@ namespace ChatApp
 
 
 
-                Console.WriteLine(receivedName + ": " + message);
+                Console.WriteLine(K + ":\t" + receivedName + ": " + message);
             }
             return (false);
         }
