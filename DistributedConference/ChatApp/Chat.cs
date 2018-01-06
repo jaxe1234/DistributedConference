@@ -21,25 +21,34 @@ namespace ChatApp
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
+            ISpace chatSpace;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                var ChatSpace = new SequentialSpace();
+                chatSpace = new SequentialSpace();
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                Task.Run(() => ChatReader(ChatSpace));
-                Task.Run(() => ChatSender(ChatSpace));
-                ChatSpace.Get("done");
+                Task.Run(() => ChatReader(chatSpace));
+                Task.Run(() => ChatSender(chatSpace));
+                chatSpace.Get("done");
             }
             else
             {
                 Console.WriteLine("You are a slave!");
                 Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                var ChatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                Task.Run(() => ChatReader(ChatSpace));
-                Task.Run(() => ChatSender(ChatSpace));
-                ChatSpace.Get("done");
+                try
+                {
+                    chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                    Task.Run(() => ChatReader(chatSpace));
+                    Task.Run(() => ChatSender(chatSpace));
+                    chatSpace.Get("done");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e +"\t"+ e.Message);
+                    throw;
+                }
             }
 
 
