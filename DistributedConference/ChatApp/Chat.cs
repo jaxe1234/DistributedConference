@@ -62,18 +62,18 @@ namespace ChatApp
             // http://www.c-sharpcorner.com/UploadFile/80ae1e/canceling-a-running-task/
             // https://binary-studio.com/2015/10/23/task-cancellation-in-c-and-things-you-should-know-about-it/
 
-            var reader = Task.Run(() =>
-                    ChatReader(chatSpace), cancelToken)
-                .ContinueWith(ant =>
-                {
-                    Console.WriteLine("Reader was terminated");
-                }, TaskContinuationOptions.OnlyOnCanceled);
-            var sender = Task.Run(() =>
-                    ChatSender(chatSpace), cancelToken)
-                .ContinueWith(ant =>
-                    {
-                        Console.WriteLine("Sender was terminated");
-                    }, TaskContinuationOptions.OnlyOnCanceled);
+            var reader = Task.Run(async () =>
+            {
+                var temp = await ChatReader(chatSpace);
+                Console.WriteLine("Reader was terminated");
+                return temp;
+            });
+            var sender = Task.Run(async () =>
+            {
+                var temp = await ChatSender(chatSpace);
+                Console.WriteLine("Sender was terminated");
+                return temp;
+            });
             try
             {
                 reader.Wait(cancelToken);
@@ -93,7 +93,7 @@ namespace ChatApp
         }
 
 
-        public Task<bool> ChatReader(ISpace ChatSpace)
+        public async Task<bool> ChatReader(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-reader...");
             while (ContinueSession)
@@ -117,17 +117,17 @@ namespace ChatApp
                 catch (ConferenceTransmissionEndedException e)
                 {
                     ContinueSession = false;
-                    return Task.FromResult(false);
+                    return (false);
                 }
 
 
 
                 Console.WriteLine(receivedName + ": " + message);
             }
-            return Task.FromResult(false);
+            return (false);
         }
 
-        public Task<bool> ChatSender(ISpace ChatSpace)
+        public async Task<bool> ChatSender(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-sender...");
             while (ContinueSession)
@@ -148,7 +148,7 @@ namespace ChatApp
                 catch (ConferenceTransmissionEndedException e)
                 {
                     ContinueSession = false;
-                    return Task.FromResult(false);
+                    return (false);
                 }
                 catch (Exception ex)
                 {
@@ -156,7 +156,7 @@ namespace ChatApp
                     throw;
                 }
             }
-            return Task.FromResult(false);
+            return (false);
         }
     }
 }
