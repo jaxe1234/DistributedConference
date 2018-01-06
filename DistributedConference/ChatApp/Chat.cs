@@ -29,16 +29,8 @@ namespace ChatApp
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
-                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
-                {
-                    // https://stackoverflow.com/questions/31513409/async-method-to-return-true-or-false-in-a-task
-                    // the idea of this if-statement is to run the sender and reader in a constant check for a return statement
-                    // if either one returns false we can simply terminate the chat client altogether
-                    // this can be done by putting "done" in the ChatSpace
-                    return;
-                }
-                chatSpace.Get("done");
+                
+                InitializeChat(chatSpace);
             }
             else
             {
@@ -54,37 +46,76 @@ namespace ChatApp
                     throw;
                 }
 
-                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
-                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
-                {
-                    return;
-                }
-
-                chatSpace.Get("done");
+                InitializeChat(chatSpace);
             }
             
         }
 
+        public void InitializeChat(ISpace chatSpace)
+        {
+            Task<bool> reader = Task.Run(() => ChatReader(chatSpace));
+            Task<bool> sender = Task.Run(() => ChatSender(chatSpace));
+            if (reader == Task.FromResult(false) && sender == Task.FromResult(false))
+            {
+                Console.WriteLine("Chat session was eneded");
+                return;
+            }
 
-        async public Task<bool> ChatReader(ISpace ChatSpace)
+            while (ContinueSession)
+            {
+            }
+
+            /*
+                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
+                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
+                {
+                    // https://stackoverflow.com/questions/31513409/async-method-to-return-true-or-false-in-a-task
+                    // the idea of this if-statement is to run the sender and reader in a constant check for a return statement
+                    // if either one returns false we can simply terminate the chat client altogether
+                    // this can be done by putting "done" in the ChatSpace
+                    return;
+                }
+                chatSpace.Get("done");
+             */
+        }
+
+
+        public Task<bool> ChatReader(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-reader...");
             while (ContinueSession)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = ChatSpace.Query((K + 1), typeof(string), typeof(string));
+                var received = ChatSpace.Query(K + 1, typeof(string), typeof(string));
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
-                if (!receivedName.Equals(LockedInUser))
+                try
                 {
-                    K++;
+                    if (!receivedName.Equals(LockedInUser))
+                    {
+                        K++;
+                    }
+                    else if (message == "!quit" || message == "!exit")
+                    {
+                        throw new ConferenceTransmissionEndedException(
+                            "You have ended your transmission.");
+                    }
                 }
+                catch (ConferenceTransmissionEndedException e)
+                {
+
+                    ContinueSession = false;
+                    return Task.FromResult(false);
+                }
+                
+
+
                 Console.WriteLine(receivedName + ": " + message);
             }
-            return false;
+            return Task.FromResult(false);
         }
 
-        async public Task<bool> ChatSender(ISpace ChatSpace)
+        public Task<bool> ChatSender(ISpace ChatSpace)
         {
             Console.WriteLine("Making chat-sender...");
             while (ContinueSession)
@@ -94,19 +125,19 @@ namespace ChatApp
                     string message = Console.ReadLine();
                     K++;
                     //Console.WriteLine("Your message was: " + message);
+                    
+                    ChatSpace.Put(K, LockedInUser, message);
                     if (message == "!quit" || message == "!exit")
                     {
                         throw new ConferenceTransmissionEndedException(
-                            "You have ended your transmission with the conference holder.");
+                            "You have ended your transmission.");
                     }
-                    ChatSpace.Put(K, LockedInUser, message);
-
                 }
                 catch (ConferenceTransmissionEndedException e)
                 {
-                    Console.WriteLine(e.Message);
+                    
                     ContinueSession = false;
-                    return false;
+                    return Task.FromResult(false);
                 }
                 catch (Exception ex)
                 {
@@ -114,7 +145,7 @@ namespace ChatApp
                     throw;
                 }
             }
-            return false;
+            return Task.FromResult(false);
         }
     }
 }

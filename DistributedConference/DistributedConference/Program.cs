@@ -13,10 +13,14 @@ namespace DistributedConference
     {
         static void Main(string[] args)
         {
-            string uri = "tcp://" + Dns.GetHostByName(Dns.GetHostName()).AddressList[0].ToString() + ":5002";
+            string uri = "tcp://" + Dns.GetHostByName(Dns.GetHostName()).AddressList[0] + ":5002";
 
             SpaceRepository spaceRepo = new SpaceRepository();
             new ChatApp.ChatTest(args, spaceRepo, uri);
+
+            Console.WriteLine("ChatApp succesfully terminated, press enter to terminate program.");
+            Console.ReadLine();
+            Environment.Exit(0);
         }
     }
 }
