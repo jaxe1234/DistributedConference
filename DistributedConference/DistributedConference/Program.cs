@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using ChatApp;
 using dotSpace.Objects.Network;
 
 
@@ -14,9 +15,15 @@ namespace DistributedConference
         static void Main(string[] args)
         {
             string uri = "tcp://" + Dns.GetHostByName(Dns.GetHostName()).AddressList[0] + ":5002";
+            
+            chatTest(args, uri);
+        }
 
+        private static void chatTest(string[] args, string uri)
+        {
             SpaceRepository spaceRepo = new SpaceRepository();
-            new ChatApp.ChatTest(args, spaceRepo, uri);
+            new Chat(args[0].Equals("host"), args[0], spaceRepo, uri, args[1]).InitializeChat();
+            Console.WriteLine("Chat is done.");
         }
     }
 }

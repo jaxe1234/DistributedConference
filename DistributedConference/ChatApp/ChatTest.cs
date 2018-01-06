@@ -9,10 +9,6 @@ namespace ChatApp
 {
     public class ChatTest
     {
-        public ChatTest(string[] args, SpaceRepository spaceRepo, string uri)
-        {
-            new Chat(args[0].Equals("host"), args[0], spaceRepo, uri, args[1]).InitializeChat();
-            Console.WriteLine("Chat is done.");
-        }
+
     }
 }

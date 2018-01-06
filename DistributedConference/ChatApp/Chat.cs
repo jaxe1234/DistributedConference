@@ -45,37 +45,43 @@ namespace ChatApp
                     throw;
                 }
             }
-
-            InitializeChat();
-
         }
 
         public void InitializeChat()
         {
             var cancellationTokenSource = new CancellationTokenSource();
             var cancelToken = cancellationTokenSource.Token;
-            
+
+            // my own stackoverflow post on this topic:
+            // https://stackoverflow.com/questions/48128273/cancelling-parallel-tasks-with-thread-blocking-operations
+
             // this is how to cancel a task running a thread-blocking operation:
             // https://stackoverflow.com/questions/22735533/how-do-i-cancel-a-blocked-task-in-c-sharp-using-a-cancellation-token
+            // https://msdn.microsoft.com/en-us/library/dd321315(v=vs.110).aspx
+            // https://msdn.microsoft.com/en-us/library/hh160373(v=vs.110).aspx
+            // http://www.c-sharpcorner.com/UploadFile/80ae1e/canceling-a-running-task/
+            // https://binary-studio.com/2015/10/23/task-cancellation-in-c-and-things-you-should-know-about-it/
 
             var reader = Task.Run(() =>
-                    Task.Run(() => ChatReader(chatSpace), cancelToken), cancelToken)
+                    ChatReader(chatSpace), cancelToken)
                 .ContinueWith(ant =>
-                    { }, TaskContinuationOptions.OnlyOnCanceled);
-            //Task<bool> reader = Task.Run(() => ChatReader(chatSpace));
+                {
+                    Console.WriteLine("Reader was terminated");
+                }, TaskContinuationOptions.OnlyOnCanceled);
             var sender = Task.Run(() =>
-                    Task.Run(() => ChatSender(chatSpace), cancelToken), cancelToken)
+                    ChatSender(chatSpace), cancelToken)
                 .ContinueWith(ant =>
-                    { }, TaskContinuationOptions.OnlyOnCanceled);
+                    {
+                        Console.WriteLine("Sender was terminated");
+                    }, TaskContinuationOptions.OnlyOnCanceled);
             try
             {
                 reader.Wait(cancelToken);
                 sender.Wait(cancelToken);
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+
             }
 
 
@@ -141,7 +147,6 @@ namespace ChatApp
                 }
                 catch (ConferenceTransmissionEndedException e)
                 {
-
                     ContinueSession = false;
                     return Task.FromResult(false);
                 }
