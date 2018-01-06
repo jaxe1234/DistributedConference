@@ -21,10 +21,11 @@ namespace ChatApp
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
+            ISpace chatSpace;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                var chatSpace = new SequentialSpace();
+                chatSpace = new SequentialSpace();
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
@@ -43,7 +44,15 @@ namespace ChatApp
             {
                 Console.WriteLine("You are a slave!");
                 Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                var chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                try
+                {
+                    chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception + "\t" + exception.Message);
+                    throw;
+                }
 
                 if (Task.Run(() => ChatReader(chatSpace)) == Task.FromResult(false) ||
                     Task.Run(() => ChatSender(chatSpace)) == Task.FromResult(false))
