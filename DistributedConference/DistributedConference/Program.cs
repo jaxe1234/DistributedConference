@@ -20,13 +20,13 @@ namespace DistributedConference
             Console.WriteLine("Program has terminated");
         }
 
-        private static int ChatTest(string[] args, string uri)
+        private static void ChatTest(string[] args, string uri)
         {
             SpaceRepository spaceRepo = new SpaceRepository();
             new Chat(args[0].Equals("host"), args[0], spaceRepo, uri, args[1]).InitializeChat();
             Console.WriteLine("Chat is done.");
+            spaceRepo.Dispose();
             //Environment.Exit(0);
-            return 0;
         }
     }
 }
