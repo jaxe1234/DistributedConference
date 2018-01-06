@@ -21,38 +21,37 @@ namespace ChatApp
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
-            ISpace chatSpace;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                chatSpace = new SequentialSpace();
+                var chatSpace = new SequentialSpace();
                 Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                if (Task.Run(() => ChatReader(ChatSpace)) == Task.FromResult(false) ||
-                    Task.Run(() => ChatSender(ChatSpace)) == Task.FromResult(false))
+                if (Task.Run(() => ChatReader(chatSpace)) == Task.FromResult(false) ||
+                    Task.Run(() => ChatSender(chatSpace)) == Task.FromResult(false))
                 {
                     // https://stackoverflow.com/questions/31513409/async-method-to-return-true-or-false-in-a-task
                     // the idea of this if-statement is to run the sender and reader in a constant check for a return statement
                     // if either one returns false we can simply terminate the chat client altogether
                     // this can be done by putting "done" in the ChatSpace
-                    ChatSpace.Put("done");
+                    chatSpace.Put("done");
                 }
-                ChatSpace.Get("done");
+                chatSpace.Get("done");
             }
             else
             {
                 Console.WriteLine("You are a slave!");
                 Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                var ChatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                var chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
 
-                if (Task.Run(() => ChatReader(ChatSpace)) == Task.FromResult(false) ||
-                    Task.Run(() => ChatSender(ChatSpace)) == Task.FromResult(false))
+                if (Task.Run(() => ChatReader(chatSpace)) == Task.FromResult(false) ||
+                    Task.Run(() => ChatSender(chatSpace)) == Task.FromResult(false))
                 {
-                    ChatSpace.Put("done");
+                    chatSpace.Put("done");
                 }
 
-                ChatSpace.Get("done");
+                chatSpace.Get("done");
             }
             
         }
