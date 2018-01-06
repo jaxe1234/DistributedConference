@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
@@ -16,21 +17,19 @@ namespace ChatApp
     {
         private bool ContinueSession = true;
         //string uri = "tcp://10.16.174.190:5002";
+        public ISpace chatSpace { get; private set; }
         private int K = 0;
         private string LockedInUser;
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
             this.LockedInUser = name;
-            ISpace chatSpace;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
                 chatSpace = new SequentialSpace();
-                Console.WriteLine(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
+                Console.WriteLine("Conference name: " + RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                
-                InitializeChat(chatSpace);
             }
             else
             {
@@ -45,38 +44,46 @@ namespace ChatApp
                     Console.WriteLine(exception + "\t" + exception.Message);
                     throw;
                 }
-
-                InitializeChat(chatSpace);
             }
-            
+
+            InitializeChat();
+
         }
 
-        public void InitializeChat(ISpace chatSpace)
+        public void InitializeChat()
         {
-            Task<bool> reader = Task.Run(() => ChatReader(chatSpace));
-            Task<bool> sender = Task.Run(() => ChatSender(chatSpace));
-            if (reader == Task.FromResult(false) && sender == Task.FromResult(false))
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancelToken = cancellationTokenSource.Token;
+            
+            // this is how to cancel a task running a thread-blocking operation:
+            // https://stackoverflow.com/questions/22735533/how-do-i-cancel-a-blocked-task-in-c-sharp-using-a-cancellation-token
+
+            var reader = Task.Run(() =>
+                    Task.Run(() => ChatReader(chatSpace), cancelToken), cancelToken)
+                .ContinueWith(ant =>
+                    { }, TaskContinuationOptions.OnlyOnCanceled);
+            //Task<bool> reader = Task.Run(() => ChatReader(chatSpace));
+            var sender = Task.Run(() =>
+                    Task.Run(() => ChatSender(chatSpace), cancelToken), cancelToken)
+                .ContinueWith(ant =>
+                    { }, TaskContinuationOptions.OnlyOnCanceled);
+            try
             {
-                Console.WriteLine("Chat session was eneded");
-                return;
+                reader.Wait(cancelToken);
+                sender.Wait(cancelToken);
+
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
 
             while (ContinueSession)
             {
             }
-
-            /*
-                if (Task.Run(async () => await ChatReader(chatSpace)) == Task.FromResult(false) ||
-                    Task.Run(async () => await ChatSender(chatSpace)) == Task.FromResult(false))
-                {
-                    // https://stackoverflow.com/questions/31513409/async-method-to-return-true-or-false-in-a-task
-                    // the idea of this if-statement is to run the sender and reader in a constant check for a return statement
-                    // if either one returns false we can simply terminate the chat client altogether
-                    // this can be done by putting "done" in the ChatSpace
-                    return;
-                }
-                chatSpace.Get("done");
-             */
+            cancellationTokenSource.Cancel();
         }
 
 
@@ -103,11 +110,10 @@ namespace ChatApp
                 }
                 catch (ConferenceTransmissionEndedException e)
                 {
-
                     ContinueSession = false;
                     return Task.FromResult(false);
                 }
-                
+
 
 
                 Console.WriteLine(receivedName + ": " + message);
@@ -125,7 +131,7 @@ namespace ChatApp
                     string message = Console.ReadLine();
                     K++;
                     //Console.WriteLine("Your message was: " + message);
-                    
+
                     ChatSpace.Put(K, LockedInUser, message);
                     if (message == "!quit" || message == "!exit")
                     {
@@ -135,7 +141,7 @@ namespace ChatApp
                 }
                 catch (ConferenceTransmissionEndedException e)
                 {
-                    
+
                     ContinueSession = false;
                     return Task.FromResult(false);
                 }

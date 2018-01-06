@@ -17,10 +17,6 @@ namespace DistributedConference
 
             SpaceRepository spaceRepo = new SpaceRepository();
             new ChatApp.ChatTest(args, spaceRepo, uri);
-
-            Console.WriteLine("ChatApp succesfully terminated, press enter to terminate program.");
-            Console.ReadLine();
-            Environment.Exit(0);
         }
     }
 }
