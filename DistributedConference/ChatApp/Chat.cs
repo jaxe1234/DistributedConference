@@ -99,15 +99,17 @@ namespace ChatApp
             {
                 //Console.WriteLine("Getting messages...");
                 var received = ChatSpace.Query(K + 1, typeof(string), typeof(string));
+                int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
                 try
                 {
-                    if (!receivedName.Equals(LockedInUser))
-                    {
-                        K++;
-                    }
-                    else if (message == "!quit" || message == "!exit")
+//                    if (!receivedName.Equals(LockedInUser))
+//                    {
+//                        K++;
+//                    }
+                    K = messageNumber;
+                    if ((message == "!quit" || message == "!exit") && receivedName.Equals(LockedInUser))
                     {
                         throw new ConferenceTransmissionEndedException(
                             "You have ended your transmission.");
@@ -121,7 +123,7 @@ namespace ChatApp
 
 
 
-                Console.WriteLine(K + ":\t" + receivedName + ": " + message);
+                Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
             }
             return (false);
         }
