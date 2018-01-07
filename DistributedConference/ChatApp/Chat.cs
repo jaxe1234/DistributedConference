@@ -92,28 +92,25 @@ namespace ChatApp
         }
 
 
-        public async Task<bool> ChatReader(ISpace ChatSpace)
+        public async Task<bool> ChatReader(ISpace chatSpace)
         {
             Console.WriteLine("Making chat-reader...");
             while (ContinueSession)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = ChatSpace.Query(K + 1, typeof(string), typeof(string));
+                var received = chatSpace.Query(K + 1, typeof(string), typeof(string));
                 int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
                 try
                 {
-//                    if (!receivedName.Equals(LockedInUser))
-//                    {
-//                        K++;
-//                    }
                     K = messageNumber;
                     if ((message == "!quit" || message == "!exit") && receivedName.Equals(LockedInUser))
                     {
                         throw new ConferenceTransmissionEndedException(
                             "You have ended your transmission.");
                     }
+                    
                 }
                 catch (ConferenceTransmissionEndedException e)
                 {
@@ -128,7 +125,7 @@ namespace ChatApp
             return (false);
         }
 
-        public async Task<bool> ChatSender(ISpace ChatSpace)
+        public async Task<bool> ChatSender(ISpace chatSpace)
         {
             Console.WriteLine("Making chat-sender...");
             while (ContinueSession)
@@ -139,7 +136,7 @@ namespace ChatApp
                     K++;
                     //Console.WriteLine("Your message was: " + message);
 
-                    ChatSpace.Put(K, LockedInUser, message);
+                    chatSpace.Put(K, LockedInUser, message);
                     if (message == "!quit" || message == "!exit")
                     {
                         throw new ConferenceTransmissionEndedException(
