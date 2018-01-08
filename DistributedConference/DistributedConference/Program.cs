@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ChatApp;
+using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
 
 
@@ -14,10 +15,15 @@ namespace DistributedConference
     {
         static void Main(string[] args)
         {
-            string uri = "tcp://" + Dns.GetHostByName(Dns.GetHostName()).AddressList[0] + ":5002";
+
+            var hostentry = Dns.GetHostEntry("").AddressList[0];
+            string uri = "tcp://" + hostentry + ":5002";
             
             ChatTest(args, uri);
-            Console.WriteLine("Program has terminated");
+            //Console.WriteLine("Program has terminated");
+
+            new ChatUI();
+            
         }
 
         private static void ChatTest(string[] args, string uri)
