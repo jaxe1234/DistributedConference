@@ -16,7 +16,7 @@ namespace ConferenceLobbyUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ChatUI());
+            Application.Run(new ConferenceUI());
         }
     }
 }
