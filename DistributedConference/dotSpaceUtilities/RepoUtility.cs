@@ -13,7 +13,6 @@ namespace dotSpaceUtilities
             return "Conference" + ConvertHashCodeToAlphabeticString((uint) name.GetHashCode() % UInt32.MaxValue);
         }
 
-
         private static string ConvertHashCodeToAlphabeticString(uint hash)
         {
             char[] chars = hash.ToString().ToCharArray();

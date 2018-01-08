@@ -59,9 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dotSpaceUtilities\dotSpaceUtilities.csproj">
+    <ProjectReference Include="..\dotSpaceUtilities\NamingTools.csproj">
       <Project>{040f98bf-e52c-4a0b-a0ce-0328dd67c94d}</Project>
-      <Name>dotSpaceUtilities</Name>
+      <Name>NamingTools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
