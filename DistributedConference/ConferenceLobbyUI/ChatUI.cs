@@ -19,7 +19,7 @@ namespace ConferenceLobbyUI
 
         private void msgToSendBox_TextChanged(object sender, EventArgs e)
         {
-            //Ignored
+            // TODO: We should probably sanitize input and limit size
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -37,15 +37,16 @@ namespace ConferenceLobbyUI
 
         }
 
-
         private void msgToSendBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Shift && e.KeyCode == Keys.Enter)
             {
+                //Shift+Enter to insert newline
                 msgToSendBox.Text.Insert(msgToSendBox.SelectionStart, Environment.NewLine);
             }
             else if (e.KeyCode == Keys.Enter)
             {
+                //Enter to send
                 sendButton.PerformClick();
             }
 

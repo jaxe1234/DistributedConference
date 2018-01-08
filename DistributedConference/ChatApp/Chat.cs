@@ -67,28 +67,27 @@ namespace ChatApp
                 var temp = await ChatReader(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
-            });
+            }, cancellationTokenSource.Token);
             var sender = Task.Run(async () =>
             {
                 var temp = await ChatSender(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Sender was terminated");
                 return temp;
-            });
-            try
-            {
-                reader.Wait(cancellationTokenSource.Token);
-                sender.Wait(cancellationTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                // ignored
-            }
+            }, cancellationTokenSource.Token);
+            //try
+            //{
+            //    reader.Wait(cancellationTokenSource.Token);
+            //    sender.Wait(cancellationTokenSource.Token);
+            //}
+            //catch (Exception ex)
+            //{
+            //    ignored
+            //}
 
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
             }
-            cancellationTokenSource.Cancel();
         }
 
 
