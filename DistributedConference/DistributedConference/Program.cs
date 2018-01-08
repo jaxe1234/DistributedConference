@@ -27,8 +27,6 @@ namespace DistributedConference
                 new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
                 Console.WriteLine("Chat is done.");
                 spaceRepo.CloseGate(uri);
-                //spaceRepo.Dispose();
-                //Environment.Exit(0);
             }
 
         }
