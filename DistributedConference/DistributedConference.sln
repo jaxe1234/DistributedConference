@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceMain", "DistributedConference\ConferenceMain.csproj", "{084EE1EC-45F0-446D-A48A-C4732986D8CC}"
 EndProject
@@ -13,9 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceImageProcessing",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfHandler", "PdfHandler\PdfHandler.csproj", "{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotSpaceUtilities", "dotSpaceUtilities\dotSpaceUtilities.csproj", "{040F98BF-E52C-4A0B-A0CE-0328DD67C94D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamingTools", "dotSpaceUtilities\NamingTools.csproj", "{040F98BF-E52C-4A0B-A0CE-0328DD67C94D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceLobbyUI", "ConferenceLobbyUI\ConferenceLobbyUI.csproj", "{71BBA04F-46A6-4033-B087-73386B3654F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlideCommunication", "SlideCommunication\SlideCommunication.csproj", "{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,12 @@ Global
 		{71BBA04F-46A6-4033-B087-73386B3654F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71BBA04F-46A6-4033-B087-73386B3654F4}.Run|Any CPU.ActiveCfg = Release|Any CPU
 		{71BBA04F-46A6-4033-B087-73386B3654F4}.Run|Any CPU.Build.0 = Release|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Run|Any CPU.ActiveCfg = Release|Any CPU
+		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Run|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
