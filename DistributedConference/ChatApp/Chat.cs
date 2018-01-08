@@ -8,7 +8,7 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
-using dotSpaceUtilities;
+using NamingTools;
 
 
 namespace ChatApp
@@ -74,16 +74,6 @@ namespace ChatApp
                 Console.WriteLine("Sender was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
-            //try
-            //{
-            //    reader.Wait(cancellationTokenSource.Token);
-            //    sender.Wait(cancellationTokenSource.Token);
-            //}
-            //catch (Exception ex)
-            //{
-            //    ignored
-            //}
-
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -97,11 +87,13 @@ namespace ChatApp
             while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = chatSpace.QueryP(K + 1, typeof(string), typeof(string));
-                while (received == null)
+                var received = Task.Run(() =>
                 {
-                    if (cancelTokenSource.IsCancellationRequested) return false;
-                }
+                    return chatSpace.Query(K + 1, typeof(string), typeof(string));
+
+                }, cancelTokenSource.Token).Result;
+
+
 
                 int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
