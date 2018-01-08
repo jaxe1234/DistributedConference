@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 
-namespace DistributedConference
+namespace LoginServer
 {
-    class account
+    public class account
     {
         public string username { get; }
-        public byte[] salt { get;}
         public string hash { get; }
+        public byte[] salt { get;}
+        
 
        
 
@@ -28,13 +29,15 @@ namespace DistributedConference
 
         }
 
-        private string generatePassHash(byte[] password, byte[] salt)
+        public static string generatePassHash(byte[] password, byte[] salt)
         {
             byte[] data = new byte[password.Length + salt.Length];
             password.CopyTo(data, 0);
             salt.CopyTo(data, password.Length);
             SHA512Managed hasher = new SHA512Managed();
-            return hasher.ComputeHash(data).ToString();
+            return Encoding.UTF8.GetString(hasher.ComputeHash(data));
+
+            
             
            
         }
