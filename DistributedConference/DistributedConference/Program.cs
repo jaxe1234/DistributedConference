@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using PdfHandler;
+using System.Drawing;
+using System.Net;
 using ChatApp;
 using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
-
 
 namespace DistributedConference
 {
@@ -32,10 +34,20 @@ namespace DistributedConference
                 new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
                 Console.WriteLine("Chat is done.");
                 spaceRepo.CloseGate(uri);
-                //spaceRepo.Dispose();
-                //Environment.Exit(0);
             }
 
+        }
+
+        private static void testPdfService()
+        {
+            var url = "https://meltdownattack.com/meltdown.pdf";
+            var client = new WebClient();
+            using (var stream = client.OpenRead(url))
+            {
+                IList<Image> images = new List<Image>();
+                PdfRasterizerService.GetImages(stream, ref images);
+                images = images;
+            }
         }
     }
 }
