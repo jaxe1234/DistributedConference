@@ -15,9 +15,9 @@ namespace LoginServer
 
         SpaceRepository loginServerSpaces = new SpaceRepository();
         private SequentialSpace userAccounts = new SequentialSpace();
-        private SequentialSpace loggedInUsers = new SequentialSpace();
         private SequentialSpace loginAttempts = new SequentialSpace();
         private SequentialSpace accountCreation = new SequentialSpace();
+        private SequentialSpace loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
 
 
 
@@ -78,7 +78,7 @@ namespace LoginServer
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);
             loginServerSpaces.AddSpace("accountCreation", accountCreation);
-            //Not good. ikke alle spaces skal være remote. How do we int security?
+            //Not good. ikke alle spaces skal være remote. How do we into security?
 
             Task.Factory.StartNew(() => getAccountCreationService());
             Task.Factory.StartNew(() => getLoginAttemptsService());
