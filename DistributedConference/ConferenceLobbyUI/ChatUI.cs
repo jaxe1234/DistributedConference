@@ -42,10 +42,12 @@ namespace ConferenceLobbyUI
         {
             if (e.Shift && e.KeyCode == Keys.Enter)
             {
+                //Shift+Enter to insert newline
                 msgToSendBox.Text.Insert(msgToSendBox.SelectionStart, Environment.NewLine);
             }
             else if (e.KeyCode == Keys.Enter)
             {
+                //Enter to send
                 sendButton.PerformClick();
             }
 
