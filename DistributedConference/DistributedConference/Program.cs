@@ -21,8 +21,7 @@ namespace DistributedConference
             
             ChatTest(args, uri);
             //Console.WriteLine("Program has terminated");
-
-            new ChatUI();
+            
             
         }
 
