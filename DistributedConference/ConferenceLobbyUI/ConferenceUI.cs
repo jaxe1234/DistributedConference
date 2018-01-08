@@ -7,14 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChatApp;
 
 namespace ConferenceLobbyUI
 {
-    public partial class ChatUI : Form
+    public partial class ConferenceUI : Form
     {
-        public ChatUI()
+        
+        public ConferenceUI()
         {
             InitializeComponent();
+        }
+
+        private void ChatUI_Load(object sender, EventArgs e)
+        {
         }
 
         private void msgToSendBox_TextChanged(object sender, EventArgs e)
@@ -26,16 +32,12 @@ namespace ConferenceLobbyUI
         {
 
             var msg = msgToSendBox.Text;
-            receivedMessagesBox.Items.Add(msg);
+            receivedMessagesBox.AppendText(msg);
             msgToSendBox.Clear();
-            receivedMessagesBox.TopIndex = receivedMessagesBox.Items.Count - 1;
+            //receivedMessagesBox
 
         }
 
-        private void receivedMessagesBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void msgToSendBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -50,6 +52,12 @@ namespace ConferenceLobbyUI
                 sendButton.PerformClick();
             }
 
+        }
+
+        private void receivedMessagesBox_TextChanged(object sender, EventArgs e)
+        {
+            receivedMessagesBox.SelectionStart = receivedMessagesBox.TextLength;
+            receivedMessagesBox.ScrollToCaret();
         }
     }
 }
