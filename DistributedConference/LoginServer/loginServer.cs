@@ -29,16 +29,22 @@ namespace LoginServer
                 ITuple attempt = accountCreation.Get(typeof(string), typeof(string));
                 if (attempt != null)// <---
                 {
-                    var existsInDB = userAccounts.QueryP(attempt[0], typeof(string), typeof(byte[]));
-                    if(existsInDB == null)
+                    Console.WriteLine("server: saw request for user creation. With input " + attempt[0] + " " + attempt[1]);
+                    var existsInDB = userAccounts.QueryAll(typeof(account)); //attempt[0], typeof(string), typeof(byte[])
+                    var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
+                    if (!usernmTaken)
                     {
                         account newUser = new account(attempt[0] as string, attempt[1] as string);
                         userAccounts.Put(newUser);
+                       // Console.WriteLine(newUser.username + " " + newUser.hash);
+
                         accountCreation.Put(attempt[0],1); //lav 1 til en enum for success
+                        Console.WriteLine("server: created user");
                     }
                     else
                     {
                         accountCreation.Put(attempt[0], 0);
+                        Console.WriteLine("server: rejected user creation");
                     }
 
 
@@ -56,13 +62,30 @@ namespace LoginServer
                 ITuple attempt = loginAttempts.Get(typeof(string), typeof(string)); //get er blocking = ingen null return
                 if (attempt != null)// <---
                 {
+                   
                     string user = (string)attempt[0];
                     string pass = (string)attempt[1];
-                    ITuple userAcc = userAccounts.Query(user, typeof(string), typeof(byte[]));
-                    account.generatePassHash(Encoding.UTF8.GetBytes(pass), userAcc[2] as byte[]);
-                    if (attempt[1] == userAcc[1])
+                    var userAccs = userAccounts.QueryAll(typeof(account));
+                    var userAccount = userAccs.Select(t => t[0] as account).FirstOrDefault(a => a.username == user);
+                    if (userAccount != null) {
+                        
+                        if (userAccount.hash == (account.generatePassHash(Encoding.UTF8.GetBytes(pass), userAccount.salt)))
+                        {
+                            loggedInUsers.Put(user);
+                            loginAttempts.Put(user, 1);
+                            Console.WriteLine("server: deposited results succ");
+                        }
+                        else
+                        {
+                            loginAttempts.Put(user, 0);
+                            Console.WriteLine("server: deposited results fail");
+                        }
+                       
+                    }
+                    else
                     {
-                        loggedInUsers.Put(user);
+                        loginAttempts.Put(user, 0);
+                        Console.WriteLine("server: deposited results null");
                     }
                 }
               attempt = null;
@@ -72,7 +95,7 @@ namespace LoginServer
 
         public loginServer() {
             
-            loginServer loginService = new loginServer();
+            
             loginServerSpaces.AddGate("tcp://10.16.169.224:5001"); //tjek IP hver dag. just in case.
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
