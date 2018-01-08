@@ -35,7 +35,7 @@ namespace LoginServer
             password.CopyTo(data, 0);
             salt.CopyTo(data, password.Length);
             SHA512Managed hasher = new SHA512Managed();
-            return hasher.ComputeHash(data).ToString();
+            return Encoding.UTF8.GetString(hasher.ComputeHash(data));
 
             
             
