@@ -22,12 +22,15 @@ namespace DistributedConference
 
         private static void ChatTest(string[] args, string uri)
         {
-            SpaceRepository spaceRepo = new SpaceRepository();
-            new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
-            Console.WriteLine("Chat is done.");
-            spaceRepo.CloseGate(uri);
-            //spaceRepo.Dispose();
-            //Environment.Exit(0);
+            using (var spaceRepo = new SpaceRepository())
+            {
+                new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
+                Console.WriteLine("Chat is done.");
+                spaceRepo.CloseGate(uri);
+                //spaceRepo.Dispose();
+                //Environment.Exit(0);
+            }
+
         }
     }
 }

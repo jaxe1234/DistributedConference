@@ -105,11 +105,11 @@ namespace ChatApp
                 try
                 {
                     K = messageNumber;
-                    if ((message == "!quit" || message == "!exit") && receivedName.Equals(LockedInUser))
-                    {
-                        throw new ConferenceTransmissionEndedException(
-                            "You have ended your transmission.");
-                    }
+//                    if ((message == "!quit" || message == "!exit") && receivedName.Equals(LockedInUser))
+//                    {
+//                        throw new ConferenceTransmissionEndedException(
+//                            "You have ended your transmission.");
+//                    }
                     
                 }
                 catch (ConferenceTransmissionEndedException e)
@@ -136,11 +136,15 @@ namespace ChatApp
                     K++;
                     //Console.WriteLine("Your message was: " + message);
 
-                    chatSpace.Put(K, LockedInUser, message);
                     if (message == "!quit" || message == "!exit")
                     {
                         throw new ConferenceTransmissionEndedException(
                             "You have ended your transmission.");
+                    }
+                    else
+                    {
+                        chatSpace.Put(K, LockedInUser, message);
+
                     }
                 }
                 catch (ConferenceTransmissionEndedException e)
