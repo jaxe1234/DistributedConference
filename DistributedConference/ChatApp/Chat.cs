@@ -98,7 +98,12 @@ namespace ChatApp
             while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = chatSpace.Query(K + 1, typeof(string), typeof(string));
+                var received = chatSpace.QueryP(K + 1, typeof(string), typeof(string));
+                while (received == null)
+                {
+                    if (cancelTokenSource.IsCancellationRequested) return false;
+                }
+
                 int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
@@ -106,7 +111,7 @@ namespace ChatApp
                 K = messageNumber;
                 Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
             }
-            return (false);
+            return true;
         }
 
         public async Task<bool> ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)

@@ -50,10 +50,5 @@ namespace ConferenceLobbyUI
             }
 
         }
-
-        private void receivedMessagesBox_DrawItem(object sender, DrawItemEventArgs e)
-        {
-
-        }
     }
 }
