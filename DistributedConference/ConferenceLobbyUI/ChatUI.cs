@@ -19,7 +19,7 @@ namespace ConferenceLobbyUI
 
         private void msgToSendBox_TextChanged(object sender, EventArgs e)
         {
-            //Ignored
+            // TODO: We should probably sanitize input and limit size
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -36,7 +36,6 @@ namespace ConferenceLobbyUI
         {
 
         }
-
 
         private void msgToSendBox_KeyDown(object sender, KeyEventArgs e)
         {
