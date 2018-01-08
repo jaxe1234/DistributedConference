@@ -147,7 +147,7 @@ namespace ChatApp
 
                     }
                 }
-                catch (ConferenceTransmissionEndedException e)
+                catch (ConferenceTransmissionEndedException ex)
                 {
                     ContinueSession = false;
                     return (false);
