@@ -15,7 +15,6 @@ namespace ChatApp
 {
     public class Chat
     {
-        private bool ContinueSession = true;
         //string uri = "tcp://10.16.174.190:5002";
         public ISpace chatSpace { get; private set; }
         private int K = 0;
@@ -49,8 +48,7 @@ namespace ChatApp
 
         public void InitializeChat()
         {
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancelToken = cancellationTokenSource.Token;
+
 
             // my own stackoverflow post on this topic:
             // https://stackoverflow.com/questions/48128273/cancelling-parallel-tasks-with-thread-blocking-operations
@@ -62,22 +60,24 @@ namespace ChatApp
             // http://www.c-sharpcorner.com/UploadFile/80ae1e/canceling-a-running-task/
             // https://binary-studio.com/2015/10/23/task-cancellation-in-c-and-things-you-should-know-about-it/
 
+            var cancellationTokenSource = new CancellationTokenSource();
+
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(chatSpace);
+                var temp = await ChatReader(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             });
             var sender = Task.Run(async () =>
             {
-                var temp = await ChatSender(chatSpace);
+                var temp = await ChatSender(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Sender was terminated");
                 return temp;
             });
             try
             {
-                reader.Wait(cancelToken);
-                sender.Wait(cancelToken);
+                reader.Wait(cancellationTokenSource.Token);
+                sender.Wait(cancellationTokenSource.Token);
             }
             catch (Exception ex)
             {
@@ -85,50 +85,34 @@ namespace ChatApp
             }
 
 
-            while (ContinueSession)
+            while (!cancellationTokenSource.IsCancellationRequested)
             {
             }
             cancellationTokenSource.Cancel();
         }
 
 
-        public async Task<bool> ChatReader(ISpace chatSpace)
+        public async Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
         {
             Console.WriteLine("Making chat-reader...");
-            while (ContinueSession)
+            while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
                 var received = chatSpace.Query(K + 1, typeof(string), typeof(string));
                 int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
-                try
-                {
-                    K = messageNumber;
-//                    if ((message == "!quit" || message == "!exit") && receivedName.Equals(LockedInUser))
-//                    {
-//                        throw new ConferenceTransmissionEndedException(
-//                            "You have ended your transmission.");
-//                    }
-                    
-                }
-                catch (ConferenceTransmissionEndedException e)
-                {
-                    ContinueSession = false;
-                    return (false);
-                }
-
-
-
+                
+                K = messageNumber;
                 Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
             }
             return (false);
         }
 
-        public async Task<bool> ChatSender(ISpace chatSpace)
+        public async Task<bool> ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
         {
             Console.WriteLine("Making chat-sender...");
-            while (ContinueSession)
+            while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 try
                 {
@@ -138,19 +122,12 @@ namespace ChatApp
 
                     if (message == "!quit" || message == "!exit")
                     {
-                        throw new ConferenceTransmissionEndedException(
-                            "You have ended your transmission.");
+                        cancelTokenSource.Cancel();
                     }
                     else
                     {
                         chatSpace.Put(K, LockedInUser, message);
-
                     }
-                }
-                catch (ConferenceTransmissionEndedException ex)
-                {
-                    ContinueSession = false;
-                    return (false);
                 }
                 catch (Exception ex)
                 {
@@ -158,7 +135,7 @@ namespace ChatApp
                     throw;
                 }
             }
-            return (false);
+            return true;
         }
     }
 }
