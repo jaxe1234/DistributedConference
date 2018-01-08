@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{004F2EEC-9D5C-43FE-8E9A-FAE2E956F35B}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LoginServer</RootNamespace>
     <AssemblyName>LoginServer</AssemblyName>
@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="account.cs" />
+    <Compile Include="LoginServerTests.cs" />
     <Compile Include="loginServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
