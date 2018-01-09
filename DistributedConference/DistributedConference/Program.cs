@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using PdfHandler;
 using System.Drawing;
-using System.Net;
 using ChatApp;
 using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
 using System.IO;
+using System.Net.Sockets;
 
 namespace DistributedConference
 {
@@ -18,12 +18,13 @@ namespace DistributedConference
     {
         static void Main(string[] args)
         {
-            testPdfService();
+            //testPdfService();
 
-            //var hostentry = Dns.GetHostEntry("").AddressList[0];
-            //string uri = "tcp://" + hostentry + ":5002";
+            var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+
+            string uri = "tcp://" + hostentry + ":5002";
             
-            //ChatTest(args, uri);
+            ChatTest(args, uri);
             //Console.WriteLine("Program has terminated");
             
             
@@ -35,9 +36,8 @@ namespace DistributedConference
             {
                 new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
                 Console.WriteLine("Chat is done.");
-                spaceRepo.CloseGate(uri);
+                spaceRepo.Dispose();
             }
-
         }
 
         private static void testPdfService()

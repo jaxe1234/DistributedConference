@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace dotSpaceUtilities
+namespace NamingTools
 {
     public class RepoUtility
     {
