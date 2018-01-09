@@ -46,6 +46,11 @@ namespace ChatApp
             }
         }
 
+        private static string formatMessage(string formattedTimeString, string name, string message)
+        {
+            return $"[{formattedTimeString}]  {name}: {message}";
+        }
+
         public void InitializeChat()
         {
 
@@ -68,12 +73,8 @@ namespace ChatApp
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
-            var sender = Task.Run(async () =>
-            {
-                var temp = await ChatSender(chatSpace, cancellationTokenSource);
-                Console.WriteLine("Sender was terminated");
-                return temp;
-            }, cancellationTokenSource.Token);
+            
+            var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -89,40 +90,52 @@ namespace ChatApp
                 //Console.WriteLine("Getting messages...");
                 var received = Task.Run(() =>
                 {
-                    return chatSpace.Query(K + 1, typeof(string), typeof(string));
+                    return chatSpace.Query(K + 1, typeof(string), typeof(string), typeof(string));
 
                 }, cancelTokenSource.Token).Result;
 
 
 
-                int messageNumber = (int) received[0];
-                string receivedName = (string)received[1];
-                string message = (string)received[2];
+                K = (int) received[0];
+                string formattedTimeString = (string) received[1];
+                string receivedName = (string)received[2];
+                string message = (string)received[3];
                 
-                K = messageNumber;
-                Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
+                Console.WriteLine(formatMessage(formattedTimeString, receivedName, message));
             }
             return true;
         }
-
-        public async Task<bool> ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        
+        public class ChatSender
         {
-            Console.WriteLine("Making chat-sender...");
-            while (!cancelTokenSource.Token.IsCancellationRequested)
+            public string LockedInUser { get; private set; }
+            public ISpace ChatSpace { get; private set; }
+            public CancellationTokenSource CancelTokenSource { get; private set; }
+            public Chat Chat { get; private set; }
+
+            public ChatSender(string user, ISpace space, CancellationTokenSource source, Chat chat)
             {
+                LockedInUser = user;
+                ChatSpace = space;
+                CancelTokenSource = source;
+                Chat = chat;
+            }
+
+            public string SendMessage(string msg)
+            {
+                string fullMessage;
+                DateTime time = DateTime.Now;
+                string formattedTimeString = time.ToString("HH':'mm':'ss");
                 try
                 {
-                    string message = Console.ReadLine();
-                    K++;
-                    //Console.WriteLine("Your message was: " + message);
-
-                    if (message == "!quit" || message == "!exit")
+                    Chat.K++;
+                    if (msg == "!quit" || msg == "!exit")
                     {
-                        cancelTokenSource.Cancel();
+                        CancelTokenSource.Cancel();
                     }
                     else
                     {
-                        chatSpace.Put(K, LockedInUser, message);
+                        ChatSpace.Put(Chat.K, formattedTimeString, LockedInUser, msg);
                     }
                 }
                 catch (Exception ex)
@@ -130,8 +143,21 @@ namespace ChatApp
                     Console.WriteLine(ex);
                     throw;
                 }
+                return formatMessage(formattedTimeString, LockedInUser, msg);
             }
-            return true;
+
+            public async Task<bool> RunAsConsole()
+            {
+                Console.WriteLine("Making chat-sender...");
+                while (!CancelTokenSource.Token.IsCancellationRequested)
+                {
+                    string message = Console.ReadLine();
+                    SendMessage(message);
+                }
+                return true;
+            }
         }
     }
+
+    
 }

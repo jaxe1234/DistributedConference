@@ -22,7 +22,7 @@ namespace LoginServer
 
 
 
-        private void getAccountCreationService()
+        private void GetAccountCreationService()
         {//To create a user, put at (username, password) tuple in accountCreation and check for confirmation
             while (true)
             {
@@ -31,7 +31,8 @@ namespace LoginServer
                 {
                     Console.WriteLine("server: saw request for user creation. With input " + attempt[0] + " " + attempt[1]);
                     var existsInDB = userAccounts.QueryAll(typeof(account)); //attempt[0], typeof(string), typeof(byte[])
-                    var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
+                    var usernmTaken = existsInDB.Any(t => (t[0] as account).username ==(attempt[0] as string));
+                    //var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
                     if (!usernmTaken)
                     {
                         account newUser = new account(attempt[0] as string, attempt[1] as string);
@@ -55,7 +56,7 @@ namespace LoginServer
             }
         }
 
-        private void getLoginAttemptsService()
+        private void GetLoginAttemptsService()
         {
             while (true)
             {
@@ -103,9 +104,10 @@ namespace LoginServer
             loginServerSpaces.AddSpace("accountCreation", accountCreation);
             //Not good. ikke alle spaces skal være remote. How do we into security?
 
-            Task.Factory.StartNew(() => getAccountCreationService());
-            Task.Factory.StartNew(() => getLoginAttemptsService());
-           
+            Task.Factory.StartNew(() => GetAccountCreationService());
+            Task.Factory.StartNew(() => GetLoginAttemptsService());
+            
+
         }
 
        
