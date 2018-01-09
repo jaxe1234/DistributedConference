@@ -24,13 +24,14 @@ namespace DistributedConference
         {
             //testPdfService();
 
-            DiningPhil(args);
+            //DiningPhil(args);
 
             //testJson();
 
-            //var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork
-            //string uri = "tcp://" + hostentry + ":5002";
-            //ChatTest(args, uri);
+            var hostentry = Dns.GetHostEntry("").AddressList
+                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            string uri = "tcp://" + hostentry + ":5002";
+            ChatTest(args, uri);
             //Console.WriteLine("Program has terminated");
 
 

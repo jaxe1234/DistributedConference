@@ -74,7 +74,7 @@ namespace ChatApp
                 return temp;
             }, cancellationTokenSource.Token);
             
-            ChatSender(chatSpace,cancellationTokenSource);
+            var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -96,12 +96,11 @@ namespace ChatApp
 
 
 
-                int messageNumber = (int) received[0];
+                K = (int) received[0];
                 string formattedTimeString = (string) received[1];
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
                 
-                K = messageNumber;
                 Console.WriteLine(formatMessage(formattedTimeString, receivedName, message));
             }
             return true;
