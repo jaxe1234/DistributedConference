@@ -8,7 +8,7 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
-using dotSpaceUtilities;
+using NamingTools;
 
 
 namespace ChatApp
@@ -67,28 +67,17 @@ namespace ChatApp
                 var temp = await ChatReader(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
-            });
+            }, cancellationTokenSource.Token);
             var sender = Task.Run(async () =>
             {
                 var temp = await ChatSender(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Sender was terminated");
                 return temp;
-            });
-            try
-            {
-                reader.Wait(cancellationTokenSource.Token);
-                sender.Wait(cancellationTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                // ignored
-            }
-
+            }, cancellationTokenSource.Token);
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
             }
-            cancellationTokenSource.Cancel();
         }
 
 
@@ -98,7 +87,14 @@ namespace ChatApp
             while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = chatSpace.Query(K + 1, typeof(string), typeof(string));
+                var received = Task.Run(() =>
+                {
+                    return chatSpace.Query(K + 1, typeof(string), typeof(string));
+
+                }, cancelTokenSource.Token).Result;
+
+
+
                 int messageNumber = (int) received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
@@ -106,7 +102,7 @@ namespace ChatApp
                 K = messageNumber;
                 Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
             }
-            return (false);
+            return true;
         }
 
         public async Task<bool> ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)

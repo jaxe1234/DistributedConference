@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace dotSpaceUtilities
+namespace NamingTools
 {
     public class RepoUtility
     {
@@ -12,7 +12,6 @@ namespace dotSpaceUtilities
         {
             return "Conference" + ConvertHashCodeToAlphabeticString((uint) name.GetHashCode() % UInt32.MaxValue);
         }
-
 
         private static string ConvertHashCodeToAlphabeticString(uint hash)
         {
