@@ -68,12 +68,8 @@ namespace ChatApp
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
-            var sender = Task.Run(async () =>
-            {
-                var temp = await ChatSender(chatSpace, cancellationTokenSource);
-                Console.WriteLine("Sender was terminated");
-                return temp;
-            }, cancellationTokenSource.Token);
+            
+            ChatSender(chatSpace,cancellationTokenSource);
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -95,43 +91,33 @@ namespace ChatApp
 
 
 
-                int messageNumber = (int) received[0];
+                int messageNumber = (int)received[0];
                 string receivedName = (string)received[1];
                 string message = (string)received[2];
-                
+
                 K = messageNumber;
                 Console.WriteLine(messageNumber + ":\t" + receivedName + ": " + message);
             }
             return true;
         }
 
-        public async Task<bool> ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        public void ChatSender(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
         {
-            Console.WriteLine("Making chat-sender...");
-            while (!cancelTokenSource.Token.IsCancellationRequested)
-            {
-                try
-                {
-                    string message = Console.ReadLine();
-                    K++;
-                    //Console.WriteLine("Your message was: " + message);
 
-                    if (message == "!quit" || message == "!exit")
-                    {
-                        cancelTokenSource.Cancel();
-                    }
-                    else
-                    {
-                        chatSpace.Put(K, LockedInUser, message);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    throw;
-                }
+            string message = Console.ReadLine();
+            K++;
+            //Console.WriteLine("Your message was: " + message);
+
+            if (message == "!quit" || message == "!exit")
+            {
+                cancelTokenSource.Cancel();
             }
-            return true;
+            else
+            {
+                chatSpace.Put(K, LockedInUser, message);
+            }
+
+
         }
     }
 }
