@@ -73,12 +73,8 @@ namespace ChatApp
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
-            var sender = Task.Run(async () =>
-            {
-                var temp = await (new ChatSender(LockedInUser, chatSpace, cancellationTokenSource).RunAsConsole());
-                Console.WriteLine("Sender was terminated");
-                return temp;
-            }, cancellationTokenSource.Token);
+            
+            ChatSender(chatSpace,cancellationTokenSource);
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
