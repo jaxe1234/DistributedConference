@@ -1,4 +1,5 @@
 ﻿using dotSpace.Objects.Network;
+using dotSpace.Objects.Space;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace LoginServer
             Console.WriteLine("loginserver inited");
             var accountSpace = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation");
             var loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts");
+         
 
             //CREATE NEW USER
             Console.WriteLine("client: Attempting to create new user...");
@@ -70,4 +72,6 @@ namespace LoginServer
 
         }
     }
+
+
 }
