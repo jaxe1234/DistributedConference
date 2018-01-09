@@ -73,7 +73,7 @@ namespace WpfApplication1
         {
             if( ((int)(this.Height / 12) - 5) < 32)
             {
-                SndBttnHeight = (int)(this.Height / 12) - 5;
+                SndBttnHeight = (int)(this.Height / 12) -5;
                 ChtFldHeight = SndBttnHeight - 5;
             }
             
