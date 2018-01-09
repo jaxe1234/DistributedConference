@@ -1,4 +1,6 @@
-﻿using System;
+﻿using dotSpace.Interfaces.Space;
+using dotSpace.Objects.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,16 +19,28 @@ namespace WpfApplication1
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class LogonWindow : Window
     {
-        string inputPassword;
-        string inputUsername;
-        public Window1()
+        
+        RemoteSpace AccountCreation;
+        RemoteSpace loginSpace;
+        public LogonWindow()
         {
             InitializeComponent();
-            UsernameInput.KeyUp += UsernameInput_KeyUp;
+            AccountCreation = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation");
+            loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts");
+            UsernameInput.KeyUp += PasswordInput_KeyUp;
             PasswordInput.KeyUp += PasswordInput_KeyUp;
+            SignupButton.Click += SignupButton_Click;
            
+        }
+
+        private void SignupButton_Click(object sender, RoutedEventArgs e)
+        {
+            SignupWindow main = new SignupWindow(AccountCreation, loginSpace);
+            App.Current.MainWindow = main;
+            this.Close();
+            main.Show();
         }
 
         private void PasswordInput_KeyUp(object sender, KeyEventArgs e)
@@ -36,54 +50,72 @@ namespace WpfApplication1
 
           if(e.Key == Key.Enter)
             {
-                inputPassword = PasswordInput.Password.Trim();
-                inputUsername = UsernameInput.Text.Trim();
-               // PasswordInput.Clear();
-                ParseInput();
+               
+              
+                ParseInput(UsernameInput.Text.Trim(), PasswordInput.Password.Trim());
             }
         }
 
-        private void UsernameInput_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                inputPassword = PasswordInput.Password.Trim();
-                inputUsername = UsernameInput.Text.Trim();
-                //UsernameInput.Clear();
-                ParseInput();
-            }
-        }
+        //private void UsernameInput_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
 
-        private void ParseInput()
+                
+               
+        //        ParseInput(UsernameInput.Text.Trim(), PasswordInput.Password.Trim());
+
+        //    }
+        //}
+
+        private void ParseInput(string Username, string Password)
         {
-            if (string.IsNullOrWhiteSpace(inputUsername))
+            if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Username))
             {
-               // UsernameInput.Text = "Must enter a username";
+                // UsernameInput.Text = "Must enter a username";
                 PasswordInput.Clear();
             }
-            if (string.IsNullOrWhiteSpace(inputPassword))
-            {
-                PasswordInput.Clear();
-                //errors
-            }
-            else if (!string.IsNullOrWhiteSpace(inputPassword) && !string.IsNullOrWhiteSpace(inputUsername))
+            else if (!string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Username))
             {
                 //login or create account depending on context
-                if (authenticateLogin())
+                if (authenticateLogin(Username, Password))
                 {
                     MainWindow main = new MainWindow();
                     App.Current.MainWindow = main;
                     this.Close();
                     main.Show();
                 }
+                else
+                {
+                    UsernameInput.Clear();
+                    PasswordInput.Clear();
+                }
             }
            
         }
 
-        private bool authenticateLogin()
+        private bool authenticateLogin(string Username, string Password)
         {
             //TEMPORARY MUST BE IMPLEMENTED
-            return true;
+            loginSpace.Put(Username, Password);
+            var result = loginSpace.GetP(Username, typeof(int));
+            if (result != null)
+            {
+                if((int)result[1] == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    //handle wrong password
+                    return false;
+                }
+            }
+            else
+            {
+                //HANDLE LOGINSERVERERRORS
+                return false;
+            }
         }
     }
 }

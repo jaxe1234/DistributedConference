@@ -22,7 +22,7 @@ namespace SlideCommunication
         public void ConnectToSession()
         {
             Space.Put("Request", "Session", Username);
-            SessionKey = Space.Get("Ack", "Session", Username, typeof(string)).Get<string>(3);
+            SessionKey = Space.Get("Ack", "Session", Username, typeof(string))[3] as string;
         }
     }
 }

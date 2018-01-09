@@ -37,6 +37,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotSpace, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\dotSpace.1.0.8\lib\net452\dotSpace.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PropertyChanged, Version=2.2.4.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.2.4.0\lib\net452\PropertyChanged.dll</HintPath>
       <Private>True</Private>
@@ -64,6 +68,9 @@
     <Compile Include="Logon.xaml.cs">
       <DependentUpon>Logon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SignupWindow.xaml.cs">
+      <DependentUpon>SignupWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Assets\Dictionary1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -81,6 +88,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Logon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SignupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,6 +126,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatApp\ChatApp.csproj">
+      <Project>{8c54a2f8-fd0d-47c1-a056-b75c828a311a}</Project>
+      <Name>ChatApp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ConferenceImageProcessing\ConferenceImageProcessing.csproj">
+      <Project>{780aeff9-1b3e-4627-b1f3-bf327c6f7adf}</Project>
+      <Name>ConferenceImageProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\dotSpaceUtilities\NamingTools.csproj">
+      <Project>{040f98bf-e52c-4a0b-a0ce-0328dd67c94d}</Project>
+      <Name>NamingTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfHandler\PdfHandler.csproj">
+      <Project>{c835e8cd-4d73-4de1-93c3-3b55c3a91afd}</Project>
+      <Name>PdfHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SlideCommunication\SlideCommunication.csproj">
+      <Project>{8b689b6a-0a73-4a72-9ea8-2a89f77237fa}</Project>
+      <Name>SlideCommunication</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.2.1.0\build\net452\Fody.targets" Condition="Exists('..\packages\Fody.2.2.1.0\build\net452\Fody.targets')" />

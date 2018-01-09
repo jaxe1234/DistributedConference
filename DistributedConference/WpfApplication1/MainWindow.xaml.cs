@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace WpfApplication1
 
     public MainWindow()
         {
+            //Chat CurrentChat = new Chat();
             MsgList = new ObservableCollection<string>();
             InitializeComponent();
             DataContext = this;
