@@ -18,7 +18,8 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         
-        <ListView ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+        <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     
                      Grid.Column="1"
                      Grid.Row="0"
                      Margin="5"
@@ -39,11 +40,11 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Height="16">
-                        <TextBlock
-                            Text="{Binding}">
+                 
+                        <TextBlock Width="auto"
+                            Text="{Binding}" TextWrapping="Wrap">
                         </TextBlock>
-                    </StackPanel>
+            
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
