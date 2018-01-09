@@ -74,7 +74,7 @@ namespace ChatApp
                 return temp;
             }, cancellationTokenSource.Token);
             
-            var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource).RunAsConsole();
+            var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -109,16 +109,16 @@ namespace ChatApp
         public class ChatSender
         {
             public string LockedInUser { get; private set; }
-            public ISpace chatSpace { get; private set; }
-            public CancellationTokenSource cancelTokenSource { get; private set; }
-            public int K { get; private set; }
+            public ISpace ChatSpace { get; private set; }
+            public CancellationTokenSource CancelTokenSource { get; private set; }
+            public Chat Chat { get; private set; }
 
-            public ChatSender(string user, ISpace space, CancellationTokenSource source)
+            public ChatSender(string user, ISpace space, CancellationTokenSource source, Chat chat)
             {
                 LockedInUser = user;
-                chatSpace = space;
-                cancelTokenSource = source;
-                int K = 0;
+                ChatSpace = space;
+                CancelTokenSource = source;
+                Chat = chat;
             }
 
             public string SendMessage(string msg)
@@ -128,14 +128,14 @@ namespace ChatApp
                 string formattedTimeString = time.ToString("HH':'mm':'ss");
                 try
                 {
-                    K++;
+                    Chat.K++;
                     if (msg == "!quit" || msg == "!exit")
                     {
-                        cancelTokenSource.Cancel();
+                        CancelTokenSource.Cancel();
                     }
                     else
                     {
-                        chatSpace.Put(K, formattedTimeString, LockedInUser, msg);
+                        ChatSpace.Put(Chat.K, formattedTimeString, LockedInUser, msg);
                     }
                 }
                 catch (Exception ex)
@@ -149,7 +149,7 @@ namespace ChatApp
             public async Task<bool> RunAsConsole()
             {
                 Console.WriteLine("Making chat-sender...");
-                while (!cancelTokenSource.Token.IsCancellationRequested)
+                while (!CancelTokenSource.Token.IsCancellationRequested)
                 {
                     string message = Console.ReadLine();
                     SendMessage(message);
