@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using PdfHandler;
-using System.Drawing; 
+using System.Drawing;
 using ChatApp;
 using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
+using SlideCommunication;
 
 namespace DistributedConference
 {
@@ -24,9 +25,12 @@ namespace DistributedConference
         {
             //testPdfService();
 
-            DiningPhil(args);
+            //DiningPhil(args);
 
             //testJson();
+
+            new Thread(() => TestSlideServer()).Start();
+            new Thread(() => TestSlideClient()).Start();
 
             //var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork
             //string uri = "tcp://" + hostentry + ":5002";
@@ -46,9 +50,9 @@ namespace DistributedConference
             }
         }
 
-        private static void testPdfService()
+        private static IEnumerable<byte[]> testPdfService()
         {
-            var url = "https://meltdownattack.com/meltdown.pdf";
+            var url = "https://meltdownattack.com/spectre.pdf";
             var client = new WebClient();
             IList<Image> images = new List<Image>();
             using (var stream = client.OpenRead(url))
@@ -57,11 +61,7 @@ namespace DistributedConference
             }
             IList<byte[]> bitstreams = new List<byte[]>();
             PdfRasterizerService.ConvertToPngBitstream(images, ref bitstreams);
-            var i = 1;
-            foreach (var stream in bitstreams)
-            {
-                File.WriteAllBytes($"image{i++}.png", stream);
-            }
+            return bitstreams;
         }
 
         class TemplateField
@@ -90,9 +90,33 @@ namespace DistributedConference
 
         }
 
+        private static void TestSlideServer()
+        {
+            using (var repo = new SpaceRepository())
+            {
+                repo.AddGate("tcp://127.0.0.1");
+                ISpace space = new SequentialSpace();
+                repo.AddSpace("space", space);
+                var server = new Consumer(space, testPdfService().ToArray());
+            }
+        }
+
+        private static void TestSlideClient()
+        {
+            Thread.Sleep(100);
+            ISpace space = new RemoteSpace("tcp://127.0.0.1/space");
+            var client = new Producer(space, "aMoe");
+            var frames = client.GetFrames(1, 2, 3, 4).ToList();
+            var i = 0;
+            foreach (var bs in frames)
+            {
+                File.WriteAllBytes($"image{i++}.png", bs);
+            }
+        }
+
         public static void DiningPhil(string[] args)
         {
-            const string addr = "tcp://127.0.0.1{0}?CONN";
+            const string addr = "tcp://127.0.0.1{0}?KEEP";
             //var addr = args.FirstOrDefault(s => s.StartsWith("--server="))?.Replace("--server=", "");
             //int n;
             //if (string.IsNullOrEmpty(addr) || !int.TryParse(args.FirstOrDefault(s => s.StartsWith("--number="))?.Replace("--number=", ""), out n))

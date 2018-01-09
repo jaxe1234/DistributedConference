@@ -93,6 +93,10 @@
       <Project>{c835e8cd-4d73-4de1-93c3-3b55c3a91afd}</Project>
       <Name>PdfHandler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SlideCommunication\SlideCommunication.csproj">
+      <Project>{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}</Project>
+      <Name>SlideCommunication</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

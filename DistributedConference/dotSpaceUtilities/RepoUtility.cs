@@ -13,6 +13,13 @@ namespace NamingTools
             return "Conference" + ConvertHashCodeToAlphabeticString((uint) name.GetHashCode() % UInt32.MaxValue);
         }
 
+        public static string UniqueString(int length)
+        {
+            Random random = new Random();
+            uint hash = (uint)(DateTime.Now.Ticks + random.Next()).GetHashCode();
+            return ConvertHashCodeToAlphabeticString(hash);
+        }
+
         private static string ConvertHashCodeToAlphabeticString(uint hash)
         {
             char[] chars = hash.ToString().ToCharArray();
