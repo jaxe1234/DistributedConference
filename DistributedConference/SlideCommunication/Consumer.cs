@@ -1,6 +1,7 @@
 ﻿using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Space;
+using NamingTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace SlideCommunication
                 {
                     case (RequestType.EstablishSession):
                         {
-                            var key = NamingTools.RepoUtility.UniqueString(64);
+                            var key = NamingTool.UniqueString(64);
                             var t1 = PrivateSpace.QueryP("SessionKey", typeof(string), identifier);
                             var t2 = PrivateSpace.QueryP("SessionKey", key, typeof(string));
                             if (t1 == null && t2 == null)

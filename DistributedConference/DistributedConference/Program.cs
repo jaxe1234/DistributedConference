@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using System.Threading;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
+using SlideCommunication;
+
 //using SlideCommunication;
 
 namespace DistributedConference
