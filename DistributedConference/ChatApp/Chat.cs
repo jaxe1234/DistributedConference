@@ -19,10 +19,10 @@ namespace ChatApp
         //string uri = "tcp://10.16.174.190:5002";
         public ISpace ChatSpace { get; private set; }
         private int K = 0;
-        private string LockedInUser;
+        private string LoggedInUser;
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
         {
-            this.LockedInUser = name;
+            this.LoggedInUser = name;
             if (isHost)
             {
                 Console.WriteLine("You are host!");
@@ -75,7 +75,7 @@ namespace ChatApp
                 return temp;
             }, cancellationTokenSource.Token);
 
-            var sender = new ChatSender(LockedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
+            var sender = new ChatSender(LoggedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
