@@ -42,7 +42,7 @@ namespace DistributedConference
                 .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             string uri = "tcp://" + hostentry + ":5002";
             ChatTest(args, uri);
-            //Console.WriteLine("Program has terminated");
+            Console.WriteLine("Program has terminated");
 
 
         }
