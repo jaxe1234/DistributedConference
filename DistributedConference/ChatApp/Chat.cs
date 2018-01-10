@@ -29,8 +29,6 @@ namespace ChatApp
                 Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
-                
-                
             }
             else
             {
@@ -84,7 +82,7 @@ namespace ChatApp
         }
 
 
-        public async Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
         {
             Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
@@ -96,8 +94,6 @@ namespace ChatApp
 
                 }, cancelTokenSource.Token).Result;
 
-
-
                 K = (int) received[0];
                 string formattedTimeString = (string) received[1];
                 string receivedName = (string)received[2];
@@ -105,7 +101,7 @@ namespace ChatApp
                 
                 Console.WriteLine(formatMessage(formattedTimeString, receivedName, message));
             }
-            return true;
+            return Task<bool>.FromResult(true);
         }
         
         public class ChatSender
@@ -125,7 +121,6 @@ namespace ChatApp
 
             public string SendMessage(string msg)
             {
-                string fullMessage;
                 DateTime time = DateTime.Now;
                 string formattedTimeString = time.ToString("HH':'mm':'ss");
                 try
@@ -148,7 +143,7 @@ namespace ChatApp
                 return formatMessage(formattedTimeString, LockedInUser, msg);
             }
 
-            public async Task<bool> RunAsConsole()
+            public Task<bool> RunAsConsole()
             {
                 Console.WriteLine("Making chat-sender...");
                 while (!CancelTokenSource.Token.IsCancellationRequested)
@@ -156,7 +151,7 @@ namespace ChatApp
                     string message = Console.ReadLine();
                     SendMessage(message);
                 }
-                return true;
+                return Task<bool>.FromResult(true);
             }
         }
     }
