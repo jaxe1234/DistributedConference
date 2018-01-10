@@ -69,11 +69,11 @@ namespace ChatApp
 
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(chatSpace, cancellationTokenSource);
+                var temp = await Task<bool>.Factory.StartNew(() => ChatReader(chatSpace, cancellationTokenSource));//await ChatReader(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
-            
+
             var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
@@ -88,22 +88,32 @@ namespace ChatApp
             while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
-                var received = Task.Run(() =>
-                {
-                    return chatSpace.Query(K + 1, typeof(string), typeof(string), typeof(string));
+                ITuple received = null;
 
+                received = Task.Run(() =>
+                {
+                    try
+                    {
+                        return chatSpace.Query(K + 1, typeof(string), typeof(string), typeof(string));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    return null;
                 }, cancelTokenSource.Token).Result;
 
                 K = (int) received[0];
                 string formattedTimeString = (string) received[1];
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
-                
+
                 Console.WriteLine(formatMessage(formattedTimeString, receivedName, message));
             }
             return Task<bool>.FromResult(true);
         }
-        
+
         public class ChatSender
         {
             public string LockedInUser { get; private set; }
@@ -156,5 +166,5 @@ namespace ChatApp
         }
     }
 
-    
+
 }
