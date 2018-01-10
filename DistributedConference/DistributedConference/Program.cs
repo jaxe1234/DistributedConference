@@ -17,6 +17,8 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
 using SlideCommunication;
 
+//using SlideCommunication;
+
 namespace DistributedConference
 {
     class Program
@@ -33,8 +35,8 @@ namespace DistributedConference
             //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             //string uri = "tcp://" + hostentry + ":5002";
             //ChatTest(args, uri);
-            new Thread(() => TestSlideServer()).Start();
-           new Thread(() => TestSlideClient()).Start();
+            //new Thread(() => TestSlideServer()).Start();
+            //new Thread(() => TestSlideClient()).Start();
 
             //var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork
             //string uri = "tcp://" + hostentry + ":5002";

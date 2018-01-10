@@ -26,17 +26,19 @@ namespace ChatApp
             {
                 Console.WriteLine("You are host!");
                 chatSpace = new SequentialSpace();
-                Console.WriteLine("Conference name: " + conferenceName + " with hash: " + RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(RepoUtility.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
+                Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+                chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
                 chatRepo.AddGate(uri);
+                
+                
             }
             else
             {
                 Console.WriteLine("You are a slave!");
-                Console.WriteLine(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 try
                 {
-                    chatSpace = new RemoteSpace(RepoUtility.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                    chatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 }
                 catch (Exception exception)
                 {
