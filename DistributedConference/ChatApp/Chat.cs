@@ -71,7 +71,7 @@ namespace ChatApp
 
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(chatSpace, cancellationTokenSource);
+                var temp = await Task<bool>.Factory.StartNew(() => ChatReader(chatSpace, cancellationTokenSource));//await ChatReader(chatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
@@ -84,7 +84,7 @@ namespace ChatApp
         }
 
 
-        public async Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        public bool ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
         {
             Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
@@ -148,7 +148,7 @@ namespace ChatApp
                 return formatMessage(formattedTimeString, LockedInUser, msg);
             }
 
-            public async Task<bool> RunAsConsole()
+            public bool RunAsConsole()
             {
                 Console.WriteLine("Making chat-sender...");
                 while (!CancelTokenSource.Token.IsCancellationRequested)
