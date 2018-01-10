@@ -68,11 +68,14 @@
     <Compile Include="SignupWindow.xaml.cs">
       <DependentUpon>SignupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConferenceListWindow.xaml.cs">
+      <DependentUpon>ConferenceListWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Assets\Dictionary1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="ConferenceWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -80,8 +83,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="ConferenceWindow.xaml.cs">
+      <DependentUpon>ConferenceWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Logon.xaml">
@@ -89,6 +92,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SignupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConferenceListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -136,6 +143,10 @@
     <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LoginServer\LoginServer.csproj">
+      <Project>{004f2eec-9d5c-43fe-8e9a-fae2e956f35b}</Project>
+      <Name>LoginServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\PdfHandler\PdfHandler.csproj">
       <Project>{c835e8cd-4d73-4de1-93c3-3b55c3a91afd}</Project>
