@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,6 +97,11 @@ namespace ChatApp
                     {
                         return chatSpace.Query(K + 1, typeof(string), typeof(string), typeof(string));
                     }
+                    catch (SocketException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        return null;
+                    }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
@@ -103,6 +109,13 @@ namespace ChatApp
 
                     return null;
                 }, cancelTokenSource.Token).Result;
+
+
+                if (received == null)
+                {
+                    cancelTokenSource.Cancel();
+                    return Task<bool>.FromResult(false);
+                }
 
                 K = (int) received[0];
                 string formattedTimeString = (string) received[1];
@@ -145,10 +158,15 @@ namespace ChatApp
                         ChatSpace.Put(Chat.K, formattedTimeString, LockedInUser, msg);
                     }
                 }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    CancelTokenSource.Cancel();
+                    return String.Empty;
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    throw;
                 }
                 return FormatMessage(formattedTimeString, LockedInUser, msg);
             }
