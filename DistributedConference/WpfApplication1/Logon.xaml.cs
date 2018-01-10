@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace WpfApplication1
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for ConferenceListWindow.xaml
     /// </summary>
     public partial class LogonWindow : Window, INotifyPropertyChanged
     {
@@ -96,7 +96,7 @@ namespace WpfApplication1
 
                 if (authenticateLogin(Username, Password))
                 {
-                    MainWindow main = new MainWindow();
+                    ConferenceListWindow main = new ConferenceListWindow();
                     App.Current.MainWindow = main;
                     this.Close();
                     main.Show();
@@ -123,7 +123,7 @@ namespace WpfApplication1
             var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {
-                if((int)result[1] == 1)
+                if((long)result[1] == 1)
                 {
                     return true;
                 }

@@ -18,6 +18,8 @@ namespace LoginServer
         private int cpuPercentageLimit;
         SpaceRepository loginServerSpaces = new SpaceRepository();
         private SequentialSpace userAccounts = new SequentialSpace();
+        private SequentialSpace conferences = new SequentialSpace();
+        private SequentialSpace getConferences = new SequentialSpace();
         private SequentialSpace loginAttempts = new SequentialSpace();
         private SequentialSpace accountCreation = new SequentialSpace();
         private SequentialSpace loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
@@ -79,6 +81,7 @@ namespace LoginServer
             }
         }
 
+
         private void GetLoginAttemptsService()
         {
             while (true)
@@ -136,6 +139,63 @@ namespace LoginServer
             
         }
 
+        private void GetConferenceListService()
+        {
+
+            while (true)
+            {
+                var request = getConferences.Get(typeof(string), typeof(string),typeof(int));
+                if((long)request[2] == 1)
+                {
+                    //add
+                    conferences.Put(request[0], request[1]);
+                    List<string> confList = conferences.QueryAll(typeof(string),typeof(string)) as List<string>;
+                    getConferences.Get(typeof(List<string>));
+                    getConferences.Put(confList);
+                }
+                if ((long)request[2] == 0)
+                {
+                    //remove
+                    conferences.Get(request[0], request[1]);
+                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string)) as List<string>;
+                    getConferences.Get(typeof(List<string>));
+                    getConferences.Put(confList);
+
+                }
+
+
+
+
+
+            }
+
+
+
+
+
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public loginServer() {
             
             
@@ -144,12 +204,17 @@ namespace LoginServer
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);
             loginServerSpaces.AddSpace("accountCreation", accountCreation);
+            loginServerSpaces.AddSpace("getConferenceList", getConferences);
             //Not good. ikke alle spaces skal være remote. How do we into security?
+            conferences.Put(new List<string>());
+
+
             stopwatch = new Stopwatch();
             cpuPercentageLimit = 10;
             Task.Factory.StartNew(() => GetAccountCreationService());
             Task.Factory.StartNew(() => GetLoginAttemptsService());
-            
+            Task.Factory.StartNew(() => GetConferenceListService());
+
 
         }
 

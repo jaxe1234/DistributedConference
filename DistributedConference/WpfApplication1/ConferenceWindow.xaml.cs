@@ -19,9 +19,9 @@ using System.Windows.Shapes;
 namespace WpfApplication1
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ConferenceWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class ConferenceWindow : Window, INotifyPropertyChanged
     {
 
         public int SndBttnHeight { get; set; }
@@ -30,7 +30,7 @@ namespace WpfApplication1
         TextRange TxtToSend;
 
 
-    public MainWindow()
+    public ConferenceWindow()
         {
             //Chat CurrentChat = new Chat();
             MsgList = new ObservableCollection<string>();
