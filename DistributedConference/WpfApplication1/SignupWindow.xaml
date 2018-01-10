@@ -63,6 +63,31 @@
         </Style>
     </Window.Resources>
     <Grid>
+
+
+        <TextBlock Text="{Binding SignupErrorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                   Name="SignupError"
+                   Margin="80,60,80,160"
+                   TextWrapping="Wrap"
+                   TextAlignment="Center"
+                   Foreground="red"
+                   
+            >
+        </TextBlock>
+        <Button
+            Name="GoBackButton"
+            Margin="25,225,210,18"
+            
+            >
+            <TextBlock Name="declineButton" Text="Go back" Foreground="Blue"></TextBlock>
+        </Button>
+        <Button
+            Name="SignUpButton"
+            Margin="210,225,25,18"
+            
+            >
+            <TextBlock Name="acceptButton" Text="Sign Up" Foreground="Blue"></TextBlock>
+        </Button>
         <TextBlock Text="Username:"
                    Margin="25,118"
                    
@@ -81,7 +106,7 @@
 
         </TextBlock>
         <TextBlock Text=" Password:"
-                   Margin="25,198,0,0"
+                   Margin="25,198,0,50"
                    
                    
                    

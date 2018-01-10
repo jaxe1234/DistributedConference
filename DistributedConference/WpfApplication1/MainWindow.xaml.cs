@@ -41,7 +41,6 @@ namespace WpfApplication1
             SendButton.Click += SendButton_Click;
             TxtToSend =  new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
             SendField.KeyUp += SendField_KeyUp;
-
         }
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)

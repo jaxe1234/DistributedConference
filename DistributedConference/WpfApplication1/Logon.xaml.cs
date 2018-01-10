@@ -2,6 +2,7 @@
 using dotSpace.Objects.Network;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,21 +20,34 @@ namespace WpfApplication1
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class LogonWindow : Window
+    public partial class LogonWindow : Window, INotifyPropertyChanged
     {
-        
+        public string LoginErrorText { get; set; }
         RemoteSpace AccountCreation;
         RemoteSpace loginSpace;
         public LogonWindow()
         {
             InitializeComponent();
-            AccountCreation = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation");
-            loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts");
+            DataContext = this;
+            AccountCreation = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation?CONN");
+            loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts?CONN");
             UsernameInput.KeyUp += PasswordInput_KeyUp;
             PasswordInput.KeyUp += PasswordInput_KeyUp;
             SignupButton.Click += SignupButton_Click;
-           
+            UsernameInput.GotFocus += FocusClearError;
+            PasswordInput.GotFocus += FocusClearError;
+            UsernameInput.Focus();
+
+
+
         }
+
+        private void FocusClearError(object sender, RoutedEventArgs e)
+        {
+            LoginErrorText = "";
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
@@ -68,7 +82,7 @@ namespace WpfApplication1
         //    }
         //}
 
-        private void ParseInput(string Username, string Password)
+        private async void ParseInput(string Username, string Password)
         {
             if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Username))
             {
@@ -78,6 +92,8 @@ namespace WpfApplication1
             else if (!string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Username))
             {
                 //login or create account depending on context
+                var outcome = await Task<bool>.Factory.StartNew(() => authenticateLogin(Username, Password));
+
                 if (authenticateLogin(Username, Password))
                 {
                     MainWindow main = new MainWindow();
@@ -89,16 +105,22 @@ namespace WpfApplication1
                 {
                     UsernameInput.Clear();
                     PasswordInput.Clear();
+                    LoginErrorText = "Incorrect user/\npassword";
+                    Keyboard.ClearFocus();
                 }
             }
            
         }
 
+
+
+      
+
         private bool authenticateLogin(string Username, string Password)
         {
-            //TEMPORARY MUST BE IMPLEMENTED
+            
             loginSpace.Put(Username, Password);
-            var result = loginSpace.GetP(Username, typeof(int));
+            var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {
                 if((int)result[1] == 1)
