@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using dotSpace.Interfaces.Network;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Network.ConnectionModes;
@@ -17,10 +18,10 @@ namespace ChatApp
     public class Chat
     {
         //string uri = "tcp://10.16.174.190:5002";
-        public ISpace ChatSpace { get; private set; }
-        private int K = 0;
-        private string LoggedInUser;
-        public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
+        public ISpace ChatSpace { get; }
+        private int K;
+        private readonly string LoggedInUser;
+        public Chat(bool isHost, string name, IRepository chatRepo, string uri, string conferenceName)
         {
             this.LoggedInUser = name;
             if (isHost)
@@ -46,6 +47,7 @@ namespace ChatApp
                 }
             }
         }
+        
 
         private static string FormatMessage(string formattedTimeString, string name, string message)
         {
@@ -54,10 +56,6 @@ namespace ChatApp
 
         public void InitializeChat()
         {
-
-
-            // my own stackoverflow post on this topic:
-            // https://stackoverflow.com/questions/48128273/cancelling-parallel-tasks-with-thread-blocking-operations
 
             // this is how to cancel a task running a thread-blocking operation:
             // https://stackoverflow.com/questions/22735533/how-do-i-cancel-a-blocked-task-in-c-sharp-using-a-cancellation-token
@@ -114,7 +112,7 @@ namespace ChatApp
                 if (received == null)
                 {
                     cancelTokenSource.Cancel();
-                    return Task<bool>.FromResult(false);
+                    return Task.FromResult(false);
                 }
 
                 K = (int) received[0];
@@ -124,7 +122,7 @@ namespace ChatApp
 
                 Console.WriteLine(FormatMessage(formattedTimeString, receivedName, message));
             }
-            return Task<bool>.FromResult(true);
+            return Task.FromResult(true);
         }
 
         public class ChatSender
@@ -179,7 +177,7 @@ namespace ChatApp
                     string message = Console.ReadLine();
                     SendMessage(message);
                 }
-                return Task<bool>.FromResult(true);
+                return Task.FromResult(true);
             }
         }
     }
