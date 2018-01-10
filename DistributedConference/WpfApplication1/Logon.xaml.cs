@@ -96,7 +96,7 @@ namespace WpfApplication1
 
                 if (authenticateLogin(Username, Password))
                 {
-                    ConferenceListWindow main = new ConferenceListWindow();
+                    ConferenceListWindow main = new ConferenceListWindow(Username);
                     App.Current.MainWindow = main;
                     this.Close();
                     main.Show();
