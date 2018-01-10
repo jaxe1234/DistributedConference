@@ -162,18 +162,18 @@ namespace LoginServer
                     getConferences.Put(confList);
 
                 }
+            }            
+        }
 
+        private void GetIPService()
+        {
+            while (true)
+            {
+                var request = getConferences.Get(typeof(string), typeof(string));
 
-
-
-
+                var result = conferences.Query(request[1],typeof(string));
+                getConferences.Put(request[0], result[1]);
             }
-
-
-
-
-
-            
         }
 
 
@@ -214,6 +214,7 @@ namespace LoginServer
             Task.Factory.StartNew(() => GetAccountCreationService());
             Task.Factory.StartNew(() => GetLoginAttemptsService());
             Task.Factory.StartNew(() => GetConferenceListService());
+            Task.Factory.StartNew(() => GetIPService());
 
 
         }

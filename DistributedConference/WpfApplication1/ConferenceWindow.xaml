@@ -7,7 +7,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
         mc:Ignorable="d"
-        Title="Fucking Dank Chat Client" Height="350" Width="525"
+        Title="{Binding ConferenceName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="350" Width="525"
+        
       
       
     

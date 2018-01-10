@@ -28,27 +28,62 @@ namespace WpfApplication1
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
+        private string User;
 
 
        
 
 
-        public ConferenceListWindow()
+        public ConferenceListWindow(string Username)
         {
+            DataContext = this;
             Task.Factory.StartNew(() => init());
+            User = Username;
+            
            
 
-            DataContext = this;
+            
            
            
             InitializeComponent();
+            RefreshButton.Click += RefreshButton_Click;
+            ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
+
+
+
+        }
+
+        private void ConfList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            asyncmethodthatwecall(e);
+        }
+
+        private async void asyncmethodthatwecall(MouseButtonEventArgs e)
+        {
+            var IPconnect = await Task<string>.Factory.StartNew(()=> otherasyncmethod(e));
+        }
+
+        private string otherasyncmethod(MouseButtonEventArgs e)
+        {
+            var conferenceClicked = (TextBlock)e.OriginalSource;
+            ConferenceRequests.Put(User, conferenceClicked.Text);
+            var ip = (string)ConferenceRequests.Get(User, typeof(string))[1];
+            return ip;
+        }
+
+        private void RefreshButton_MouseEnter(object sender, MouseEventArgs e)
+        {
             
-           
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         public void init()
         {
+            ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList");
             conferenceTuple = new ObservableCollection<string>();
             conferenceTuple = ConferenceRequests.Query(typeof(List<string>))[0] as ObservableCollection<string>;
         }
