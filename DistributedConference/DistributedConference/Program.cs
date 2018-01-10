@@ -38,10 +38,11 @@ namespace DistributedConference
             //new Thread(() => TestSlideServer()).Start();
             //new Thread(() => TestSlideClient()).Start();
 
-            var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            var hostentry = Dns.GetHostEntry("").AddressList
+                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             string uri = "tcp://" + hostentry + ":5002";
             ChatTest(args, uri);
-            Console.WriteLine("Program has terminated");
+            //Console.WriteLine("Program has terminated");
 
 
         }
