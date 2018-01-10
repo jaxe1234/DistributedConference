@@ -37,10 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotSpace, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\dotSpace.1.0.8\lib\net452\dotSpace.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PropertyChanged, Version=2.2.4.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.2.4.0\lib\net452\PropertyChanged.dll</HintPath>
       <Private>True</Private>
@@ -139,6 +135,10 @@
     <ProjectReference Include="..\dotSpaceUtilities\NamingTools.csproj">
       <Project>{040f98bf-e52c-4a0b-a0ce-0328dd67c94d}</Project>
       <Name>NamingTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
+      <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
+      <Name>dotSpace</Name>
     </ProjectReference>
     <ProjectReference Include="..\PdfHandler\PdfHandler.csproj">
       <Project>{c835e8cd-4d73-4de1-93c3-3b55c3a91afd}</Project>

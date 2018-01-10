@@ -33,10 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotSpace, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\dotSpace.1.0.8\lib\net452\dotSpace.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,7 +76,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -98,6 +93,10 @@
     <ProjectReference Include="..\ChatApp\ChatApp.csproj">
       <Project>{8C54A2F8-FD0D-47C1-A056-B75C828A311A}</Project>
       <Name>ChatApp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
+      <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
+      <Name>dotSpace</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
