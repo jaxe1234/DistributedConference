@@ -16,7 +16,7 @@ namespace ChatApp
     public class Chat
     {
         //string uri = "tcp://10.16.174.190:5002";
-        public ISpace chatSpace { get; private set; }
+        public ISpace ChatSpace { get; private set; }
         private int K = 0;
         private string LockedInUser;
         public Chat(bool isHost, string name, SpaceRepository chatRepo, string uri, string conferenceName)
@@ -25,9 +25,9 @@ namespace ChatApp
             if (isHost)
             {
                 Console.WriteLine("You are host!");
-                chatSpace = new SequentialSpace();
+                ChatSpace = new SequentialSpace();
                 Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), chatSpace);
+                chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
                 chatRepo.AddGate(uri);
             }
             else
@@ -36,7 +36,7 @@ namespace ChatApp
                 Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 try
                 {
-                    chatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                    ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
                 }
                 catch (Exception exception)
                 {
@@ -46,7 +46,7 @@ namespace ChatApp
             }
         }
 
-        private static string formatMessage(string formattedTimeString, string name, string message)
+        private static string FormatMessage(string formattedTimeString, string name, string message)
         {
             return $"[{formattedTimeString}]  {name}: {message}";
         }
@@ -69,12 +69,12 @@ namespace ChatApp
 
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(chatSpace, cancellationTokenSource);
+                var temp = await ChatReader(ChatSpace, cancellationTokenSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
 
-            var sender = new ChatSender(LockedInUser, chatSpace, cancellationTokenSource, this).RunAsConsole();
+            var sender = new ChatSender(LockedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -109,7 +109,7 @@ namespace ChatApp
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
 
-                Console.WriteLine(formatMessage(formattedTimeString, receivedName, message));
+                Console.WriteLine(FormatMessage(formattedTimeString, receivedName, message));
             }
             return Task<bool>.FromResult(true);
         }
@@ -150,7 +150,7 @@ namespace ChatApp
                     Console.WriteLine(ex);
                     throw;
                 }
-                return formatMessage(formattedTimeString, LockedInUser, msg);
+                return FormatMessage(formattedTimeString, LockedInUser, msg);
             }
 
             public Task<bool> RunAsConsole()
