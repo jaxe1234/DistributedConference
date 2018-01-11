@@ -79,7 +79,7 @@ namespace WpfApplication1
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            Task.Factory.StartNew(() => conferenceTuple = ConferenceRequests.Query(typeof(List<string>))[0] as ObservableCollection<string>);
         }
 
         public void init()
