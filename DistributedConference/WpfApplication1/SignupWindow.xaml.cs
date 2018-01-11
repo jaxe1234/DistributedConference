@@ -133,7 +133,7 @@ namespace WpfApplication1
             var result = AccountCreation.Get(Username, typeof(int)); // await Task<ITuple>.Factory.StartNew(() => asyncGetresult(Username));// AccountCreation.GetP(Username, typeof(int));
             if (result != null)
             {
-                if((long)result[1] == 1)
+                if((int)result[1] == 1)
                 {
                     return true;
                 }

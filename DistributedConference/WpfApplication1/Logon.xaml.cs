@@ -124,7 +124,7 @@ namespace WpfApplication1
             var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {
-                if((long)result[1] == 1)
+                if((int)result[1] == 1)
                 {
                     return true;
                 }

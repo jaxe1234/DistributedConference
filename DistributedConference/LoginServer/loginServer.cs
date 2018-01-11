@@ -148,16 +148,16 @@ namespace LoginServer
             {
                 var request = getConferences.Get(typeof(string), typeof(string),typeof(int));
                 Console.WriteLine("got request to create or delete conference");
-                if((long)request[2] == 1)
+                if((int)request[2] == 1)
                 {
                     //add
                     conferences.Put(request[0], request[1]);
-                    List<string> confList = conferences.QueryAll(typeof(string),typeof(string)) as List<string>;
+                    List<string> confList = conferences.QueryAll(typeof(string),typeof(string)).Select(t => t.Get<string>(1)).ToList();
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
                     Console.WriteLine("added conference" + request[1] );
                 }
-                if ((long)request[2] == 0)
+                if ((int)request[2] == 0)
                 {
                     //remove
                     conferences.Get(request[0], request[1]);
