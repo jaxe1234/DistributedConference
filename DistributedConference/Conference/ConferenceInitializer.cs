@@ -26,7 +26,7 @@ namespace Conference
         public ConferenceInitializer(string name, string conferenceName, string ip, ObservableCollection<string> dataSource)//For the client
         {
             this.uri = "tcp://" + ip + "5002";
-            this.chat = new Chat(name, uri,)
+            //this.chat = new Chat(name, uri,)
         }
     }
 }
