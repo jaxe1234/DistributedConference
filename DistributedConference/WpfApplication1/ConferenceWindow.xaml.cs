@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Conference;
+using dotSpace.Objects.Network;
 
 namespace WpfApplication1
 {
@@ -29,19 +31,35 @@ namespace WpfApplication1
         public int ChtFldHeight { get; set; }
         public ObservableCollection<string> MsgList { get; set; }
         TextRange TxtToSend;
+        private ConferenceInitializer conference;
 
 
-    public ConferenceWindow(ConferenceInitializer conference)
+        public ConferenceWindow(string username, string conferenceName) //For host
         {
-            //Chat CurrentChat = new Chat();
-            MsgList = new ObservableCollection<string>();
+            SetUpConferenceWindow();
+
+            
+            SpaceRepository spaceRepository = new SpaceRepository();
+            this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
+            
+        }
+
+        public ConferenceWindow(string username, string conferenceName, string ip) //For client
+        {
+            SetUpConferenceWindow();
+            this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
+        }
+
+        public void SetUpConferenceWindow()
+        {
             InitializeComponent();
             DataContext = this;
             this.Loaded += MainWindow_Loaded;
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
-            TxtToSend =  new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
             SendField.KeyUp += SendField_KeyUp;
+            this.MsgList = new ObservableCollection<string>();
         }
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)
@@ -54,10 +72,11 @@ namespace WpfApplication1
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(TxtToSend.Text))
+            string textToSend = TxtToSend.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(textToSend))
             {
 
-                MsgList.Add(TxtToSend.Text.Trim());
+                conference.ChatSender.SendMessage(textToSend);
                 SendField.Document.Blocks.Clear();
             }
         }
@@ -73,12 +92,12 @@ namespace WpfApplication1
 
         void Resize(object sender, RoutedEventArgs e)
         {
-            if( ((int)(this.Height / 12) - 5) < 32)
+            if (((int)(this.Height / 12) - 5) < 32)
             {
-                SndBttnHeight = (int)(this.Height / 12) -5;
+                SndBttnHeight = (int)(this.Height / 12) - 5;
                 ChtFldHeight = SndBttnHeight - 5;
             }
-            
+
 
 
         }

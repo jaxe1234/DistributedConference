@@ -33,7 +33,7 @@ namespace Conference
         public ConferenceInitializer(string name, string conferenceName, string ip, ObservableCollection<string> dataSource)//For the client
         {
             this.name = name;
-            this.uri = "tcp://" + ip + "5002";
+            this.uri = "tcp://" + ip + ":5002";
             this.Chat = new Chat(name, uri, conferenceName, dataSource);
 
             InitChat();
@@ -42,6 +42,7 @@ namespace Conference
         private void InitChat()
         {
             this.ChatSender = new Chat.ChatSender(name, Chat.ChatSpace, tokenSource, Chat);
+            Chat.InitializeChat();
         }
     }
 }

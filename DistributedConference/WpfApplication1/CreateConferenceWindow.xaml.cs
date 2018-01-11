@@ -47,13 +47,13 @@ namespace WpfApplication1
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            string text = new TextRange(NewConferenceName.Document.ContentStart,NewConferenceName.Document.ContentEnd).Text.Trim();
-            ConferenceRequests.Put(Username, text, 1);
-            ConferenceWindow Conference = new ConferenceWindow(Username);
-            App.Current.MainWindow = Conference;
+            string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart,NewConferenceName.Document.ContentEnd).Text.Trim();
+            ConferenceRequests.Put(Username, newConferenceName, 1);
+            ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName);
+            App.Current.MainWindow = conference;
             oldWin.Close();
             this.Close();
-            Conference.Show();
+            conference.Show();
 
         }
 
@@ -62,20 +62,8 @@ namespace WpfApplication1
 
             if (e.Key == Key.Enter)
             {
-                ConferenceRequests.Put(
-                    Username,
-                    new TextRange(
-                        NewConferenceName.Document.ContentStart,
-                        NewConferenceName.Document.ContentEnd
-                    ).Text,
-                    1
-                );
-                ConferenceWindow Conference = new ConferenceWindow(Username);
-                App.Current.MainWindow = Conference;
-                this.Close();
-                Conference.Show();
-                
-               
+                CreateButton_Click(sender, null);
+
             }
         }
     }
