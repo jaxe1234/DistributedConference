@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using PdfHandler;
 using System.Drawing;
 using ChatApp;
-using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
 using System.IO;
-using System.Net.Sockets;
 using Newtonsoft.Json;
 using System.Threading;
 using dotSpace.Interfaces.Space;
@@ -25,18 +23,18 @@ namespace DistributedConference
     {
         static void Main(string[] args)
         {
-            //testPdfService();
+            //TestPdfService();
 
             //DiningPhil(args);
 
-            //testJson();
+            //TestJson();
 
             //var hostentry = Dns.GetHostEntry("").AddressList
             //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             //string uri = "tcp://" + hostentry + ":5002";
             //ChatTest(args, uri);
-            new Thread(() => TestSlideServer()).Start();
-            new Thread(() => TestSlideClient()).Start();
+            new Thread(TestSlideServer).Start();
+            new Thread(TestSlideClient).Start();
 
             //var hostentry = Dns.GetHostEntry("").AddressList
             //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
@@ -51,23 +49,25 @@ namespace DistributedConference
         {
             string name = args[0];
             string conferenceName = args[1];
+            ObservableCollection<string> dataSource = new ObservableCollection<string>();
+
             if (name.Equals("host"))
             {
                 using (var spaceRepo = new SpaceRepository())
                 {
-                    new Chat(name, uri, conferenceName, spaceRepo).InitializeChat();
+                    new Chat(name, uri, conferenceName, spaceRepo, dataSource).InitializeChat();
                     Console.WriteLine("Chat is done.");
                     spaceRepo.Dispose();
                 }
             }
             else
             {
-                new Chat(name, uri, conferenceName).InitializeChat();
+                new Chat(name, uri, conferenceName, dataSource).InitializeChat();
             }
 
         }
 
-        private static IEnumerable<byte[]> testPdfService()
+        private static IEnumerable<byte[]> TestPdfService()
         {
             var url = "https://meltdownattack.com/spectre.pdf";
             var client = new WebClient();
@@ -94,7 +94,7 @@ namespace DistributedConference
             public ICollection<int> Courses { get; set; }
         }
 
-        private static void testJson()
+        private static void TestJson()
         {
             var setting = new JsonSerializerSettings
             {
@@ -116,7 +116,7 @@ namespace DistributedConference
                 repo.AddSpace("space", space);
                 space.Put("L", "O", "L", 108);
                 var t = space.Get("Y", "O", "L", "O", typeof(int));
-                var server = new Consumer(space, testPdfService().ToArray());
+                var server = new Consumer(space, TestPdfService().ToArray());
             }
         }
 
