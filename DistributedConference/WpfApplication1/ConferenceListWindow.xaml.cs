@@ -67,7 +67,7 @@ namespace WpfApplication1
         private string otherasyncmethod(MouseButtonEventArgs e)
         {
             var conferenceClicked = (TextBlock)e.OriginalSource;
-            ConferenceRequests.Put(User, conferenceClicked.Text);
+            //ConferenceRequests.Put(User, conferenceClicked.Text);
             var ip = (string)ConferenceRequests.Get(User, typeof(string))[1];
             return ip;
         }
@@ -85,8 +85,8 @@ namespace WpfApplication1
         public void init()
         {
             ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList?CONN");
-            conferenceTuple = new ObservableCollection<string>();
-            conferenceTuple = ConferenceRequests.Query(typeof(List<string>))[0] as ObservableCollection<string>;
+            conferenceTuple = new ObservableCollection<string>((List<string>)ConferenceRequests.Query(typeof(List<string>))[0]);
+            //conferenceTuple = (ObservableCollection < string >) ConferenceRequests.Query(typeof(List<string>))[0];
         }
 
 

@@ -227,7 +227,8 @@ namespace LoginServer
             loginServerSpaces.AddSpace("getConferenceList", getConferences);
             loginAttempts.Put(PubKey);
             //Not good. ikke alle spaces skal være remote. How do we into security?
-            conferences.Put(new List<string>());
+            
+            getConferences.Put(new List<string>());
 
 
             stopwatch = new Stopwatch();
