@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -94,7 +95,7 @@ namespace WpfApplication1
                 //login or create account depending on context
                 var outcome = await Task<bool>.Factory.StartNew(() => authenticateLogin(Username, Password));
 
-                if (authenticateLogin(Username, Password))
+                if (outcome)
                 {
                     ConferenceListWindow main = new ConferenceListWindow(Username);
                     App.Current.MainWindow = main;
@@ -119,7 +120,9 @@ namespace WpfApplication1
         private bool authenticateLogin(string Username, string Password)
         {
             
-            loginSpace.Put(Username, Password);
+            string PubKey = loginSpace.Query(typeof(string))[0] as string;
+            //string EncryptedPassword = ;
+            loginSpace.Put(Username, RSAEncrypt(Password, PubKey));
             var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {
@@ -139,7 +142,24 @@ namespace WpfApplication1
                 return false;
             }
         }
+
+        public static string RSAEncrypt(string Password, string destKey)
+        {
+            byte[] BytePass = Encoding.UTF8.GetBytes(Password);// Convert.FromBase64String(Password);
+            byte[] encryptedData;
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            RSA.FromXmlString(destKey);
+            encryptedData = RSA.Encrypt(BytePass, true);
+            RSA.Dispose();
+            return Convert.ToBase64String(encryptedData);
+        }
+
+
+
+
+
     }
+
 }
 
 
