@@ -33,7 +33,7 @@ namespace LoginServer
         {//To create a user, put at (username, password) tuple in accountCreation and check for confirmation
             while (true)
             {
-                long actionStart = stopwatch.ElapsedTicks;
+               
                 //spoghetti
                 ITuple attempt = accountCreation.Get(typeof(string), typeof(string));
                 if (attempt != null)// <---
@@ -63,14 +63,6 @@ namespace LoginServer
                 //
 
 
-                long actionEnd = stopwatch.ElapsedTicks;
-                long actionDuration = actionEnd - actionStart;
-
-                long relativeWaitTime = (int)(
-                    (1 / (double)cpuPercentageLimit) * actionDuration);
-
-                Thread.Sleep((int)((relativeWaitTime / (double)Stopwatch.Frequency) * 1000));
-
 
 
 
@@ -88,8 +80,6 @@ namespace LoginServer
         {
             while (true)
             {
-                long actionStart = stopwatch.ElapsedTicks;
-
 
                 //spoghetti
                 ITuple attempt = loginAttempts.Get(typeof(string), typeof(string)); //get er blocking = ingen null return
@@ -126,14 +116,6 @@ namespace LoginServer
 
 
 
-
-                long actionEnd = stopwatch.ElapsedTicks;
-                long actionDuration = actionEnd - actionStart;
-
-                long relativeWaitTime = (int)(
-                    (1 / (double)cpuPercentageLimit) * actionDuration);
-
-                Thread.Sleep((int)((relativeWaitTime / (double)Stopwatch.Frequency) * 1000));
 
                
               attempt = null;
