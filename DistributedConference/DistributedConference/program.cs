@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -35,14 +36,14 @@ namespace DistributedConference
             //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             //string uri = "tcp://" + hostentry + ":5002";
             //ChatTest(args, uri);
-            //new Thread(() => TestSlideServer()).Start();
-            //new Thread(() => TestSlideClient()).Start();
+            new Thread(() => TestSlideServer()).Start();
+            new Thread(() => TestSlideClient()).Start();
 
-            var hostentry = Dns.GetHostEntry("").AddressList
-                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            string uri = "tcp://" + hostentry + ":5002";
-            ChatTest(args, args[0].Equals("host") ? uri : args[2]);
-            Console.WriteLine("Program has terminated");
+            //var hostentry = Dns.GetHostEntry("").AddressList
+            //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            //string uri = "tcp://" + hostentry + ":5002";
+            //ChatTest(args, uri);
+            //Console.WriteLine("Program has terminated");
 
 
         }
@@ -51,18 +52,20 @@ namespace DistributedConference
         {
             string name = args[0];
             string conferenceName = args[1];
+            ObservableCollection<string> dataSource = new ObservableCollection<string>();
+
             if (name.Equals("host"))
             {
                 using (var spaceRepo = new SpaceRepository())
                 {
-                    new Chat(name, uri, conferenceName, spaceRepo).InitializeChat();
+                    new Chat(name, uri, conferenceName, spaceRepo, dataSource).InitializeChat();
                     Console.WriteLine("Chat is done.");
                     spaceRepo.Dispose();
                 }
             }
             else
             {
-                new Chat(name, uri, conferenceName).InitializeChat();
+                new Chat(name, uri, conferenceName, dataSource).InitializeChat();
             }
 
         }
@@ -111,9 +114,11 @@ namespace DistributedConference
         {
             using (var repo = new SpaceRepository())
             {
-                repo.AddGate("tcp://127.0.0.1");
+                repo.AddGate("tcp://127.0.0.1:15432");
                 ISpace space = new SequentialSpace();
                 repo.AddSpace("space", space);
+                space.Put("L", "O", "L", 108);
+                var t = space.Get("Y", "O", "L", "O", typeof(int));
                 var server = new Consumer(space, testPdfService().ToArray());
             }
         }
@@ -121,7 +126,9 @@ namespace DistributedConference
         private static void TestSlideClient()
         {
             Thread.Sleep(100);
-            ISpace space = new RemoteSpace("tcp://127.0.0.1/space");
+            ISpace space = new RemoteSpace("tcp://127.0.0.1:15432/space");
+            var t = space.Get("L", "O", "L", typeof(int));
+            space.Put("Y", "O", "L", "O", 810);
             var client = new Producer(space, "aMoe");
             var frames = client.GetFrames(1, 2, 3, 4).ToList();
             var i = 0;

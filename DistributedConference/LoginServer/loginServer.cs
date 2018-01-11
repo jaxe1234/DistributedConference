@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using dotSpace;
 using dotSpace.Objects.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Interfaces.Space;
@@ -40,12 +39,12 @@ namespace LoginServer
                 if (attempt != null)// <---
                 {
                     Console.WriteLine("server: saw request for user creation. With input " + attempt[0] + " " + attempt[1]);
-                    var existsInDB = userAccounts.QueryAll(typeof(account)); //attempt[0], typeof(string), typeof(byte[])
-                    var usernmTaken = existsInDB.Any(t => (t[0] as account).username == (attempt[0] as string));
+                    var existsInDB = userAccounts.QueryAll(typeof(Account)); //attempt[0], typeof(string), typeof(byte[])
+                    var usernmTaken = existsInDB.Any(t => (t[0] as Account).Username == (attempt[0] as string));
                     //var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
                     if (!usernmTaken)
                     {
-                        account newUser = new account(attempt[0] as string, attempt[1] as string);
+                        Account newUser = new Account(attempt[0] as string, attempt[1] as string);
                         userAccounts.Put(newUser);
                         // Console.WriteLine(newUser.username + " " + newUser.hash);
 
@@ -99,12 +98,12 @@ namespace LoginServer
                     Console.WriteLine("saw login request");
                     string user = (string)attempt[0];
                     string pass = RSADecrypt(attempt[1] as string, PrivKey);
-                    var userAccs = userAccounts.QueryAll(typeof(account));
-                    var userAccount = userAccs.Select(t => t[0] as account).FirstOrDefault(a => a.username == user);
+                    var userAccs = userAccounts.QueryAll(typeof(Account));
+                    var userAccount = userAccs.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == user);
                     if (userAccount != null)
                     {
 
-                        if (userAccount.hash == (account.generatePassHash(Encoding.UTF8.GetBytes(pass), userAccount.salt)))
+                        if (userAccount.Hash == (Account.GeneratePassHash(Encoding.UTF8.GetBytes(pass), userAccount.Salt)))
                         {
                             loggedInUsers.Put(user);
                             loginAttempts.Put(user, 1);

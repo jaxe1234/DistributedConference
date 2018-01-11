@@ -7,29 +7,29 @@ using System.Security.Cryptography;
 
 namespace LoginServer
 {
-    public class account
+    public class Account
     {
-        public string username { get; }
-        public string hash { get; }
-        public byte[] salt { get;}
+        public string Username { get; }
+        public string Hash { get; }
+        public byte[] Salt { get;}
         
 
        
 
-        public account(string username, string password)
+        public Account(string username, string password)
         {
             
 
-            this.username = username;
-            this.salt = getSalt();
-            this.hash = generatePassHash(Encoding.UTF8.GetBytes(password), salt);
+            Username = username;
+            Salt = getSalt();
+            Hash = GeneratePassHash(Encoding.UTF8.GetBytes(password), Salt);
             
             
 
 
         }
 
-        public static string generatePassHash(byte[] password, byte[] salt)
+        public static string GeneratePassHash(byte[] password, byte[] salt)
         {
             byte[] data = new byte[password.Length + salt.Length];
             password.CopyTo(data, 0);

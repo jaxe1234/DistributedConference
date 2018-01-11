@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using dotSpace.Interfaces.Network;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
-using dotSpace.Objects.Network.ConnectionModes;
 using dotSpace.Objects.Space;
 using NamingTools;
 
@@ -18,27 +15,27 @@ namespace ChatApp
     public class Chat
     {
         public ISpace ChatSpace { get; }
-        private int K;
-        private readonly string LoggedInUser;
-        public Chat(string name, string uri, string conferenceName, IRepository chatRepo) //For host
+        private int K { get; set; }
+        private string LoggedInUser { get; }
+        private ObservableCollection<string> DataSource { get; }
+        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource) //For host
         {
-            this.LoggedInUser = name;
-           
-                Console.WriteLine("You are host!");
-                ChatSpace = new SequentialSpace();
-                Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
-                chatRepo.AddGate(uri);
-            
-                
-            
+            LoggedInUser = name;
+
+            Console.WriteLine("You are host!");
+            ChatSpace = new SequentialSpace();
+            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+            chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+            chatRepo.AddGate(uri);
+            DataSource = dataSource;
         }
 
-        public Chat(string name, string uri, string conferenceName) //For client
+        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource) //For client
         {
-            this.LoggedInUser = name;
+            LoggedInUser = name;
             Console.WriteLine("You are a slave!");
             Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            DataSource = dataSource;
             try
             {
                 ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
@@ -49,7 +46,7 @@ namespace ChatApp
                 throw;
             }
         }
-        
+
 
         private static string FormatMessage(string formattedTimeString, string name, string message)
         {
@@ -58,7 +55,6 @@ namespace ChatApp
 
         public void InitializeChat()
         {
-
             // this is how to cancel a task running a thread-blocking operation:
             // https://stackoverflow.com/questions/22735533/how-do-i-cancel-a-blocked-task-in-c-sharp-using-a-cancellation-token
             // https://msdn.microsoft.com/en-us/library/dd321315(v=vs.110).aspx
@@ -70,7 +66,7 @@ namespace ChatApp
 
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(ChatSpace, cancellationTokenSource);
+                var temp = await ChatReader(ChatSpace, cancellationTokenSource, DataSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
@@ -83,7 +79,7 @@ namespace ChatApp
         }
 
 
-        public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource, ObservableCollection<string> dataSource)
         {
             Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
@@ -109,7 +105,7 @@ namespace ChatApp
 
                     return null;
                 }, cancelTokenSource.Token).Result;
-
+                Console.WriteLine("received message");
 
                 if (received == null)
                 {
@@ -117,26 +113,27 @@ namespace ChatApp
                     return Task.FromResult(false);
                 }
 
-                K = (int) received[0];
-                string formattedTimeString = (string) received[1];
+                K = (int)received[0];
+                string formattedTimeString = (string)received[1];
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
-
-                Console.WriteLine(FormatMessage(formattedTimeString, receivedName, message));
+                string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
+                dataSource.Add(finalMsg);
+                Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);
         }
 
         public class ChatSender
         {
-            public string LockedInUser { get; private set; }
-            public ISpace ChatSpace { get; private set; }
-            public CancellationTokenSource CancelTokenSource { get; private set; }
-            public Chat Chat { get; private set; }
+            public string LoggedInUser { get; }
+            public ISpace ChatSpace { get; }
+            public CancellationTokenSource CancelTokenSource { get; }
+            public Chat Chat { get; }
 
             public ChatSender(string user, ISpace space, CancellationTokenSource source, Chat chat)
             {
-                LockedInUser = user;
+                LoggedInUser = user;
                 ChatSpace = space;
                 CancelTokenSource = source;
                 Chat = chat;
@@ -150,13 +147,9 @@ namespace ChatApp
                 {
                     Chat.K++;
                     if (msg == "!quit" || msg == "!exit")
-                    {
                         CancelTokenSource.Cancel();
-                    }
                     else
-                    {
-                        ChatSpace.Put(Chat.K, formattedTimeString, LockedInUser, msg);
-                    }
+                        ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
                 }
                 catch (SocketException ex)
                 {
@@ -168,7 +161,7 @@ namespace ChatApp
                 {
                     Console.WriteLine(ex);
                 }
-                return FormatMessage(formattedTimeString, LockedInUser, msg);
+                return FormatMessage(formattedTimeString, LoggedInUser, msg);
             }
 
             public Task<bool> RunAsConsole()
@@ -183,6 +176,4 @@ namespace ChatApp
             }
         }
     }
-
-
 }
