@@ -38,6 +38,7 @@ namespace WpfApplication1
             UsernameInput.GotFocus += FocusClearError;
             PasswordInput.GotFocus += FocusClearError;
             UsernameInput.Focus();
+            
 
 
 
@@ -52,7 +53,7 @@ namespace WpfApplication1
 
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
-            SignupWindow main = new SignupWindow(AccountCreation, loginSpace);
+            SignupWindow main = new SignupWindow( AccountCreation, loginSpace);
             App.Current.MainWindow = main;
             this.Close();
             main.Show();
@@ -60,9 +61,6 @@ namespace WpfApplication1
 
         private void PasswordInput_KeyUp(object sender, KeyEventArgs e)
         {
-
-
-
           if(e.Key == Key.Enter)
             {
                

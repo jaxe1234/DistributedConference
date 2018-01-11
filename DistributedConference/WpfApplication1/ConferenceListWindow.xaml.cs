@@ -39,18 +39,19 @@ namespace WpfApplication1
             DataContext = this;
             Task.Factory.StartNew(() => init());
             User = Username;
-            
-           
-
-            
-           
-           
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
             ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
+            NewConferenceButton.Click += NewConferenceButton_Click;
 
+            
 
+        }
 
+        private void NewConferenceButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, User, this);
+            NewConfWin.Show();
         }
 
         private void ConfList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -83,7 +84,7 @@ namespace WpfApplication1
 
         public void init()
         {
-            ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList");
+            ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList?CONN");
             conferenceTuple = new ObservableCollection<string>();
             conferenceTuple = ConferenceRequests.Query(typeof(List<string>))[0] as ObservableCollection<string>;
         }

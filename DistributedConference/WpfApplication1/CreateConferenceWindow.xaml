@@ -1,0 +1,71 @@
+﻿<Window x:Class="WpfApplication1.CreateConferenceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication1"
+        mc:Ignorable="d"
+        Title="CreateConferenceWindow" Height="300" Width="300">
+    <Window.Resources>
+        <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Assets/Dictionary1.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+    </Window.Resources>
+
+
+
+
+
+    <Grid>
+
+
+
+        <TextBlock Text="Create a new Conference by entering the desired conference name:"
+                    TextWrapping="Wrap"
+                   FontFamily="Verdana"
+                   FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="#38d"
+                   Margin="0,30"
+                   ></TextBlock>
+        <RichTextBox
+            Name="NewConferenceName"
+            Height="32"
+            Width="200"
+            FontSize="16"></RichTextBox>
+        <Button
+            Name="cancelButton"
+            Margin="-100,100,0,0"
+            Height="25"
+            Width="55"
+            Style="{StaticResource MetroButton}" >
+            <TextBlock Text="Cancel">
+            </TextBlock>
+               </Button>
+        
+        
+        <Button
+            Name="CreateButton"
+             Margin="100,100,0,0"
+             Height="25"
+             Width="55"
+             Style="{StaticResource MetroButton}">
+            <TextBlock Text="Create"></TextBlock>
+        </Button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </Grid>
+</Window>

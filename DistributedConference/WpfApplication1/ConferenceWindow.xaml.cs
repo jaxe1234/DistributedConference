@@ -30,7 +30,7 @@ namespace WpfApplication1
         TextRange TxtToSend;
 
 
-    public ConferenceWindow()
+    public ConferenceWindow(string Username)
         {
             //Chat CurrentChat = new Chat();
             MsgList = new ObservableCollection<string>();
