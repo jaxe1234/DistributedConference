@@ -17,34 +17,36 @@ namespace ChatApp
 {
     public class Chat
     {
-        //string uri = "tcp://10.16.174.190:5002";
         public ISpace ChatSpace { get; }
         private int K;
         private readonly string LoggedInUser;
-        public Chat(bool isHost, string name, IRepository chatRepo, string uri, string conferenceName)
+        public Chat(string name, string uri, string conferenceName, IRepository chatRepo) //For host
         {
             this.LoggedInUser = name;
-            if (isHost)
-            {
+           
                 Console.WriteLine("You are host!");
                 ChatSpace = new SequentialSpace();
                 Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
                 chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
                 chatRepo.AddGate(uri);
-            }
-            else
+            
+                
+            
+        }
+
+        public Chat(string name, string uri, string conferenceName) //For client
+        {
+            this.LoggedInUser = name;
+            Console.WriteLine("You are a slave!");
+            Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            try
             {
-                Console.WriteLine("You are a slave!");
-                Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                try
-                {
-                    ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception + "\t" + exception.Message);
-                    throw;
-                }
+                ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception + "\t" + exception.Message);
+                throw;
             }
         }
         
