@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -20,25 +22,25 @@ namespace ChatApp
         public ISpace ChatSpace { get; }
         private int K;
         private readonly string LoggedInUser;
-        public Chat(string name, string uri, string conferenceName, IRepository chatRepo) //For host
+        private readonly ObservableCollection<string> dataSource;
+        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource) //For host
         {
             this.LoggedInUser = name;
-           
-                Console.WriteLine("You are host!");
-                ChatSpace = new SequentialSpace();
-                Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-                chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
-                chatRepo.AddGate(uri);
-            
-                
-            
+
+            Console.WriteLine("You are host!");
+            ChatSpace = new SequentialSpace();
+            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+            chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+            chatRepo.AddGate(uri);
+            this.dataSource = dataSource;
         }
 
-        public Chat(string name, string uri, string conferenceName) //For client
+        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource) //For client
         {
             this.LoggedInUser = name;
             Console.WriteLine("You are a slave!");
             Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            this.dataSource = dataSource;
             try
             {
                 ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
@@ -49,7 +51,7 @@ namespace ChatApp
                 throw;
             }
         }
-        
+
 
         private static string FormatMessage(string formattedTimeString, string name, string message)
         {
@@ -58,7 +60,6 @@ namespace ChatApp
 
         public void InitializeChat()
         {
-
             // this is how to cancel a task running a thread-blocking operation:
             // https://stackoverflow.com/questions/22735533/how-do-i-cancel-a-blocked-task-in-c-sharp-using-a-cancellation-token
             // https://msdn.microsoft.com/en-us/library/dd321315(v=vs.110).aspx
@@ -70,20 +71,20 @@ namespace ChatApp
 
             var reader = Task.Run(async () =>
             {
-                var temp = await ChatReader(ChatSpace, cancellationTokenSource);
+                var temp = await ChatReader(ChatSpace, cancellationTokenSource, dataSource);
                 Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
 
-            var sender = new ChatSender(LoggedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
+            //var sender = new ChatSender(LoggedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
 
-            while (!cancellationTokenSource.IsCancellationRequested)
+            //while (!cancellationTokenSource.IsCancellationRequested)
             {
             }
         }
 
 
-        public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource)
+        public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource, ObservableCollection<string> dataSource)
         {
             Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
@@ -109,7 +110,7 @@ namespace ChatApp
 
                     return null;
                 }, cancelTokenSource.Token).Result;
-
+                Console.WriteLine("received message");
 
                 if (received == null)
                 {
@@ -117,12 +118,13 @@ namespace ChatApp
                     return Task.FromResult(false);
                 }
 
-                K = (int) received[0];
-                string formattedTimeString = (string) received[1];
+                K = (int)received[0];
+                string formattedTimeString = (string)received[1];
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
-
-                Console.WriteLine(FormatMessage(formattedTimeString, receivedName, message));
+                string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
+                dataSource.Add(finalMsg);
+                Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);
         }
@@ -183,6 +185,4 @@ namespace ChatApp
             }
         }
     }
-
-
 }
