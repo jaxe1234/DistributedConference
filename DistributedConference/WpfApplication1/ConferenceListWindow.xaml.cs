@@ -28,7 +28,7 @@ namespace WpfApplication1
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string User;
+        private string Username;
 
 
        
@@ -38,7 +38,7 @@ namespace WpfApplication1
         {
             DataContext = this;
             Task.Factory.StartNew(() => init());
-            User = Username;
+            this.Username = Username;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
             ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
@@ -50,26 +50,31 @@ namespace WpfApplication1
 
         private void NewConferenceButton_Click(object sender, RoutedEventArgs e)
         {
-            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, User, this);
+            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, Username, this);
             NewConfWin.Show();
         }
 
         private void ConfList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            asyncmethodthatwecall(e);
+            var conferenceClicked = ((TextBlock)e.OriginalSource).Text;
+            ConnectToConference(conferenceClicked);
         }
 
-        private async void asyncmethodthatwecall(MouseButtonEventArgs e)
+        private async void ConnectToConference(string conferenceClicked)
         {
-            var IPconnect = await Task<string>.Factory.StartNew(()=> otherasyncmethod(e));
+            var IPconnect = await Task<string>.Factory.StartNew(()=> GetIpFromServer(conferenceClicked));
+            ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect);
+            App.Current.MainWindow = conference;
+            this.Close();
+            conference.Show();
 
         }
 
-        private string otherasyncmethod(MouseButtonEventArgs e)
+        private string GetIpFromServer(string conferenceClicked)
         {
-            var conferenceClicked = (TextBlock)e.OriginalSource;
-            //ConferenceRequests.Put(User, conferenceClicked.Text);
-            var ip = (string)ConferenceRequests.Get(User, typeof(string))[1];
+            
+            ConferenceRequests.Put(Username, conferenceClicked);
+            var ip = (string)ConferenceRequests.Get(Username, typeof(string))[1];
             return ip;
         }
 
