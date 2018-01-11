@@ -41,7 +41,7 @@ namespace DistributedConference
             var hostentry = Dns.GetHostEntry("").AddressList
                 .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             string uri = "tcp://" + hostentry + ":5002";
-            ChatTest(args, uri);
+            ChatTest(args, args[0].Equals("host") ? uri : args[2]);
             Console.WriteLine("Program has terminated");
 
 
@@ -49,12 +49,22 @@ namespace DistributedConference
 
         private static void ChatTest(string[] args, string uri)
         {
-            using (var spaceRepo = new SpaceRepository())
+            string name = args[0];
+            string conferenceName = args[1];
+            if (name.Equals("host"))
             {
-                new Chat(args[0].Equals("host"), args[0], spaceRepo, args[0].Equals("host") ? uri : args[2], args[1]).InitializeChat();
-                Console.WriteLine("Chat is done.");
-                spaceRepo.Dispose();
+                using (var spaceRepo = new SpaceRepository())
+                {
+                    new Chat(name, uri, conferenceName, spaceRepo).InitializeChat();
+                    Console.WriteLine("Chat is done.");
+                    spaceRepo.Dispose();
+                }
             }
+            else
+            {
+                new Chat(name, uri, conferenceName).InitializeChat();
+            }
+
         }
 
         private static IEnumerable<byte[]> testPdfService()
