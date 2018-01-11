@@ -24,36 +24,34 @@ namespace WpfApplication1
         public event PropertyChangedEventHandler PropertyChanged;
         RemoteSpace ConferenceRequests;
         string Username;
-        ConferenceListWindow oldWin;
+        ConferenceListWindow conferenceListWindow;
 
-
-
-        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow oldWindow)
+        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow conferenceListWindow)
         {
 
             DataContext = this;
-            oldWin = oldWindow;
+            this.conferenceListWindow = conferenceListWindow;
             this.ConferenceRequests = ConferenceRequests;
             this.Username = Username;
             InitializeComponent();
             NewConferenceName.KeyUp += EnterPressed;
             NewConferenceName.KeyDown += EnterPressed;
             CreateButton.Click += CreateButton_Click;
-            //LAV NULL CHEKCS FOR CONF NAME
-
-
 
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart,NewConferenceName.Document.ContentEnd).Text.Trim();
-            ConferenceRequests.Put(Username, newConferenceName, 1);
-            ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName);
-            App.Current.MainWindow = conference;
-            oldWin.Close();
-            this.Close();
-            conference.Show();
+            if (!string.IsNullOrWhiteSpace(newConferenceName))
+            {
+                ConferenceRequests.Put(Username, newConferenceName, 1);
+                ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName);
+                App.Current.MainWindow = conference;
+                conferenceListWindow.Close();
+                this.Close();
+                conference.Show();
+            }
 
         }
 

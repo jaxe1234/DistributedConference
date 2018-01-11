@@ -30,10 +30,6 @@ namespace WpfApplication1
 
         private string Username;
 
-
-       
-
-
         public ConferenceListWindow(string Username)
         {
             DataContext = this;
@@ -63,6 +59,7 @@ namespace WpfApplication1
         private async void ConnectToConference(string conferenceClicked)
         {
             var IPconnect = await Task<string>.Factory.StartNew(()=> GetIpFromServer(conferenceClicked));
+
             ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect);
             App.Current.MainWindow = conference;
             this.Close();
