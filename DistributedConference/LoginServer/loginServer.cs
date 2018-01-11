@@ -9,11 +9,14 @@ using dotSpace.Objects.Network;
 using dotSpace.Interfaces.Space;
 using System.Diagnostics;
 using System.Threading;
+using System.Security.Cryptography;
 
 namespace LoginServer
 {
     class loginServer 
     {
+
+        string PrivKey;
         private Stopwatch stopwatch;
         private int cpuPercentageLimit;
         SpaceRepository loginServerSpaces = new SpaceRepository();
@@ -93,9 +96,9 @@ namespace LoginServer
                 ITuple attempt = loginAttempts.Get(typeof(string), typeof(string)); //get er blocking = ingen null return
                 if (attempt != null)// <---
                 {
-
+                    Console.WriteLine("saw login request");
                     string user = (string)attempt[0];
-                    string pass = (string)attempt[1];
+                    string pass = RSADecrypt(attempt[1] as string, PrivKey);
                     var userAccs = userAccounts.QueryAll(typeof(account));
                     var userAccount = userAccs.Select(t => t[0] as account).FirstOrDefault(a => a.username == user);
                     if (userAccount != null)
@@ -194,17 +197,33 @@ namespace LoginServer
 
 
 
+        public static string RSADecrypt(string Password, string PrivKey)
+        {
+            byte[] BytePass = Convert.FromBase64String(Password);// Encoding.ASCII.GetBytes(Password);
+            byte[] decryptedData;
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(PrivKey);
+            decryptedData = rsa.Decrypt(BytePass, true); 
+            rsa.Dispose();
+            return Encoding.UTF8.GetString(decryptedData);
 
+        }
 
         public loginServer() {
-            
-            
+
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            string PubKey = rsa.ToXmlString(false);
+            PrivKey = rsa.ToXmlString(true);
+           
+            //string DecryptedPasword = RSADecrypt(someThing, prikey);
+
             loginServerSpaces.AddGate("tcp://10.16.169.224:5001?CONN"); //tjek IP hver dag. just in case.
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);
             loginServerSpaces.AddSpace("accountCreation", accountCreation);
             loginServerSpaces.AddSpace("getConferenceList", getConferences);
+            loginAttempts.Put(PubKey);
             //Not good. ikke alle spaces skal være remote. How do we into security?
             conferences.Put(new List<string>());
 
