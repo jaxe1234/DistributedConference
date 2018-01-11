@@ -147,6 +147,10 @@
       <Project>{780aeff9-1b3e-4627-b1f3-bf327c6f7adf}</Project>
       <Name>ConferenceImageProcessing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Conference\Conference.csproj">
+      <Project>{80ef452b-6f90-406b-9e85-8ef211a14a0e}</Project>
+      <Name>Conference</Name>
+    </ProjectReference>
     <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>

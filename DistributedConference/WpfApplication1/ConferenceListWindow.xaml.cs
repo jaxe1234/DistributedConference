@@ -62,6 +62,7 @@ namespace WpfApplication1
         private async void asyncmethodthatwecall(MouseButtonEventArgs e)
         {
             var IPconnect = await Task<string>.Factory.StartNew(()=> otherasyncmethod(e));
+
         }
 
         private string otherasyncmethod(MouseButtonEventArgs e)

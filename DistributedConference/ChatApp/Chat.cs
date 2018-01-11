@@ -71,7 +71,6 @@ namespace ChatApp
                 return temp;
             }, cancellationTokenSource.Token);
 
-            var sender = new ChatSender(LoggedInUser, ChatSpace, cancellationTokenSource, this).RunAsConsole();
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -81,7 +80,7 @@ namespace ChatApp
 
         public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource, ObservableCollection<string> dataSource)
         {
-            Console.WriteLine("Making chat-reader...");
+            //Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
             {
                 //Console.WriteLine("Getting messages...");
@@ -105,7 +104,7 @@ namespace ChatApp
 
                     return null;
                 }, cancelTokenSource.Token).Result;
-                Console.WriteLine("received message");
+                //Console.WriteLine("received message");
 
                 if (received == null)
                 {
@@ -119,7 +118,7 @@ namespace ChatApp
                 string message = (string)received[3];
                 string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
                 dataSource.Add(finalMsg);
-                Console.WriteLine(finalMsg);
+                //Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);
         }

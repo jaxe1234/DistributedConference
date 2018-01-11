@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Conference;
 
 namespace WpfApplication1
 {
@@ -30,7 +31,7 @@ namespace WpfApplication1
         TextRange TxtToSend;
 
 
-    public ConferenceWindow(string Username)
+    public ConferenceWindow(ConferenceInitializer conference)
         {
             //Chat CurrentChat = new Chat();
             MsgList = new ObservableCollection<string>();
