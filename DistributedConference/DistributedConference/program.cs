@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
+using NamingTools;
 using SlideCommunication;
 
 //using SlideCommunication;
@@ -31,18 +32,16 @@ namespace DistributedConference
             //DiningPhil(args);
 
             //testJson();
+            
 
-            //var hostentry = Dns.GetHostEntry("").AddressList
-            //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            //string uri = "tcp://" + hostentry + ":5002";
-            //ChatTest(args, uri);
-            new Thread(() => TestSlideServer()).Start();
-            new Thread(() => TestSlideClient()).Start();
 
-            //var hostentry = Dns.GetHostEntry("").AddressList
-            //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            //string uri = "tcp://" + hostentry + ":5002";
-            //ChatTest(args, uri);
+            var hostentry = Dns.GetHostEntry("").AddressList
+                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            string uri = "tcp://" + hostentry + ":5002";
+            ChatTest(args, uri);
+            //new Thread(() => TestSlideServer()).Start();
+            //new Thread(() => TestSlideClient()).Start();
+
             //Console.WriteLine("Program has terminated");
 
 
