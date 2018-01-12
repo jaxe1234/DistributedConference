@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using dotSpace.Interfaces.Network;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
@@ -117,7 +118,10 @@ namespace ChatApp
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
                 string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
-                dataSource.Add(finalMsg);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    dataSource.Add(finalMsg);
+                });
                 //Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);

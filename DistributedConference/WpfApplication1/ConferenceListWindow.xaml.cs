@@ -33,7 +33,7 @@ namespace WpfApplication1
         public ConferenceListWindow(string Username)
         {
             DataContext = this;
-            Task.Factory.StartNew(() => Init());
+            Task.Factory.StartNew(Init);
             this.Username = Username;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
