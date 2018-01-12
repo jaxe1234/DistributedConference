@@ -25,7 +25,7 @@ namespace SlideCommunication
                 if (value != _running)
                 {
                     _running = value;
-                    if (!_running)
+                    if (_running)
                     {
                         Cacelation = new CancellationTokenSource();
                         Task.Run(GetHostAction(), Cacelation.Token);
@@ -48,7 +48,7 @@ namespace SlideCommunication
 
         public virtual void Dispose()
         {
-            Cacelation.Cancel();
+            Cacelation?.Cancel();
         }
     }
 

@@ -18,17 +18,21 @@ namespace SlideCommunication
     {
         private SpaceRepository _repo;
 
+        private ISlideShow SlideShower { get; set; }
+
         private ISpace _exposedSpace;
         private string _concealedSpaceTarget;
         private ISpace _concealedSpace;
 
+        private string _identifier;
+
         private HubConsumer _hub;
         private FrameConsumer _frame;
-        //private Producer _producer;
+        private ControlProducer _controlProducer;
 
         private HubConsumer Hub => _hub ?? (_hub = new HubConsumer(_exposedSpace, _concealedSpace));
         private FrameConsumer Frame => _frame ?? (_frame = new FrameConsumer(_exposedSpace, _concealedSpace));
-        //private Producer Producer => _producer ?? (_producer = new Producer(this, _exposedSpace, _username));
+        public ControlProducer Control => _controlProducer ?? (_controlProducer = new ControlProducer(_concealedSpace, SlideShower, _identifier));
 
         private string _concealedSpacePassword;
         public string ConcealedSpacePassword {
@@ -48,12 +52,15 @@ namespace SlideCommunication
             }
         }
 
-        public SlideHostFacade(SpaceRepository repo)
+        public SlideHostFacade(SpaceRepository repo, string identifier, ISlideShow slideShower)
         {
             _repo = repo;
+            SlideShower = slideShower;
+            _identifier = identifier;
             _exposedSpace = new SequentialSpace();
             _concealedSpace = new SequentialSpace();
             _repo.AddSpace("hub", _exposedSpace);
+            _concealedSpace.Put("ControlLock");
             Hub.Running = true;
         }
 

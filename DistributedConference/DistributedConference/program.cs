@@ -32,15 +32,15 @@ namespace DistributedConference
             //DiningPhil(args);
 
             //testJson();
-            
 
 
-            var hostentry = Dns.GetHostEntry("").AddressList
-                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            string uri = "tcp://" + hostentry + ":5002";
-            ChatTest(args, uri);
-            //new Thread(() => TestSlideServer()).Start();
-            //new Thread(() => TestSlideClient()).Start();
+
+            //var hostentry = Dns.GetHostEntry("").AddressList
+            //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            //string uri = "tcp://" + hostentry + ":5002";
+            //ChatTest(args, uri);
+            new Thread(() => TestSlideServer()).Start();
+            new Thread(() => TestSlideClient()).Start();
 
             //Console.WriteLine("Program has terminated");
 
@@ -114,22 +114,80 @@ namespace DistributedConference
             using (var repo = new SpaceRepository())
             {
                 repo.AddGate("tcp://127.0.0.1:15432");
-                var server = new SlideHostFacade(repo);
+                var slide = new SimpleSlideShow("host");
+                var server = new SlideHostFacade(repo, "Host", slide);
+                server.ConcealedSpacePassword = "AsgerAsger";
                 var url = "https://meltdownattack.com/spectre.pdf";
                 var client = new WebClient();
-                using (var stream = client.OpenRead(url))
+                using (var mstream = new MemoryStream())
                 {
-                    server.PrepareToHost(stream);
+                    using (var stream = client.OpenRead(url))
+                    {
+                        stream.CopyTo(mstream);
+                    }
+                    server.PrepareToHost(mstream);
                 }
+                var control = server.Control;
+                slide.Producer = control;
+                control.Controlling = true;
+                Task.Delay(-1).Wait();
+            }
+        }
+
+        private class SimpleSlideShow : ISlideShow
+        {
+            public string Name { get; set; }
+
+            public ControlProducer Producer  { get; set; }
+
+            public SimpleSlideShow(string name)
+            {
+                Name = name;
+            }
+
+            public void Draw(System.Windows.Shapes.Shape figure, Point position)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void UpdateSlide(byte[] image)
+            {
+                Console.WriteLine("{0}: Switched slide", Name);
+            }
+
+            public void GrantControl()
+            {
+                Console.WriteLine("{0}: Granted control", Name);
+                Producer.ChangeSlider(1);
+            }
+
+            public void GrantHostStatus()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void RevokeControl()
+            {
+                Console.WriteLine("{0}: Revoked control", Name);
+            }
+
+            public void RevokeHostStatus()
+            {
+                throw new NotImplementedException();
             }
         }
 
         private static void TestSlideClient()
         {
-            Thread.Sleep(100);
-            ISpace space = new RemoteSpace("tcp://127.0.0.1:15432/hub123");
-            var client = new FrameProducer(space, "aMoe");
-            var frames = client.GetFrames(1, 2, 3);
+            Thread.Sleep(500);
+            const string uri = "tcp://127.0.0.1:15432/";
+            ISlideShow slide = new SimpleSlideShow("client");
+
+            var client1 = new SlideClientFacade(slide, uri, "aMoe");
+            //client1.UpgradePrivileges("AsgerAsger");
+            //var control = client1.Control;
+            //control.ChangeSlider(1);
+            Task.Delay(-1).Wait();
         }
 
         public static void DiningPhil(string[] args)

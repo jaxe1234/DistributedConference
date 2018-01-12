@@ -23,6 +23,11 @@ namespace SlideCommunication
         private FrameProducer _frameProducer;
         private ControlConsumer _controlConsumer;
         private ControlProducer _controlProducer;
+        public ControlProducer Control {
+            get {
+                return IsPrivileged ? _controlProducer : null;
+            }
+        }
 
         public bool IsPrivileged => ConcealedSpace != null && _controlProducer != null;
 

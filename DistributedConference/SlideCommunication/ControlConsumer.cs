@@ -2,6 +2,7 @@
 using dotSpace.Interfaces.Space;
 using NamingTools;
 using dotSpace.Objects.Network;
+using System.Linq;
 
 namespace SlideCommunication
 {
@@ -31,7 +32,7 @@ namespace SlideCommunication
                 Space.Put("SlideChangeToken", Identifier, token.Token);
                 var tuple = Space.Get("SlideChange", token.ResponseToken, Identifier, typeof(int));
                 var page = tuple.Get<int>(3);
-                SlideShower.GotoSlide(page);
+                SlideShower.UpdateSlide(Producer.GetFrames(page).FirstOrDefault());
             }
         }
     }
