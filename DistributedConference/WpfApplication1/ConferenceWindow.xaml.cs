@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
@@ -61,6 +62,23 @@ namespace WpfApplication1
             this.MsgList = new ObservableCollection<string>();
             this.Loaded += MainWindow_Loaded;
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
+            MsgList.CollectionChanged += NewMessageReceived;
+        }
+
+        private void NewMessageReceived(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(VisualTreeHelper.GetChildrenCount(ChatView)>0)
+            {
+                var b = VisualTreeHelper.GetChild(ChatView, 0);
+                var s = (ScrollViewer)VisualTreeHelper.GetChild(b, 0);
+                s.ScrollToBottom();
+            }
+           //((ListView)sender).ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
+            //var selectedIndex = ChatView.Items.Count - 1;
+            //if (selectedIndex < 0) return;
+            //ChatView.SelectedIndex = selectedIndex;
+            //ChatView.UpdateLayout();
+            //ChatView.ScrollIntoView(ChatView.SelectedItem);
         }
 
         public void SetUpConferenceWindow()

@@ -27,7 +27,7 @@ namespace ChatApp
             ChatSpace = new SequentialSpace();
             //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
             chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
-            chatRepo.AddGate(uri);
+            chatRepo.AddGate(uri+ "?CONN");
             DataSource = dataSource;
         }
 

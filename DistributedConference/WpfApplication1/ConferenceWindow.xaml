@@ -36,7 +36,8 @@
         </Grid.RowDefinitions>
         
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     
+                  
+                    Name="ChatView" 
                      Grid.Column="1"
                      Grid.Row="0"
                      Margin="5"
