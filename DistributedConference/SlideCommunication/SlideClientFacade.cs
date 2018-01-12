@@ -42,10 +42,10 @@ namespace SlideCommunication
         {
             var tuple = Space.QueryP("ConcealedIdentifier", typeof(string));
             var token = tuple?.Get<string>(1);
-            var hash = NamingTool.GetSHA256String(passwd);
+            var hash = NameHashingTool.GetSHA256String(passwd);
             if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(passwd) && token == hash)
             {
-                var id = NamingTool.GetSHA256String(passwd + token);
+                var id = NameHashingTool.GetSHA256String(passwd + token);
                 ConcealedSpace = new RemoteSpace(string.Format(UriFormat, id));
                 _controlProducer = new ControlProducer(ConcealedSpace, SlideShower, Username);
             }

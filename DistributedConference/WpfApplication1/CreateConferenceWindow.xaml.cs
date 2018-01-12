@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,7 +47,8 @@ namespace WpfApplication1
             string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart,NewConferenceName.Document.ContentEnd).Text.Trim();
             if (!string.IsNullOrWhiteSpace(newConferenceName))
             {
-                ConferenceRequests.Put(Username, newConferenceName, 1);
+                string ipAddress = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)+"";
+                ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1);
                 ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName);
                 App.Current.MainWindow = conference;
                 conferenceListWindow.Close();
@@ -57,7 +60,6 @@ namespace WpfApplication1
 
         private void EnterPressed(object sender, KeyEventArgs e)
         {
-
             if (e.Key == Key.Enter)
             {
                 CreateButton_Click(sender, null);

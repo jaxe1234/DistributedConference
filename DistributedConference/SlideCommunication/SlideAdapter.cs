@@ -41,8 +41,8 @@ namespace SlideCommunication
                     _repo.CloseGate(_concealedSpaceTarget);
                 }
                 _concealedSpacePassword = value;
-                var hashPassword = NamingTool.GetSHA256String(_concealedSpacePassword);
-                _concealedSpaceTarget = NamingTool.GetSHA256String(_concealedSpacePassword + hashPassword);
+                var hashPassword = NameHashingTool.GetSHA256String(_concealedSpacePassword);
+                _concealedSpaceTarget = NameHashingTool.GetSHA256String(_concealedSpacePassword + hashPassword);
                 _exposedSpace.Put("ConcealedIdentifier", hashPassword);
                 _repo.AddSpace(_concealedSpaceTarget, _concealedSpace);
             }

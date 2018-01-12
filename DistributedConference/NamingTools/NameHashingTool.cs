@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NamingTools
 {
-    public class NamingTool
+    public class NameHashingTool
     {
         public static string GenerateUniqueRemoteSpaceUri(string uri, string name)
         {

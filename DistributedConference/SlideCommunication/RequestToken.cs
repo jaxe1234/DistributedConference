@@ -26,7 +26,7 @@ namespace SlideCommunication
                 {
                     throw new ArgumentNullException();
                 }
-                return NamingTool.GetSHA256String(Secret + Token);
+                return NameHashingTool.GetSHA256String(Secret + Token);
             }
         } 
     }

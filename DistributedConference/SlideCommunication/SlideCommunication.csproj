@@ -57,6 +57,7 @@
     <Compile Include="RequestToken.cs" />
     <Compile Include="SlideAdapter.cs" />
     <Compile Include="SlideBitstreamRequest.cs" />
+    <Compile Include="SlideClientFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">

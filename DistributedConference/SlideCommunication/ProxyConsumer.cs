@@ -31,7 +31,7 @@ namespace SlideCommunication
                 var username = response[2] as string;
                 var key = Space.QueryP("SessionSecret", typeof(string), username)?.Get<string>(1);
                 response[0] = "Response";
-                response[1] = NamingTools.NamingTool.GetSHA256String(key + token);
+                response[1] = NamingTools.NameHashingTool.GetSHA256String(key + token);
                 ExposedSpace.Put(response);
             }
         }
@@ -49,7 +49,7 @@ namespace SlideCommunication
                     var token = tuple.Get<string>(2);
                     var username = tuple.Get<string>(1);
                     var key = Space.QueryP("SessionSecret", typeof(string), username)?.Get<string>(1);
-                    var resposeToken = NamingTools.NamingTool.GetSHA256String(key + token);
+                    var resposeToken = NamingTools.NameHashingTool.GetSHA256String(key + token);
                     ExposedSpace.Put("SlideChange", resposeToken, username, page);
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using dotSpace.Objects.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Interfaces.Space;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Security.Cryptography;
 
@@ -61,17 +63,6 @@ namespace LoginServer
 
                 }
                 //
-
-
-
-
-
-
-
-
-              
-
-
             }
         }
 
@@ -128,25 +119,25 @@ namespace LoginServer
 
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string),typeof(int));
+                var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int));
                 Console.WriteLine("got request to create or delete conference");
-                if((int)request[2] == 1)
+                if((int)request[3] == 1)
                 {
                     //add
-                    conferences.Put(request[0], request[1]);
-                    List<string> confList = conferences.QueryAll(typeof(string),typeof(string)).Select(t => t.Get<string>(1)).ToList();
+                    conferences.Put(request[0], request[1], request[2]);
+                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
-                    Console.WriteLine("added conference" + request[1] );
+                    Console.WriteLine("added conference " + request[1] );
                 }
-                if ((int)request[2] == 0)
+                if ((int)request[3] == 0)
                 {
                     //remove
-                    conferences.Get(request[0], request[1]);
-                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string)) as List<string>;
+                    conferences.Get(request[0], request[1], request[2]);
+                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
-                    Console.WriteLine("removed conference" + request[1]);
+                    Console.WriteLine("removed conference " + request[1]);
 
                 }
             }            
@@ -158,8 +149,8 @@ namespace LoginServer
             {
                 var request = getConferences.Get(typeof(string), typeof(string));
 
-                var result = conferences.Query(request[1],typeof(string));
-                getConferences.Put(request[0], result[1]);
+                var result = conferences.Query(typeof(string),request[1],typeof(string));
+                getConferences.Put(request[0], result[2]);
             }
         }
 

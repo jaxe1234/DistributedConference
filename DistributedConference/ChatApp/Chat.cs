@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using dotSpace.Interfaces.Network;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
@@ -18,31 +19,31 @@ namespace ChatApp
         private int K { get; set; }
         private string LoggedInUser { get; }
         private ObservableCollection<string> DataSource { get; }
-        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource) //For host
-        {
+        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource)
+        {   //For host
             LoggedInUser = name;
 
-            Console.WriteLine("You are host!");
+            // Console.WriteLine("You are host!");
             ChatSpace = new SequentialSpace();
-            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-            chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+            //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
             chatRepo.AddGate(uri);
             DataSource = dataSource;
         }
 
-        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource) //For client
-        {
+        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource)
+        {   //For client
             LoggedInUser = name;
-            Console.WriteLine("You are a slave!");
-            Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            // Console.WriteLine("You are a slave!");
+            //Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
             try
             {
-                ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                ChatSpace = new RemoteSpace(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception + "\t" + exception.Message);
+                //Console.WriteLine(exception + "\t" + exception.Message);
                 throw;
             }
         }
@@ -117,7 +118,10 @@ namespace ChatApp
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
                 string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
-                dataSource.Add(finalMsg);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    dataSource.Add(finalMsg);
+                });
                 //Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);
