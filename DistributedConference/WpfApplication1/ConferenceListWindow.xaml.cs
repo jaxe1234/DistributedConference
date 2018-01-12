@@ -52,7 +52,7 @@ namespace WpfApplication1
 
         private void ConfList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            string conferenceClicked = ((TextBlock)e.OriginalSource).Text as string;
+            string conferenceClicked =((Button)sender).Content as string;
             ConnectToConference(conferenceClicked);
         }
 

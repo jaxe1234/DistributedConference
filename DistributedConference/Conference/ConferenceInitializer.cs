@@ -26,6 +26,7 @@ namespace Conference
             var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             this.uri = "tcp://" + hostentry + ":5002";
             this.Chat = new Chat(name,uri, conferenceName, spaceRepo,dataSource);
+            tokenSource = new CancellationTokenSource();
 
             Task.Factory.StartNew(InitChat);
         }
@@ -35,6 +36,7 @@ namespace Conference
             this.name = name;
             this.uri = "tcp://" + ip + ":5002";
             this.Chat = new Chat(name, uri, conferenceName, dataSource);
+            tokenSource = new CancellationTokenSource();
 
             Task.Factory.StartNew(InitChat);
         }

@@ -52,7 +52,14 @@ namespace WpfApplication1
 
         public ConferenceWindow(string username, string conferenceName, string ip) //For client
         {
-            SetUpConferenceWindow();
+            DataContext = this;
+            InitializeComponent();
+            this.SizeChanged += Resize;
+            SendButton.Click += SendButton_Click;
+            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            SendField.KeyUp += SendField_KeyUp;
+            this.MsgList = new ObservableCollection<string>();
+            this.Loaded += MainWindow_Loaded;
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
         }
 
