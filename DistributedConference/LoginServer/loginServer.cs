@@ -63,17 +63,6 @@ namespace LoginServer
 
                 }
                 //
-
-
-
-
-
-
-
-
-              
-
-
             }
         }
 
@@ -132,7 +121,7 @@ namespace LoginServer
             {
                 var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int));
                 Console.WriteLine("got request to create or delete conference");
-                if((int)request[2] == 1)
+                if((int)request[3] == 1)
                 {
                     //add
                     conferences.Put(request[0], request[1], request[2]);
@@ -141,7 +130,7 @@ namespace LoginServer
                     getConferences.Put(confList);
                     Console.WriteLine("added conference " + request[1] );
                 }
-                if ((int)request[2] == 0)
+                if ((int)request[3] == 0)
                 {
                     //remove
                     conferences.Get(request[0], request[1], request[2]);
