@@ -19,23 +19,23 @@ namespace ChatApp
         private int K { get; set; }
         private string LoggedInUser { get; }
         private ObservableCollection<string> DataSource { get; }
-        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource) //For host
-        {
+        public Chat(string name, string uri, string conferenceName, IRepository chatRepo, ObservableCollection<string> dataSource)
+        {   //For host
             LoggedInUser = name;
 
-            Console.WriteLine("You are host!");
+            // Console.WriteLine("You are host!");
             ChatSpace = new SequentialSpace();
-            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+            //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
             chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
             chatRepo.AddGate(uri);
             DataSource = dataSource;
         }
 
-        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource) //For client
-        {
+        public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource)
+        {   //For client
             LoggedInUser = name;
-            Console.WriteLine("You are a slave!");
-            Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            // Console.WriteLine("You are a slave!");
+            //Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
             try
             {
@@ -43,7 +43,7 @@ namespace ChatApp
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception + "\t" + exception.Message);
+                //Console.WriteLine(exception + "\t" + exception.Message);
                 throw;
             }
         }
