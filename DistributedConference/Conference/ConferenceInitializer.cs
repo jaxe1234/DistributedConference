@@ -27,7 +27,7 @@ namespace Conference
             this.uri = "tcp://" + hostentry + ":5002";
             this.Chat = new Chat(name,uri, conferenceName, spaceRepo,dataSource);
 
-            InitChat();
+            Task.Factory.StartNew(InitChat);
         }
 
         public ConferenceInitializer(string name, string conferenceName, string ip, ObservableCollection<string> dataSource)//For the client
@@ -36,7 +36,7 @@ namespace Conference
             this.uri = "tcp://" + ip + ":5002";
             this.Chat = new Chat(name, uri, conferenceName, dataSource);
 
-            InitChat();
+            Task.Factory.StartNew(InitChat);
         }
 
         private void InitChat()
