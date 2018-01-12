@@ -36,7 +36,15 @@ namespace WpfApplication1
 
         public ConferenceWindow(string username, string conferenceName) //For host
         {
-            SetUpConferenceWindow();
+            
+            DataContext = this;
+            InitializeComponent();
+            this.SizeChanged += Resize;
+            SendButton.Click += SendButton_Click;
+            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            SendField.KeyUp += SendField_KeyUp;
+            this.MsgList = new ObservableCollection<string>();
+            this.Loaded += MainWindow_Loaded;
             SpaceRepository spaceRepository = new SpaceRepository();
             this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
             
@@ -44,20 +52,21 @@ namespace WpfApplication1
 
         public ConferenceWindow(string username, string conferenceName, string ip) //For client
         {
-            SetUpConferenceWindow();
+            DataContext = this;
+            InitializeComponent();
+            this.SizeChanged += Resize;
+            SendButton.Click += SendButton_Click;
+            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            SendField.KeyUp += SendField_KeyUp;
+            this.MsgList = new ObservableCollection<string>();
+            this.Loaded += MainWindow_Loaded;
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
         }
 
         public void SetUpConferenceWindow()
         {
-            InitializeComponent();
-            DataContext = this;
-            this.Loaded += MainWindow_Loaded;
-            this.SizeChanged += Resize;
-            SendButton.Click += SendButton_Click;
-            TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
-            SendField.KeyUp += SendField_KeyUp;
-            this.MsgList = new ObservableCollection<string>();
+           
+           
         }
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)
@@ -86,6 +95,7 @@ namespace WpfApplication1
         {
             this.MinWidth = this.Width;
             this.MinHeight = this.Height;
+           
         }
 
         void Resize(object sender, RoutedEventArgs e)

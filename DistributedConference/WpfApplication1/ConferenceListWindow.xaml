@@ -9,9 +9,9 @@
         MinHeight="150" MinWidth="300">
     <Window.Resources>
 
-
        
-            <ResourceDictionary>
+
+        <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary Source="Assets/Dictionary1.xaml" />
                 </ResourceDictionary.MergedDictionaries>
@@ -48,23 +48,36 @@
         
         
         <ListBox 
+           
                      Name="ConfList"
                      Grid.Column="1"
                      Grid.Row="0"
                      Margin="5"
+                     HorizontalAlignment="Stretch"
                      ItemsSource="{Binding conferenceTuple, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     VirtualizingStackPanel.VirtualizationMode="Recycling">
-
+                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+            HorizontalContentAlignment="Stretch"
+            >
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Focusable" Value="False"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
+
                 <DataTemplate>
                     
-                        <TextBlock
+                        <Button
+                            Style="{StaticResource MetroButton}"
                             FontSize="12"
-                            Text="{Binding}"
-                            TextAlignment="Center"
+                            Content="{Binding}"
+                            HorizontalContentAlignment="Center"
+                            MouseDoubleClick="ConfList_MouseDoubleClick"
+                            HorizontalAlignment="Stretch"
+                            
                             >
                             
-                        </TextBlock>
+                        </Button>
                     
 
                 </DataTemplate>

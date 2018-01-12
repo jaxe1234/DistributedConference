@@ -24,19 +24,21 @@ namespace Conference
         {
             this.name = name;
             var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            this.uri = "tcp://" + hostentry + ":5002";
+            this.uri = "tcp://" + hostentry + ":5002?CONN";
             this.Chat = new Chat(name,uri, conferenceName, spaceRepo,dataSource);
+            tokenSource = new CancellationTokenSource();
 
-            InitChat();
+            Task.Factory.StartNew(InitChat);
         }
 
         public ConferenceInitializer(string name, string conferenceName, string ip, ObservableCollection<string> dataSource)//For the client
         {
             this.name = name;
-            this.uri = "tcp://" + ip + ":5002";
+            this.uri = "tcp://" + ip + ":5002?CONN";
             this.Chat = new Chat(name, uri, conferenceName, dataSource);
+            tokenSource = new CancellationTokenSource();
 
-            InitChat();
+            Task.Factory.StartNew(InitChat);
         }
 
         private void InitChat()

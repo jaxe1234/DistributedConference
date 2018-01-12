@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using LoginServer;
+
 using dotSpace.Objects.Network;
 
 namespace WpfApplication1
@@ -33,11 +33,11 @@ namespace WpfApplication1
         public ConferenceListWindow(string Username)
         {
             DataContext = this;
-            Task.Factory.StartNew(() => Init());
+            Task.Factory.StartNew(Init);
             this.Username = Username;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
-            ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
+            //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
 
             
@@ -52,7 +52,7 @@ namespace WpfApplication1
 
         private void ConfList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var conferenceClicked = ((TextBlock)e.OriginalSource).Text;
+            string conferenceClicked =((Button)sender).Content as string;
             ConnectToConference(conferenceClicked);
         }
 
