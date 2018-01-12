@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace NamingTools
 {
@@ -13,11 +16,19 @@ namespace NamingTools
             return "Conference" + ConvertHashCodeToAlphabeticString((uint)name.GetHashCode() % UInt32.MaxValue);
         }
 
-        public static string UniqueString(int length)
+        public static string UniqueString()
         {
-            Random random = new Random();
-            uint hash = (uint)(DateTime.Now.Ticks + random.Next()).GetHashCode();
-            return ConvertHashCodeToAlphabeticString(hash);
+            return Guid.NewGuid().ToString();
+        }
+
+        public static string GetSHA256String(string value)
+        {
+            using (SHA256 hash = SHA256.Create())
+            {
+                return string.Concat(hash
+                  .ComputeHash(Encoding.UTF8.GetBytes(value))
+                  .Select(item => item.ToString("x2")));
+            }
         }
 
         private static string ConvertHashCodeToAlphabeticString(uint hash)

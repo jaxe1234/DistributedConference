@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConferenceMain", "DistributedConference\ConferenceMain.csproj", "{084EE1EC-45F0-446D-A48A-C4732986D8CC}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamingTools", "NamingTools\NamingTools.csproj", "{269C31D9-E9B6-432B-92F7-3F2B0E11292A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conference", "Conference\Conference.csproj", "{80EF452B-6F90-406B-9E85-8EF211A14A0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "NamingToolsTests\UnitTests.csproj", "{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,12 @@ Global
 		{80EF452B-6F90-406B-9E85-8EF211A14A0E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80EF452B-6F90-406B-9E85-8EF211A14A0E}.Run|Any CPU.ActiveCfg = Release|Any CPU
 		{80EF452B-6F90-406B-9E85-8EF211A14A0E}.Run|Any CPU.Build.0 = Release|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Run|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC59604-D3CB-4F19-ACD5-FCE184CB5ADE}.Run|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
