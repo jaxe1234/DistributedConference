@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,13 +14,14 @@ namespace SlideCommunication
     {
         private ISpace Space { get; set; }
         private string Username { get; set; }
-        private string SessionKey { get
+
+        private string SessionSecret { get
             {
-                var t = Private.QueryP("SessionKey", typeof(string));
+                var t = Private.QueryP("SessionSecret", typeof(string));
                 if (t == null)
                 {
                     ConnectToSession();
-                    t = Private.Query("SessionKey", typeof(string));
+                    t = Private.Query("SessionSecret", typeof(string));
                 }
                 return t.Get<string>(1);
             }
@@ -45,10 +47,11 @@ namespace SlideCommunication
             var pagesToRecieve = frames
                 .Where(p => p.Bitstream == null)
                 .Select(p => p.PageNumber).ToList();
-            Space.Put("SlideRequestPayload", SessionKey, pagesToRecieve.ToList());
-            Space.Put("Request", RequestType.FrameRequest, SessionKey);
-            var t1 = Space.Get("Response", SessionKey, RequestType.FrameRequest, typeof(List<FramePayload>));
-            var recievedPages = new Queue<FramePayload>(t1.Get<List<FramePayload>>(3).AsEnumerable());
+            var token = new RequestToken(SessionSecret);
+            Space.Put("SlideRequestPayload", token.Token, pagesToRecieve.ToList());
+            Space.Put("Request", RequestType.FrameRequest, token.Token, Username);
+            var t1 = Space.Get("Response", token.ResponseToken, Username, RequestType.FrameRequest, typeof(List<FramePayload>));
+            var recievedPages = new Queue<FramePayload>(t1.Get<List<FramePayload>>(4).AsEnumerable());
             foreach (var p in frames)
             {
                 if (p.Bitstream == null)
@@ -62,9 +65,14 @@ namespace SlideCommunication
 
         private void ConnectToSession()
         {
-            Space.Put("Request", RequestType.EstablishSession, Username);
-            var tuple = Space.Get("Response", typeof(string), RequestType.EstablishSession);
-            Private.Put("SessionKey", tuple.Get<string>(1));
+            using (var me = new ECDiffieHellmanCng())
+            {
+                Space.Put("Request", HubRequestType.EstablishSession, Username, Convert.ToBase64String(me.PublicKey.ToByteArray()));
+                var tuple = Space.Get("Response", Username, HubRequestType.EstablishSession, typeof(string));
+                var herKey = CngKey.Import(Convert.FromBase64String(tuple.Get<string>(3)), CngKeyBlobFormat.EccPublicBlob);
+                var ourKey = Convert.ToBase64String(me.DeriveKeyMaterial(herKey));
+                Private.Put("SessionSecret", ourKey);
+            }
         }
     }
 }

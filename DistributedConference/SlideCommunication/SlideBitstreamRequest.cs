@@ -9,8 +9,6 @@ namespace SlideCommunication
     public enum RequestType
     {
         Unspecified,
-        EstablishSession,
-        TerminateSession,
         FrameRequest
     }
 }
