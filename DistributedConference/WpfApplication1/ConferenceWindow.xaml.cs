@@ -37,8 +37,6 @@ namespace WpfApplication1
         public ConferenceWindow(string username, string conferenceName) //For host
         {
             SetUpConferenceWindow();
-
-            
             SpaceRepository spaceRepository = new SpaceRepository();
             this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
             
