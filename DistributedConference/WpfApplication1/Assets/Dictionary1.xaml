@@ -11,6 +11,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="{x:Type ListBoxItem}" TargetType="{x:Type ListBoxItem}">
+        <!-- Possibly other setters -->
+        <Setter Property="Focusable" Value="False" />
+    </Style>
     <Style x:Key="FocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
