@@ -55,7 +55,9 @@ namespace WpfApplication1
         {
             SignupWindow main = new SignupWindow( AccountCreation, loginSpace);
             App.Current.MainWindow = main;
+            
             this.Close();
+            
             main.Show();
         }
 

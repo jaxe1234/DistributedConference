@@ -70,8 +70,9 @@ namespace WpfApplication1
         private string GetIpFromServer(string conferenceClicked)
         {
             
-            ConferenceRequests.Put(Username, conferenceClicked);
-            var ip = (string)ConferenceRequests.Get(Username, typeof(string))[1];
+            ConferenceRequests.Put(Username, conferenceClicked, 0);
+            var temp = ConferenceRequests.Get(Username, typeof(string), 1);
+            var ip = (string)temp[1];
             return ip;
         }
 

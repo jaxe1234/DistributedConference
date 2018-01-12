@@ -147,30 +147,15 @@ namespace LoginServer
         {
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string));
+                var request = getConferences.Get(typeof(string), typeof(string), 0);
 
                 var result = conferences.Query(typeof(string),request[1],typeof(string));
-                getConferences.Put(request[0], result[2]);
+                getConferences.Put(request[0], result[2], 1);
             }
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 
         public static string RSADecrypt(string Password, string PrivKey)
         {

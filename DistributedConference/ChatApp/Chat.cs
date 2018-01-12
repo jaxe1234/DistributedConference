@@ -37,9 +37,11 @@ namespace ChatApp
             // Console.WriteLine("You are a slave!");
             //Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
+            string remoteName;
             try
             {
-                ChatSpace = new RemoteSpace(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
+                ChatSpace = new RemoteSpace(remoteName);
             }
             catch (Exception exception)
             {
