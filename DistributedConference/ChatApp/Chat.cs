@@ -24,8 +24,8 @@ namespace ChatApp
 
             Console.WriteLine("You are host!");
             ChatSpace = new SequentialSpace();
-            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NamingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-            chatRepo.AddSpace(NamingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+            Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
+            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
             chatRepo.AddGate(uri);
             DataSource = dataSource;
         }
@@ -34,11 +34,11 @@ namespace ChatApp
         {
             LoggedInUser = name;
             Console.WriteLine("You are a slave!");
-            Console.WriteLine(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+            Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
             try
             {
-                ChatSpace = new RemoteSpace(NamingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
+                ChatSpace = new RemoteSpace(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             }
             catch (Exception exception)
             {

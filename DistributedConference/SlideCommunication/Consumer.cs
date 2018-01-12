@@ -51,7 +51,7 @@ namespace SlideCommunication
                 {
                     case (RequestType.EstablishSession):
                         {
-                            var key = NamingTool.UniqueString(64);
+                            var key = NameHashingTool.UniqueString(64);
                             var t1 = PrivateSpace.QueryP("SessionKey", typeof(string), identifier);
                             var t2 = PrivateSpace.QueryP("SessionKey", key, typeof(string));
                             if (t1 == null && t2 == null)
