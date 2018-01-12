@@ -10,13 +10,24 @@ namespace SlideCommunication
 {
     public class RequestToken
     {
-        public RequestToken(string secret)
+        public RequestToken()
+        {
+            Token = Guid.NewGuid().ToString();
+        }
+
+        public RequestToken(string secret) : this()
         {
             Secret = secret;
-            Token = Guid.NewGuid().ToString();
         }
         public string Token { get; }
         private string Secret { get; }
-        public string ResponseToken => NamingTool.GetSHA256String(Secret + Token);
+        public string ResponseToken { get {
+                if (string.IsNullOrEmpty(Secret))
+                {
+                    throw new ArgumentNullException();
+                }
+                return NamingTool.GetSHA256String(Secret + Token);
+            }
+        } 
     }
 }

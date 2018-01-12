@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace SlideCommunication
 {
-    public class Producer
+    public class FrameProducer
     {
-        private ISpace Space { get; set; }
+        public ISpace Space { get; private set; }
         private string Username { get; set; }
 
         private string SessionSecret { get
@@ -29,7 +29,7 @@ namespace SlideCommunication
 
         private ISpace Private { get; set; }
 
-        public Producer(ISpace space, string username)
+        public FrameProducer(ISpace space, string username)
         {
             Space = space;
             Private = new SequentialSpace();
@@ -47,7 +47,7 @@ namespace SlideCommunication
             var pagesToRecieve = frames
                 .Where(p => p.Bitstream == null)
                 .Select(p => p.PageNumber).ToList();
-            var token = new RequestToken(SessionSecret);
+            var token = CreateToken();
             Space.Put("SlideRequestPayload", token.Token, pagesToRecieve.ToList());
             Space.Put("Request", RequestType.FrameRequest, token.Token, Username);
             var t1 = Space.Get("Response", token.ResponseToken, Username, RequestType.FrameRequest, typeof(List<FramePayload>));
@@ -61,6 +61,11 @@ namespace SlideCommunication
                 }
             }
             return frames.Select(a => a.Bitstream);
+        }
+
+        public RequestToken CreateToken()
+        {
+            return new RequestToken(SessionSecret);
         }
 
         private void ConnectToSession()

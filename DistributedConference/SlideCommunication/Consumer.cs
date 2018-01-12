@@ -18,17 +18,17 @@ namespace SlideCommunication
         
         private CancellationTokenSource Cacelation { get; set; }
 
-        private HostingMode _mode;
-        public HostingMode HostingMode {
-            get { return _mode; }
+        private bool _running;
+        public bool Running {
+            get { return _running; }
             set {
-                if (value != _mode)
+                if (value != _running)
                 {
-                    _mode = value;
-                    if (_mode != HostingMode.Idle)
+                    _running = value;
+                    if (!_running)
                     {
                         Cacelation = new CancellationTokenSource();
-                        Task.Run(GetHostAction(_mode), Cacelation.Token);
+                        Task.Run(GetHostAction(), Cacelation.Token);
                     }
                     else
                     {
@@ -38,22 +38,12 @@ namespace SlideCommunication
             }
         }
 
-        protected abstract Action GetHostAction(HostingMode mode);
+        protected abstract Action GetHostAction();
 
         public Consumer(ISpace space)
         {
             Space = space;
             PrivateSpace = new SequentialSpace();
-        }
-
-        public void GotoSlider(int number)
-        {
-            Space.GetAll("SlideControl", typeof(string), typeof(int));
-            var identifiers = PrivateSpace.QueryAll("SessionKey", typeof(string), typeof(string)).Select(t => t.Get<string>(1));
-            foreach (var id in identifiers)
-            {
-                Space.Put("SlideControl", id, number);
-            }
         }
 
         public virtual void Dispose()

@@ -17,15 +17,9 @@ namespace SlideCommunication
 
         public IEnumerable<byte[]> Bitstreams { set { SetupSlides(value); } }
 
-        protected override Action GetHostAction(HostingMode mode)
+        protected override Action GetHostAction()
         {
-            switch (mode)
-            {
-                case HostingMode.Slave:
-                    return Broadcast;
-                default:
-                    return (() => { });
-            }
+            return Broadcast;
         }
 
         private void Broadcast()

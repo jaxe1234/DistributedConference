@@ -11,30 +11,24 @@ namespace SlideCommunication
     public class HubConsumer : Consumer
     {
         public ISpace ConcealedSpace { get; }
-        private ProxyConsumer Proxy { get; set; }
+        private PublishTransformer Proxy { get; set; }
         public HubConsumer(ISpace space, ISpace concealedSpace) : base(space)
         {
             ConcealedSpace = concealedSpace;
         }
 
-        protected override Action GetHostAction(HostingMode mode)
+        protected override Action GetHostAction()
         {
-            switch (mode)
-            {
-                case HostingMode.Hub:
-                    return Listen;
-                default:
-                    return (() => { });
-            }
+            return Listen;
         }
 
         private void Listen()
         {
             if (Proxy == null)
             {
-                Proxy = new ProxyConsumer(PrivateSpace, Space, ConcealedSpace);
+                Proxy = new PublishTransformer(PrivateSpace, Space, ConcealedSpace);
             }
-            Proxy.HostingMode = HostingMode.Slave;
+            Proxy.Running = true;
             while (true)
             {
                 var request = Space.Get("Request", typeof(HubRequestType), typeof(string), typeof(string));

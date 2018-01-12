@@ -7,25 +7,19 @@ using dotSpace.Interfaces.Space;
 
 namespace SlideCommunication
 {
-    public class ProxyConsumer : Consumer
+    public class PublishTransformer : Consumer
     {
         private ISpace ExposedSpace { get; }
         private ISpace ConcealedSpace { get; }
-        public ProxyConsumer(ISpace space, ISpace exposedSpace, ISpace concealedSpace) : base(space)
+        public PublishTransformer(ISpace space, ISpace exposedSpace, ISpace concealedSpace) : base(space)
         {
             ExposedSpace = exposedSpace;
             ConcealedSpace = concealedSpace;
         }
 
-        protected override Action GetHostAction(HostingMode mode)
+        protected override Action GetHostAction()
         {
-            switch (mode)
-            {
-                case HostingMode.Idle:
-                    return (() => { });
-                default:
-                    return () => Parallel.Invoke(FrameRequest, SlideControl);
-            }
+            return () => Parallel.Invoke(FrameRequest, SlideControl);
         }
 
         private void FrameRequest()
@@ -52,10 +46,11 @@ namespace SlideCommunication
                 
                 foreach (var tuple in tokens)
                 {
-                    var token = tuple.Get<string>(1);
+                    var token = tuple.Get<string>(2);
                     var username = tuple.Get<string>(1);
                     var key = Space.QueryP("SessionSecret", typeof(string), username)?.Get<string>(1);
-                    ExposedSpace.Put("SlideChange", key, username, page);
+                    var resposeToken = NamingTools.NamingTool.GetSHA256String(key + token);
+                    ExposedSpace.Put("SlideChange", resposeToken, username, page);
                 }
             }
         }

@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consumer.cs" />
+    <Compile Include="ControlConsumer.cs" />
+    <Compile Include="ControlProducer.cs" />
     <Compile Include="ControlRepository.cs" />
     <Compile Include="FrameConsumer.cs" />
     <Compile Include="FramePayload.cs" />

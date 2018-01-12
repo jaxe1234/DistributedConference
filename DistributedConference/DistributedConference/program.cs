@@ -128,8 +128,8 @@ namespace DistributedConference
         private static void TestSlideClient()
         {
             Thread.Sleep(100);
-            ISpace space = new RemoteSpace("tcp://127.0.0.1:15432/hub");
-            var client = new Producer(space, "aMoe");
+            ISpace space = new RemoteSpace("tcp://127.0.0.1:15432/hub123");
+            var client = new FrameProducer(space, "aMoe");
             var frames = client.GetFrames(1, 2, 3);
         }
 

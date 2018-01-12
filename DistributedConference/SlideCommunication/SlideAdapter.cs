@@ -1,6 +1,7 @@
 ﻿using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Space;
+using NamingTools;
 using PdfHandler;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace SlideCommunication
         private SpaceRepository _repo;
 
         private ISpace _exposedSpace;
-        private string _controlSpaceTarget;
+        private string _concealedSpaceTarget;
         private ISpace _concealedSpace;
 
         private HubConsumer _hub;
@@ -29,16 +30,32 @@ namespace SlideCommunication
         private FrameConsumer Frame => _frame ?? (_frame = new FrameConsumer(_exposedSpace, _concealedSpace));
         //private Producer Producer => _producer ?? (_producer = new Producer(this, _exposedSpace, _username));
 
+        private string _concealedSpacePassword;
+        public string ConcealedSpacePassword {
+            get {
+                return _concealedSpacePassword;
+            }
+            set {
+                if (!string.IsNullOrEmpty(_concealedSpaceTarget))
+                {
+                    _repo.CloseGate(_concealedSpaceTarget);
+                }
+                _concealedSpacePassword = value;
+                var hashPassword = NamingTool.GetSHA256String(_concealedSpacePassword);
+                _concealedSpaceTarget = NamingTool.GetSHA256String(_concealedSpacePassword + hashPassword);
+                _exposedSpace.Put("ConcealedIdentifier", hashPassword);
+                _repo.AddSpace(_concealedSpaceTarget, _concealedSpace);
+            }
+        }
+
         public SlideHostFacade(SpaceRepository repo)
         {
             _repo = repo;
             _exposedSpace = new SequentialSpace();
             _concealedSpace = new SequentialSpace();
             _repo.AddSpace("hub", _exposedSpace);
-            _repo.AddSpace("control", _concealedSpace);
-            Hub.HostingMode = HostingMode.Hub;
+            Hub.Running = true;
         }
-
 
         public void PrepareToHost(Stream stream)
         {
@@ -47,7 +64,7 @@ namespace SlideCommunication
             IList<byte[]> bitstream = new List<byte[]>();
             PdfRasterizerService.ConvertToPngBitstream(bitmaps, ref bitstream);
             Frame.Bitstreams = bitstream;
-            Frame.HostingMode = HostingMode.Slave;
+            Frame.Running = true;
         }
 
         public void Dispose()
