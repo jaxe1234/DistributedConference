@@ -33,7 +33,7 @@ namespace WpfApplication1
         public ConferenceListWindow(string Username)
         {
             DataContext = this;
-            Task.Factory.StartNew(() => init());
+            Task.Factory.StartNew(() => Init());
             this.Username = Username;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
@@ -85,7 +85,7 @@ namespace WpfApplication1
             Task.Factory.StartNew(() => conferenceTuple = new ObservableCollection<string>((List<string>)ConferenceRequests.Query(typeof(List<string>))[0]));
         }
 
-        public void init()
+        public void Init()
         {
             ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList?CONN");
             conferenceTuple = new ObservableCollection<string>((List<string>)ConferenceRequests.Query(typeof(List<string>))[0]);
