@@ -78,13 +78,14 @@ namespace LoginServer
                 {
                     Console.WriteLine("saw login request");
                     string user = (string)attempt[0];
-                    string pass = RSADecrypt(attempt[1] as string, PrivKey);
-                    var userAccs = userAccounts.QueryAll(typeof(Account));
-                    var userAccount = userAccs.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == user);
+                    string pass = attempt[1] as string;//RSADecrypt(attempt[1] as string, PrivKey);
+                    //var userAccs = userAccounts.QueryAll(typeof(Account));
+                    //var userAccount = userAccs.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == user);
+                    var  userAccount = selectAccount(user);
                     if (userAccount != null)
                     {
 
-                        if (userAccount.Hash == (Account.GeneratePassHash(Encoding.UTF8.GetBytes(pass), userAccount.Salt)))
+                        if (boolFromRawPassAndUser(pass, user))
                         {
                             loggedInUsers.Put(user);
                             loginAttempts.Put(user, 1);
@@ -114,11 +115,39 @@ namespace LoginServer
             
         }
 
-        private bool IsAuthorized(string username)
+        private bool IsAuthorized(string username, string password)
         {
-            var usersOnline = loggedInUsers.QueryAll(typeof(string)).Select(t => t.Get<string>(0)).ToList();
-            return usersOnline.Contains(username);
+            
+            string RawPass = RSADecrypt(password, PrivKey);
+            var foundUser = selectAccount(username);
+            if (foundUser != null && boolFromRawPassAndUser(password, username) && loggedInUsers.QueryP(username) != null)
+            {
+                return true;
+            }
+            return false;
+
+
         }
+        private bool boolFromRawPassAndUser(string raw, string Username)
+        {
+            raw = RSADecrypt(raw, PrivKey);
+            var foundUser = selectAccount(Username);
+            return foundUser.Hash == (Account.GeneratePassHash(Encoding.UTF8.GetBytes(raw), foundUser.Salt));
+        }
+        private Account selectAccount(string Username)
+        {
+            var list = userAccounts.QueryAll(typeof(Account));
+            var returnVal = list.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == Username);
+            if(returnVal != null)
+            {
+                return returnVal;
+            }
+            else
+            {
+                throw new Exception("no such user found in selected space");
+            }
+        }
+
 
         private void GetConferenceListService()
         {
