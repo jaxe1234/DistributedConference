@@ -1,6 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
+using dotSpace.Objects.Space;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NamingTools;
 
@@ -12,8 +16,9 @@ namespace NamingToolsTests
         [TestMethod()]
         public void GenerateUniqueRemoteSpaceUriTest()
         {
-            Debug.Assert(NameHashingTool.GenerateUniqueRemoteSpaceUri("127.0.0.1:5002","Kartoffel") ==
-                "127.0.0.1:5002/ConferenceSUSTSWVVSX");
+            var generatedName = NameHashingTool.GenerateUniqueRemoteSpaceUri("127.0.0.1:5002", "Kartoffel");
+            Debug.Assert(generatedName ==
+                "127.0.0.1:5002/ConferenceSUSTSWVVSX?CONN");
         }
 
         [TestMethod()]
@@ -23,25 +28,45 @@ namespace NamingToolsTests
                          "ConferenceSUSTSWVVSX");
         }
 
-        [TestMethod()]
-        public void CreateRemoteSpaceWithRemoteSpaceNameGeneratorTest()
-        {
-            var spaceRepo = new SpaceRepository();
-            string uri = "tcp:\\127.0.0.1:5005";
-            string testName = "ThisNameDoesNotActuallyMatter";
-            ISpace testSpace = new RemoteSpace(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, testName));
-
-        }
+        
 
         [TestMethod()]
         public void CreateSequentialSpaceWithSequentialSpaceNameGeneratorTest()
         {
-            var spaceRepo = new SpaceRepository();
-            string uri = "tcp:\\127.0.0.1:5005";
-            string testName = "ThisNameDoesNotActuallyMatter";
-            ISpace testSpace = new RemoteSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(testName));
-            spaceRepo.AddSpace(testName, testSpace);
-            spaceRepo.AddGate(uri+"?CONN");
+            using (var spaceRepo = new SpaceRepository())
+            {
+                string uri = "tcp://127.0.0.1:5005";
+                string testName = NameHashingTool.GenerateUniqueSequentialSpaceName("ThisNameDoesNotActuallyMatter");
+                ISpace testSpace = new SequentialSpace();
+                spaceRepo.AddSpace(testName, testSpace);
+                spaceRepo.AddGate(uri + "?CONN");
+                var testElement = "This string is a test";
+                testSpace.Put(testElement);
+                testSpace.Get(testElement);
+                Debug.Assert(!testSpace.GetAll().Any()); 
+                // putting and getting the element should leave us with an empty space
+            }
+            
+        }
+
+        [TestMethod()]
+        public void CreateRemoteSpaceWithRemoteSpaceNameGeneratorTest()
+        {
+            using (var spaceRepo = new SpaceRepository())
+            {
+                string uri = "tcp://127.0.0.1:5002";
+                string testRemoteName = "ThisNameDoesNotActuallyMatter";
+                string testSeqName = NameHashingTool.GenerateUniqueSequentialSpaceName(testRemoteName);
+                Console.WriteLine(testSeqName);
+                var testSeqSpace = new SequentialSpace();
+                spaceRepo.AddSpace(testSeqName, testSeqSpace);
+                spaceRepo.AddGate(uri);
+
+                var remoteHash = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, testRemoteName);
+                Console.WriteLine(remoteHash);
+                var testRemoteSpace = new RemoteSpace(remoteHash);
+            }
+            
 
         }
     }
