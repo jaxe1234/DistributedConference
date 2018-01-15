@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using PdfHandler;
 using System.Drawing;
 using ChatApp;
-using ConferenceLobbyUI;
 using dotSpace.Objects.Network;
 using System.IO;
 using System.Net.Sockets;

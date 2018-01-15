@@ -71,6 +71,10 @@
       <Project>{084ee1ec-45f0-446d-a48a-c4732986d8cc}</Project>
       <Name>ConferenceMain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
+      <Project>{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}</Project>
+      <Name>dotSpace</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LoginServer\LoginServer.csproj">
       <Project>{004f2eec-9d5c-43fe-8e9a-fae2e956f35b}</Project>
       <Name>LoginServer</Name>

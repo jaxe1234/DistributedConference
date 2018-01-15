@@ -9,7 +9,7 @@ namespace NamingTools
     {
         public static string GenerateUniqueRemoteSpaceUri(string uri, string name)
         {
-            return uri + "/" + "Conference" + ConvertHashCodeToAlphabeticString((uint)name.GetHashCode() % UInt32.MaxValue);
+            return uri + "/" + "Conference" + ConvertHashCodeToAlphabeticString((uint)name.GetHashCode() % UInt32.MaxValue) + "?CONN";
         }
         public static string GenerateUniqueSequentialSpaceName(string name)
         {

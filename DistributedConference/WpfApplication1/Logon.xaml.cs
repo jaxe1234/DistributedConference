@@ -26,12 +26,13 @@ namespace WpfApplication1
         public string LoginErrorText { get; set; }
         RemoteSpace AccountCreation;
         RemoteSpace loginSpace;
+        string PubKey;
         public LogonWindow()
         {
             InitializeComponent();
             DataContext = this;
-            AccountCreation = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation?CONN");
-            loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts?CONN");
+            AccountCreation = new RemoteSpace("tcp://10.16.162.161:5001/accountCreation?CONN");
+            loginSpace = new RemoteSpace("tcp://10.16.162.161:5001/loginAttempts?CONN");
             UsernameInput.KeyUp += PasswordInput_KeyUp;
             PasswordInput.KeyUp += PasswordInput_KeyUp;
             SignupButton.Click += SignupButton_Click;
@@ -53,7 +54,7 @@ namespace WpfApplication1
 
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
-            SignupWindow main = new SignupWindow( AccountCreation, loginSpace);
+            SignupWindow main = new SignupWindow(AccountCreation, loginSpace);
             App.Current.MainWindow = main;
             
             this.Close();
@@ -97,7 +98,7 @@ namespace WpfApplication1
 
                 if (outcome)
                 {
-                    ConferenceListWindow main = new ConferenceListWindow(Username);
+                    ConferenceListWindow main = new ConferenceListWindow(Username, Password, PubKey);
                     App.Current.MainWindow = main;
                     this.Close();
                     main.Show();
@@ -119,10 +120,10 @@ namespace WpfApplication1
 
         private bool authenticateLogin(string Username, string Password)
         {
+
             
-            string PubKey = loginSpace.Query(typeof(string))[0] as string;
             //string EncryptedPassword = ;
-            loginSpace.Put(Username, RSAEncrypt(Password, PubKey));
+            loginSpace.Put(Username, new RSA().RSAEncrypt(Password));
             var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {
@@ -143,16 +144,7 @@ namespace WpfApplication1
             }
         }
 
-        public static string RSAEncrypt(string Password, string destKey)
-        {
-            byte[] BytePass = Encoding.UTF8.GetBytes(Password);// Convert.FromBase64String(Password);
-            byte[] encryptedData;
-            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
-            RSA.FromXmlString(destKey);
-            encryptedData = RSA.Encrypt(BytePass, true);
-            RSA.Dispose();
-            return Convert.ToBase64String(encryptedData);
-        }
+       
 
 
 

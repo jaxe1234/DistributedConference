@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
-        mc:Ignorable="d"
-        Title="CreateConferenceWindow" Height="300" Width="300">
+        mc:Ignorable="d"  Icon="icon.ico"
+        Title="Webinarium" Height="300" Width="300">
     <Window.Resources>
         <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>

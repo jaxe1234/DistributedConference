@@ -6,8 +6,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
-        mc:Ignorable="d"
-        Title="{Binding ConferenceName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="350" Width="525"
+        mc:Ignorable="d"  Icon="icon.ico"
+        Title="{Binding ConferenceName}" Height="350" Width="525"
         
       
       
@@ -36,7 +36,8 @@
         </Grid.RowDefinitions>
         
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     
+                  
+                    Name="ChatView" 
                      Grid.Column="1"
                      Grid.Row="0"
                      Margin="5"
@@ -90,10 +91,36 @@
                 FontSize="12">Send</TextBlock>
         </Button>
 
-       
-           
 
 
+
+
+        <Button Grid.Row="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Margin="-80,0,0,0"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>&lt;&lt;</TextBlock>
+        </Button>
+
+        <Button Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Margin="80,0,0,0"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>&gt;&gt;</TextBlock>
+        </Button>
+
+        <Button Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>Live</TextBlock>
+        </Button>
 
 
 
