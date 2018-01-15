@@ -40,22 +40,25 @@ namespace LoginServer
                 ITuple attempt = accountCreation.Get(typeof(string), typeof(string));
                 if (attempt != null)// <---
                 {
-                    Console.WriteLine("server: saw request for user creation. With input " + attempt[0] + " " + attempt[1]);
+                    var username = (string) attempt[0];
+                    var password = (string) attempt[1];
+
+                    Console.WriteLine("server: saw request for user creation. With input " + username + " " + password);
                     var existsInDB = userAccounts.QueryAll(typeof(Account)); //attempt[0], typeof(string), typeof(byte[])
-                    var usernmTaken = existsInDB.Any(t => (t[0] as Account).Username == (attempt[0] as string));
+                    var usernmTaken = existsInDB.Any(t => (t[0] as Account).Username == (username));
                     //var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
                     if (!usernmTaken)
                     {
-                        Account newUser = new Account(attempt[0] as string, attempt[1] as string);
+                        Account newUser = new Account(username, password);
                         userAccounts.Put(newUser);
                         // Console.WriteLine(newUser.username + " " + newUser.hash);
 
-                        accountCreation.Put(attempt[0], 1); //lav 1 til en enum for success
+                        accountCreation.Put(username, 1); //lav 1 til en enum for success
                         Console.WriteLine("server: created user");
                     }
                     else
                     {
-                        accountCreation.Put(attempt[0], 0);
+                        accountCreation.Put(username, 0);
                         Console.WriteLine("server: rejected user creation");
                     }
 
@@ -126,29 +129,34 @@ namespace LoginServer
             while (true)
             {
                 var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int));
+                var username = (string)request[0];
+                var conferenceName = (string) request[1];
+                var ipOfConference = (string) request[2];
+                var requestType = (int) request[3];
+
                 Console.WriteLine("got request to create or delete conference");
-                if (!IsAuthorized(request[0] as string))
+                if (!IsAuthorized(username))
                 {
                     Console.WriteLine("User was not authorized");
                     break;
                 }
-                if((int)request[3] == 1)
+                if(requestType == 1)
                 {
                     //add
-                    conferences.Put(request[0], request[1], request[2]);
+                    conferences.Put(username, conferenceName, ipOfConference);
                     List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
-                    Console.WriteLine("added conference " + request[1] );
+                    Console.WriteLine("added conference " + conferenceName);
                 }
                 if ((int)request[3] == 0)
                 {
                     //remove
-                    conferences.Get(request[0], request[1], request[2]);
+                    conferences.Get(username, conferenceName, ipOfConference);
                     List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
-                    Console.WriteLine("removed conference " + request[1]);
+                    Console.WriteLine("removed conference " + conferenceName);
 
                 }
             }            
@@ -159,14 +167,18 @@ namespace LoginServer
             while (true)
             {
                 var request = getConferences.Get(typeof(string), typeof(string), 0);
-                if (!IsAuthorized(request[0] as string))
+                var username = (string) request[0];
+                var conferenceName = (string) request[1];
+
+                if (!IsAuthorized(username))
                 {
                     Console.WriteLine("User was not authorized");
                     break;
                 }
 
-                var result = conferences.Query(typeof(string),request[1],typeof(string));
-                getConferences.Put(request[0], result[2], 1);
+                var result = conferences.Query(typeof(string),conferenceName,typeof(string));
+                var ipOfConference = (string) result[2];
+                getConferences.Put(username, ipOfConference, 1);
             }
         }
 
