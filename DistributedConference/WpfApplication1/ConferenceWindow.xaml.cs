@@ -35,6 +35,7 @@ namespace WpfApplication1
         private ConferenceInitializer conference;
         private string username;
         private string Password;
+        public string ConferenceName { get; set; }
 
 
         public ConferenceWindow(string username, string conferenceName, string Password) //For host
@@ -43,6 +44,7 @@ namespace WpfApplication1
             DataContext = this;
             this.Password = Password;
             this.username = username;
+            this.ConferenceName = conferenceName;
             InitializeComponent();
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
@@ -60,6 +62,7 @@ namespace WpfApplication1
             DataContext = this;
             this.Password = Password;
             this.username = username;
+            this.ConferenceName = conferenceName;
             InitializeComponent();
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
