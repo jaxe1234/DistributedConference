@@ -27,33 +27,53 @@ namespace WpfApplication1
         RemoteSpace ConferenceRequests;
         string Username;
         ConferenceListWindow conferenceListWindow;
+        string Password;
 
-        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow conferenceListWindow)
+        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow conferenceListWindow, string Password)
         {
 
             DataContext = this;
             this.conferenceListWindow = conferenceListWindow;
             this.ConferenceRequests = ConferenceRequests;
             this.Username = Username;
+            this.Password = Password;
             InitializeComponent();
             NewConferenceName.KeyUp += EnterPressed;
             NewConferenceName.KeyDown += EnterPressed;
             CreateButton.Click += CreateButton_Click;
+            cancelButton.Click += CancelClick;
 
+        }
+
+        private void CancelClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            DataContext = conferenceListWindow;
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart,NewConferenceName.Document.ContentEnd).Text.Trim();
+            string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart, NewConferenceName.Document.ContentEnd).Text.Trim();
             if (!string.IsNullOrWhiteSpace(newConferenceName))
             {
-                string ipAddress = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)+"";
-                ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1);
-                ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName);
-                App.Current.MainWindow = conference;
-                conferenceListWindow.Close();
-                this.Close();
-                conference.Show();
+                string ipAddress = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) + "";
+                ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1, new RSA().RSAEncrypt(Password));
+                var feedback = ConferenceRequests.Get("Result", typeof(int), Username);
+                if ((int)feedback[1] == 1)
+                {
+                    ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName, Password);
+                    App.Current.MainWindow = conference;
+                    conferenceListWindow.Close();
+                    this.Close();
+                    conference.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Server rejected request. Try again, or log out and back in.", "Server fault", MessageBoxButton.OK, MessageBoxImage.Information);
+                    this.Close();
+                    DataContext = conferenceListWindow;
+                }
+
             }
 
         }

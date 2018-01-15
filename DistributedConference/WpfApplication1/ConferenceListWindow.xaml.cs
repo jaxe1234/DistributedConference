@@ -29,12 +29,16 @@ namespace WpfApplication1
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string Username;
+        private string Password;
+        private string PubKey;
 
-        public ConferenceListWindow(string Username)
+        public ConferenceListWindow(string Username, string Password, string PubKey)
         {
             DataContext = this;
             Task.Factory.StartNew(Init);
             this.Username = Username;
+            this.Password = Password;
+            this.PubKey = PubKey;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
@@ -46,7 +50,8 @@ namespace WpfApplication1
 
         private void NewConferenceButton_Click(object sender, RoutedEventArgs e)
         {
-            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, Username, this);
+            
+            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, Username, this, Password);
             NewConfWin.Show();
         }
 
@@ -59,19 +64,26 @@ namespace WpfApplication1
         private async void ConnectToConference(string conferenceClicked)
         {
             var IPconnect = await Task<string>.Factory.StartNew(()=> GetIpFromServer(conferenceClicked));
+            if (!IPconnect.Equals(""))
+            {
+                ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect, Password);
+                App.Current.MainWindow = conference;
+                this.Close();
+                conference.Show();
+            }
+            else
+            {
+                MessageBox.Show("Server rejected request. Try again, or log out and back in.", "Server fault", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect);
-            App.Current.MainWindow = conference;
-            this.Close();
-            conference.Show();
+            }
 
         }
 
         private string GetIpFromServer(string conferenceClicked)
         {
             
-            ConferenceRequests.Put(Username, conferenceClicked, 0);
-            var temp = ConferenceRequests.Get(Username, typeof(string), 1);
+            ConferenceRequests.Put(Username, conferenceClicked, 0, new RSA().RSAEncrypt(Password));
+            var temp = ConferenceRequests.Get(Username, typeof(string), typeof(int));
             var ip = (string)temp[1];
             return ip;
         }
@@ -88,7 +100,7 @@ namespace WpfApplication1
 
         public void Init()
         {
-            ConferenceRequests = new RemoteSpace("tcp://10.16.169.224:5001/getConferenceList?CONN");
+            ConferenceRequests = new RemoteSpace("tcp://10.16.162.161:5001/getConferenceList?CONN");
             conferenceTuple = new ObservableCollection<string>((List<string>)ConferenceRequests.Query(typeof(List<string>))[0]);
             //conferenceTuple = (ObservableCollection < string >) ConferenceRequests.Query(typeof(List<string>))[0];
         }

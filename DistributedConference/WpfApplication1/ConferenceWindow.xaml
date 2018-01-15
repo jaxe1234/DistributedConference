@@ -6,8 +6,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
-        mc:Ignorable="d"
-        Title="{Binding ConferenceName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="350" Width="525"
+        mc:Ignorable="d"  Icon="icon.ico"
+        Title="{Binding ConferenceName}" Height="350" Width="525"
         
       
       
