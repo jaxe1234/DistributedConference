@@ -24,10 +24,21 @@ namespace ChatApp
             LoggedInUser = name;
 
             // Console.WriteLine("You are host!");
-            ChatSpace = new SequentialSpace();
+            var LocalChatSpace = new SequentialSpace();
             //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), ChatSpace);
+            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), LocalChatSpace);
             chatRepo.AddGate(uri+ "?CONN");
+            string remoteName;
+            try
+            {
+                remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
+                ChatSpace = new RemoteSpace(remoteName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
             DataSource = dataSource;
         }
 
