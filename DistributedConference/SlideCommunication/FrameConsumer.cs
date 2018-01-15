@@ -1,57 +1,45 @@
-﻿using System;
+﻿using dotSpace.Interfaces.Space;
+using dotSpace.Objects.Space;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using dotSpace.Interfaces.Space;
 
 namespace SlideCommunication
 {
     public class FrameConsumer : Consumer
     {
-        private ISpace ConcealedSpace { get; set; }
-        public FrameConsumer(ISpace space, ISpace concealedSpace) : base(space)
-        {
-            ConcealedSpace = concealedSpace;
-        } 
+        private ClientSession Session { get; }
+        private ISpace Private { get; set; }
 
-        public IEnumerable<byte[]> Bitstreams { set { SetupSlides(value); } }
-
-        protected override Action GetHostAction()
+        public FrameConsumer(ClientSession session) : base(session.Space)
         {
-            return Broadcast;
+            Session = session;
+            Private = Session.LocalSpace;
         }
 
-        private void Broadcast()
+        public void Listen()
         {
             while (true)
             {
-                var request = Space.Get("Request", RequestType.FrameRequest, typeof(string), typeof(string));
-                var token = request.Get<string>(2);
-                var username = request.Get<string>(3);
-                var pageTuple = Space.GetP("SlideRequestPayload", token, typeof(List<int>));
-                var pages = pageTuple.Get<List<int>>(2);
-                var frames = pages
-                    .Select(
-                        p => PrivateSpace.QueryP("Frame", p, typeof(FramePayload))?.Get<FramePayload>(2)
-                    ).ToList();
-                ConcealedSpace.Put("UnvalidatedResponse", token, username, RequestType.FrameRequest, frames);
+                var tuple = Space.Get("FramePayload", Session.Username, typeof(string), typeof(string), typeof(FramePayload));
+                var stoken = tuple.Get<string>(2);
+                var hash = tuple.Get<string>(3);
+                var token = Session.CreateToken(stoken);
+                if (hash == token.ResponseToken)
+                {
+                    var payload = tuple.Get<FramePayload>(4);
+                    Private.Put("Frame", payload.PageNumber, payload.Bitstream);
+                }
             }
         }
 
-        private void FlushFrames()
+        protected override Action GetHostAction()
         {
-            PrivateSpace.GetAll("Frame", typeof(int), typeof(FramePayload));
-        }
-
-        private void SetupSlides(IEnumerable<byte[]> imageBitstreams)
-        {
-            FlushFrames();
-            int i = 1;
-            foreach (var bs in imageBitstreams)
-            {
-                PrivateSpace.Put("Frame", i, new FramePayload { PageNumber = i++, Bitstream = bs });
-            }
+            return Listen;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace SlideCommunication
         private ISpace ConcealedSpace { get; set; }
         private ISlideShow SlideShower { get; }
         private string Identifier { get; }
+        private string HostIdentifer { get; set; }
         private bool _controlling;
         private CancellationTokenSource _token;
         public bool Controlling {
@@ -48,7 +49,8 @@ namespace SlideCommunication
 
         private void AssumeControl()
         {
-            ConcealedSpace.Get("ControlLock");
+            var tuple = ConcealedSpace.Get("ControlLock", typeof(string));
+            HostIdentifer = tuple.Get<string>(1);
             _controlling = true;
             SlideShower.GrantControl();
         }
@@ -57,7 +59,7 @@ namespace SlideCommunication
         {
             if (_controlling)
             {
-                ConcealedSpace.Put("ControlLock");
+                ConcealedSpace.Put("ControlLock", HostIdentifer);
             }
             _controlling = false;
             SlideShower.RevokeControl();
@@ -67,7 +69,7 @@ namespace SlideCommunication
         { 
             if (_controlling)
             {
-                ConcealedSpace?.Put("SlideControl", Identifier, page);
+                ConcealedSpace?.Put("SlideChange", HostIdentifer, page);
             }
         }
     }

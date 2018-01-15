@@ -26,13 +26,13 @@ namespace SlideCommunication
         {
             while (true)
             {
-                var response = ConcealedSpace.Get("UnvalidatedResponse", typeof(string), typeof(string), RequestType.FrameRequest, typeof(List<FramePayload>)).Fields;
-                var token = response[1] as string;
-                var username = response[2] as string;
+                var tuple = ConcealedSpace.Get("UnauthenticatedFramePayload", typeof(string), typeof(string), typeof(FramePayload));
+                var username = tuple.Get<string>(1);
+                var token = tuple.Get<string>(2);
+                var payload = tuple.Get<FramePayload>(3);
                 var key = Space.QueryP("SessionSecret", typeof(string), username)?.Get<string>(1);
-                response[0] = "Response";
-                response[1] = NamingTools.NameHashingTool.GetSHA256String(key + token);
-                ExposedSpace.Put(response);
+                var hash = NamingTools.NameHashingTool.GetSHA256String(key + token);
+                ExposedSpace.Put("FramePayload", username, token, hash, payload);
             }
         }
 

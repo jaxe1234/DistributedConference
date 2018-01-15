@@ -3,36 +3,57 @@ using dotSpace.Interfaces.Space;
 using NamingTools;
 using dotSpace.Objects.Network;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace SlideCommunication
 {
     public class ControlConsumer : Consumer
     {
         public ISlideShow SlideShower { get; }
-        private FrameProducer Producer { get; }
+        private ClientSession Session { get; }
 
-        public ControlConsumer(FrameProducer producer, ISlideShow slideShow) : base(producer.Space)
+        private RequestToken _lastToken;
+
+        public ControlConsumer(ClientSession session, ISlideShow slideShow) : base(session.Space)
         {
-            Producer = producer;
+            Session = session;
             SlideShower = slideShow;
+            SendToken();
         }
-
-        private string Identifier { get; }
 
         protected override Action GetHostAction()
         {
             return Listen;
         }
 
+        private void SendToken()
+        {
+            _lastToken = Session.CreateToken();
+            Space.Put("SlideChangeToken", Session.Username, _lastToken.Token);
+        }
+
         private void Listen()
         {
+            SetupRequest();
             while (true)
             {
-                var token = Producer.CreateToken();
-                Space.Put("SlideChangeToken", Identifier, token.Token);
-                var tuple = Space.Get("SlideChange", token.ResponseToken, Identifier, typeof(int));
+                var tuple = Space.Get("SlideChange", _lastToken.ResponseToken, Session.Username, typeof(int));
                 var page = tuple.Get<int>(3);
-                SlideShower.UpdateSlide(Producer.GetFrames(page).FirstOrDefault());
+                var ftuple = Session.LocalSpace.Query("Frame", page, typeof(byte[]));
+                var bitstream = ftuple.Get<byte[]>(2);
+                SlideShower.UpdateSlide(bitstream);
+                SendToken();
+            }
+        }
+
+        private void SetupRequest()
+        {
+            var tuple = Space.Query("ActiveCollection", typeof(string), typeof(List<int>));
+            var id = tuple.Get<string>(1);
+            var pages = tuple.Get<List<int>>(2);
+            foreach (var page in pages)
+            {
+                Space.Put("FramePayloadRequest", id, Session.Username, page);
             }
         }
     }

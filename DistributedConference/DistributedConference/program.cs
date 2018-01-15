@@ -108,36 +108,11 @@ namespace DistributedConference
 
         }
 
-        private static void TestSlideServer()
-        {
-            using (var repo = new SpaceRepository())
-            {
-                repo.AddGate("tcp://127.0.0.1:15432");
-                var slide = new SimpleSlideShow("host");
-                var server = new SlideHostFacade(repo, "Host", slide);
-                server.ConcealedSpacePassword = "AsgerAsger";
-                var url = "https://meltdownattack.com/spectre.pdf";
-                var client = new WebClient();
-                using (var mstream = new MemoryStream())
-                {
-                    using (var stream = client.OpenRead(url))
-                    {
-                        stream.CopyTo(mstream);
-                    }
-                    server.PrepareToHost(mstream);
-                }
-                var control = server.Control;
-                slide.Producer = control;
-                control.Controlling = true;
-                Task.Delay(-1).Wait();
-            }
-        }
-
         private class SimpleSlideShow : ISlideShow
         {
             public string Name { get; set; }
 
-            public ControlProducer Producer  { get; set; }
+            public ControlProducer Producer { get; set; }
 
             public SimpleSlideShow(string name)
             {
@@ -176,13 +151,40 @@ namespace DistributedConference
             }
         }
 
+        private static void TestSlideServer()
+        {
+            using (var repo = new SpaceRepository())
+            {
+                repo.AddGate("tcp://127.0.0.1:15432?CONN");
+                var slide = new SimpleSlideShow("host");
+                var server = new SlideHostFacade(repo, "Host", slide);
+                server.ConcealedSpacePassword = "AsgerAsger";
+                var url = "https://meltdownattack.com/spectre.pdf";
+                var client = new WebClient();
+                using (var mstream = new MemoryStream())
+                {
+                    using (var stream = client.OpenRead(url))
+                    {
+                        stream.CopyTo(mstream);
+                    }
+                    server.PrepareToHost(mstream);
+                }
+                var control = server.Control;
+                slide.Producer = control;
+                control.Controlling = true;
+                //control.ChangeSlider(2);
+                Task.Delay(-1).Wait();
+            }
+        }
+
         private static void TestSlideClient()
         {
             Thread.Sleep(500);
-            const string uri = "tcp://127.0.0.1:15432/";
+            const string uri = "tcp://127.0.0.1:15432/?CONN";
             ISlideShow slide = new SimpleSlideShow("client");
 
             var client1 = new SlideClientFacade(slide, uri, "aMoe");
+            var control = client1.Running = true;
             //client1.UpgradePrivileges("AsgerAsger");
             //var control = client1.Control;
             //control.ChangeSlider(1);

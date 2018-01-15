@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace SlideCommunication
 {
-    public class SlideClientFacade
+    public class SlideClientFacade : IDisposable
     {
+        private ClientSession Session { get; }
+
         private ISpace ConcealedSpace { get; set; }
         private ISpace Space { get; }
         private string UriFormat { get; }
@@ -19,13 +21,34 @@ namespace SlideCommunication
 
         public ISlideShow SlideShower { get; private set; }
 
+        private bool _running;
+        public bool Running { get { return _running; }
+            set
+            {
+                _running = value;
+                if (FrameTransformer != null) {
+                    FrameTransformer.Running = _running;
+                }
+                _frameConsumer.Running = _running;
+                _controlConsumer.Running = _running;
+            }
 
-        private FrameProducer _frameProducer;
+        }
+
+        private FrameTransformer _frameTransformer;
+        private FrameConsumer _frameConsumer;
         private ControlConsumer _controlConsumer;
         private ControlProducer _controlProducer;
-        public ControlProducer Control {
+        public ControlProducer ControlProducer {
             get {
                 return IsPrivileged ? _controlProducer : null;
+            }
+        }
+        public FrameTransformer FrameTransformer
+        {
+            get
+            {
+                return IsPrivileged ? _frameTransformer : null;
             }
         }
 
@@ -39,8 +62,9 @@ namespace SlideCommunication
             SlideShower = slideShow;
 
             Space = new RemoteSpace(string.Format(UriFormat, "hub"));
-            _frameProducer = new FrameProducer(Space, Username);
-            _controlConsumer = new ControlConsumer(_frameProducer, SlideShower);
+            Session = new ClientSession(Space, Username);
+            _frameConsumer = new FrameConsumer(Session);
+            _controlConsumer = new ControlConsumer(Session, SlideShower);
         }
 
         public void UpgradePrivileges(string passwd)
@@ -54,6 +78,13 @@ namespace SlideCommunication
                 ConcealedSpace = new RemoteSpace(string.Format(UriFormat, id));
                 _controlProducer = new ControlProducer(ConcealedSpace, SlideShower, Username);
             }
+        }
+
+        public void Dispose()
+        {
+            _controlConsumer.Dispose();
+            _frameConsumer.Dispose();
+            _frameTransformer.Dispose();
         }
     }
 }
