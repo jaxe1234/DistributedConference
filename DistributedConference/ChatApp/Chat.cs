@@ -51,9 +51,9 @@ namespace ChatApp
         }
 
 
-        private static string FormatMessage(string formattedTimeString, string name, string message)
+        private static string FormatMessage(string name, string message)
         {
-            return $"[{formattedTimeString}]  {name}: {message}";
+            return $"[{DateTime.Now:HH\':\'mm\':\'ss}]  {name}: {message}";
         }
 
         public void InitializeChat()
@@ -116,10 +116,9 @@ namespace ChatApp
                 }
 
                 K = (int)received[0];
-                string formattedTimeString = (string)received[1];
                 string receivedName = (string)received[2];
                 string message = (string)received[3];
-                string finalMsg = FormatMessage(formattedTimeString, receivedName, message);
+                string finalMsg = FormatMessage(receivedName, message);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     dataSource.Add(finalMsg);
@@ -146,8 +145,7 @@ namespace ChatApp
 
             public string SendMessage(string msg)
             {
-                DateTime time = DateTime.Now;
-                string formattedTimeString = time.ToString("HH':'mm':'ss");
+                string formattedTimeString = DateTime.Now.ToString("HH':'mm':'ss");
                 try
                 {
                     Chat.K++;
@@ -166,7 +164,7 @@ namespace ChatApp
                 {
                     Console.WriteLine(ex);
                 }
-                return FormatMessage(formattedTimeString, LoggedInUser, msg);
+                return FormatMessage(LoggedInUser, msg);
             }
 
             public Task<bool> RunAsConsole()
