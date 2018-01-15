@@ -114,6 +114,12 @@ namespace LoginServer
             
         }
 
+        private bool IsAuthorized(string username)
+        {
+            var usersOnline = loggedInUsers.QueryAll(typeof(string)).Select(t => t.Get<string>(0)).ToList();
+            return usersOnline.Contains(username);
+        }
+
         private void GetConferenceListService()
         {
 
@@ -121,6 +127,11 @@ namespace LoginServer
             {
                 var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int));
                 Console.WriteLine("got request to create or delete conference");
+                if (!IsAuthorized(request[0] as string))
+                {
+                    Console.WriteLine("User was not authorized");
+                    break;
+                }
                 if((int)request[3] == 1)
                 {
                     //add
@@ -148,6 +159,11 @@ namespace LoginServer
             while (true)
             {
                 var request = getConferences.Get(typeof(string), typeof(string), 0);
+                if (!IsAuthorized(request[0] as string))
+                {
+                    Console.WriteLine("User was not authorized");
+                    break;
+                }
 
                 var result = conferences.Query(typeof(string),request[1],typeof(string));
                 getConferences.Put(request[0], result[2], 1);
