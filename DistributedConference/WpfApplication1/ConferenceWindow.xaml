@@ -91,10 +91,36 @@
                 FontSize="12">Send</TextBlock>
         </Button>
 
-       
-           
 
 
+
+
+        <Button Grid.Row="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Margin="-80,0,0,0"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>&lt;&lt;</TextBlock>
+        </Button>
+
+        <Button Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Margin="80,0,0,0"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>&gt;&gt;</TextBlock>
+        </Button>
+
+        <Button Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="35"
+                Style="{StaticResource MetroButton}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock>Live</TextBlock>
+        </Button>
 
 
 

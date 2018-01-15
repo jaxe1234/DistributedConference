@@ -18,13 +18,13 @@ namespace LoginServer
     {
 
         string PrivKey;
-        SpaceRepository         loginServerSpaces       = new SpaceRepository();
-        private SequentialSpace userAccounts            = new SequentialSpace();
-        private SequentialSpace conferences             = new SequentialSpace();
-        private SequentialSpace getConferences          = new SequentialSpace();
-        private SequentialSpace loginAttempts           = new SequentialSpace();
-        private SequentialSpace accountCreation         = new SequentialSpace();
-        private SequentialSpace loggedInUsers           = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
+        SpaceRepository loginServerSpaces = new SpaceRepository();
+        private SequentialSpace userAccounts = new SequentialSpace();
+        private SequentialSpace conferences = new SequentialSpace();
+        private SequentialSpace getConferences = new SequentialSpace();
+        private SequentialSpace loginAttempts = new SequentialSpace();
+        private SequentialSpace accountCreation = new SequentialSpace();
+        private SequentialSpace loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
 
 
 
@@ -73,13 +73,11 @@ namespace LoginServer
                 {
                     Console.WriteLine("saw login request");
                     string user = (string)attempt[0];
-                    string pass = attempt[1] as string;//RSADecrypt(attempt[1] as string, PrivKey);
-                    //var userAccs = userAccounts.QueryAll(typeof(Account));
-                    //var userAccount = userAccs.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == user);
-                    var userAccount = selectAccount(user);
-                    if (userAccount != null)
-                    {
+                    string pass = attempt[1] as string;
 
+                    try
+                    {
+                        var userAccount = selectAccount(user);
                         if (boolFromRawPassAndUser(pass, user))
                         {
                             loggedInUsers.Put(user);
@@ -93,11 +91,12 @@ namespace LoginServer
                         }
 
                     }
-                    else
+                    catch (Exception)
                     {
                         loginAttempts.Put(user, 0);
                         Console.WriteLine("server: deposited results null");
                     }
+
                 }
                 //spohetti
 
@@ -155,6 +154,7 @@ namespace LoginServer
                 var ipOfConference = (string)request[2];
                 var requestType = (int)request[3];
                 var pass = (string)request[4];
+
                 var account = selectAccount(username);
 
                 Console.WriteLine("got request to create or delete conference");
@@ -246,7 +246,7 @@ namespace LoginServer
             getConferences.Put(new List<string>());
 
 
-          
+
             Task.Factory.StartNew(() => GetAccountCreationService());
             Task.Factory.StartNew(() => GetLoginAttemptsService());
             Task.Factory.StartNew(() => GetConferenceListService());
