@@ -33,12 +33,16 @@ namespace WpfApplication1
         public ObservableCollection<string> MsgList { get; set; }
         TextRange TxtToSend;
         private ConferenceInitializer conference;
+        private string username;
+        private string Password;
 
 
-        public ConferenceWindow(string username, string conferenceName) //For host
+        public ConferenceWindow(string username, string conferenceName, string Password) //For host
         {
             
             DataContext = this;
+            this.Password = Password;
+            this.username = username;
             InitializeComponent();
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
@@ -51,9 +55,11 @@ namespace WpfApplication1
             
         }
 
-        public ConferenceWindow(string username, string conferenceName, string ip) //For client
+        public ConferenceWindow(string username, string conferenceName, string ip, string Password) //For client
         {
             DataContext = this;
+            this.Password = Password;
+            this.username = username;
             InitializeComponent();
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
@@ -81,11 +87,7 @@ namespace WpfApplication1
             //ChatView.ScrollIntoView(ChatView.SelectedItem);
         }
 
-        public void SetUpConferenceWindow()
-        {
-           
-           
-        }
+      
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)
         {

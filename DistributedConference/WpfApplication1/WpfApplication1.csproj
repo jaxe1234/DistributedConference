@@ -68,6 +68,7 @@
     <Compile Include="Logon.xaml.cs">
       <DependentUpon>Logon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RSA.cs" />
     <Compile Include="SignupWindow.xaml.cs">
       <DependentUpon>SignupWindow.xaml</DependentUpon>
     </Compile>

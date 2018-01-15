@@ -14,19 +14,17 @@ using System.Security.Cryptography;
 
 namespace LoginServer
 {
-    class loginServer 
+    class loginServer
     {
 
         string PrivKey;
-        private Stopwatch stopwatch;
-        private int cpuPercentageLimit;
-        SpaceRepository loginServerSpaces = new SpaceRepository();
-        private SequentialSpace userAccounts = new SequentialSpace();
-        private SequentialSpace conferences = new SequentialSpace();
-        private SequentialSpace getConferences = new SequentialSpace();
-        private SequentialSpace loginAttempts = new SequentialSpace();
-        private SequentialSpace accountCreation = new SequentialSpace();
-        private SequentialSpace loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
+        SpaceRepository         loginServerSpaces       = new SpaceRepository();
+        private SequentialSpace userAccounts            = new SequentialSpace();
+        private SequentialSpace conferences             = new SequentialSpace();
+        private SequentialSpace getConferences          = new SequentialSpace();
+        private SequentialSpace loginAttempts           = new SequentialSpace();
+        private SequentialSpace accountCreation         = new SequentialSpace();
+        private SequentialSpace loggedInUsers           = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
 
 
 
@@ -35,37 +33,31 @@ namespace LoginServer
         {//To create a user, put at (username, password) tuple in accountCreation and check for confirmation
             while (true)
             {
-               
+
                 //spoghetti
                 ITuple attempt = accountCreation.Get(typeof(string), typeof(string));
                 if (attempt != null)// <---
                 {
-                    var username = (string) attempt[0];
-                    var password = (string) attempt[1];
+                    var username = (string)attempt[0];
+                    var password = (string)attempt[1];
 
                     Console.WriteLine("server: saw request for user creation. With input " + username + " " + password);
-                    var existsInDB = userAccounts.QueryAll(typeof(Account)); //attempt[0], typeof(string), typeof(byte[])
-                    var usernmTaken = existsInDB.Any(t => (t[0] as Account).Username == (username));
-                    //var usernmTaken = existsInDB.Select(t => t[0] as account).Any(a => a.username == (attempt[0] as string));
-                    if (!usernmTaken)
+                    try
                     {
-                        Account newUser = new Account(username, password);
-                        userAccounts.Put(newUser);
-                        // Console.WriteLine(newUser.username + " " + newUser.hash);
-
-                        accountCreation.Put(username, 1); //lav 1 til en enum for success
-                        Console.WriteLine("server: created user");
-                    }
-                    else
-                    {
+                        var exists = selectAccount(username);
                         accountCreation.Put(username, 0);
                         Console.WriteLine("server: rejected user creation");
                     }
-
-
+                    catch (Exception)
+                    {
+                        Account newUser = new Account(username, password);
+                        userAccounts.Put(newUser);
+                        accountCreation.Put(username, 1); //lav 1 til en enum for success
+                        Console.WriteLine("server: created user");
+                    }
 
                 }
-                //
+
             }
         }
 
@@ -84,7 +76,7 @@ namespace LoginServer
                     string pass = attempt[1] as string;//RSADecrypt(attempt[1] as string, PrivKey);
                     //var userAccs = userAccounts.QueryAll(typeof(Account));
                     //var userAccount = userAccs.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == user);
-                    var  userAccount = selectAccount(user);
+                    var userAccount = selectAccount(user);
                     if (userAccount != null)
                     {
 
@@ -112,16 +104,16 @@ namespace LoginServer
 
 
 
-               
-              attempt = null;
+
+                attempt = null;
             }
-            
+
         }
 
         private bool IsAuthorized(string username, string password)
         {
-            
-            string RawPass = RSADecrypt(password, PrivKey);
+
+            //string RawPass = RSADecrypt(password, PrivKey);
             var foundUser = selectAccount(username);
             if (foundUser != null && boolFromRawPassAndUser(password, username) && loggedInUsers.QueryP(username) != null)
             {
@@ -141,13 +133,13 @@ namespace LoginServer
         {
             var list = userAccounts.QueryAll(typeof(Account));
             var returnVal = list.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == Username);
-            if(returnVal != null)
+            if (returnVal != null)
             {
                 return returnVal;
             }
             else
             {
-                throw new Exception("no such user found in selected space");
+                throw new Exception("no such user");
             }
         }
 
@@ -157,19 +149,22 @@ namespace LoginServer
 
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int));
+                var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int), typeof(string));
                 var username = (string)request[0];
-                var conferenceName = (string) request[1];
-                var ipOfConference = (string) request[2];
-                var requestType = (int) request[3];
+                var conferenceName = (string)request[1];
+                var ipOfConference = (string)request[2];
+                var requestType = (int)request[3];
+                var pass = (string)request[4];
+                var account = selectAccount(username);
 
                 Console.WriteLine("got request to create or delete conference");
-                if (!IsAuthorized(username))
+                if (!IsAuthorized(username, pass))
                 {
                     Console.WriteLine("User was not authorized");
+                    getConferences.Put("Result", 0, username);
                     break;
                 }
-                if(requestType == 1)
+                if (requestType == 1)
                 {
                     //add
                     conferences.Put(username, conferenceName, ipOfConference);
@@ -177,6 +172,7 @@ namespace LoginServer
                     getConferences.Get(typeof(List<string>));
                     getConferences.Put(confList);
                     Console.WriteLine("added conference " + conferenceName);
+                    getConferences.Put("Result", 1, username);
                 }
                 if ((int)request[3] == 0)
                 {
@@ -187,32 +183,35 @@ namespace LoginServer
                     getConferences.Put(confList);
                     Console.WriteLine("removed conference " + conferenceName);
 
+
                 }
-            }            
+            }
         }
 
         private void GetIPService()
         {
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string), 0);
-                var username = (string) request[0];
-                var conferenceName = (string) request[1];
-
-                if (!IsAuthorized(username))
+                var request = getConferences.Get(typeof(string), typeof(string), 0, typeof(string));
+                var username = (string)request[0];
+                var conferenceName = (string)request[1];
+                var pass = (string)request[3];
+                if (!IsAuthorized(username, pass))
                 {
                     Console.WriteLine("User was not authorized");
+                    getConferences.Put(username, "", 0);
+
                     break;
                 }
 
-                var result = conferences.Query(typeof(string),conferenceName,typeof(string));
-                var ipOfConference = (string) result[2];
+                var result = conferences.Query(typeof(string), conferenceName, typeof(string));
+                var ipOfConference = (string)result[2];
                 getConferences.Put(username, ipOfConference, 1);
             }
         }
 
 
-        
+
 
         public static string RSADecrypt(string Password, string PrivKey)
         {
@@ -220,21 +219,22 @@ namespace LoginServer
             byte[] decryptedData;
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             rsa.FromXmlString(PrivKey);
-            decryptedData = rsa.Decrypt(BytePass, true); 
+            decryptedData = rsa.Decrypt(BytePass, true);
             rsa.Dispose();
             return Encoding.UTF8.GetString(decryptedData);
 
         }
 
-        public loginServer() {
+        public loginServer()
+        {
 
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             string PubKey = rsa.ToXmlString(false);
             PrivKey = rsa.ToXmlString(true);
-           
+
             //string DecryptedPasword = RSADecrypt(someThing, prikey);
 
-            loginServerSpaces.AddGate("tcp://10.16.169.224:5001?CONN"); //tjek IP hver dag. just in case.
+            loginServerSpaces.AddGate("tcp://10.16.162.161:5001?CONN"); //tjek IP hver dag. just in case.
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);
@@ -242,12 +242,11 @@ namespace LoginServer
             loginServerSpaces.AddSpace("getConferenceList", getConferences);
             loginAttempts.Put(PubKey);
             //Not good. ikke alle spaces skal være remote. How do we into security?
-            
+
             getConferences.Put(new List<string>());
 
 
-            stopwatch = new Stopwatch();
-            cpuPercentageLimit = 10;
+          
             Task.Factory.StartNew(() => GetAccountCreationService());
             Task.Factory.StartNew(() => GetLoginAttemptsService());
             Task.Factory.StartNew(() => GetConferenceListService());
@@ -256,7 +255,7 @@ namespace LoginServer
 
         }
 
-       
+
     }
 
 }

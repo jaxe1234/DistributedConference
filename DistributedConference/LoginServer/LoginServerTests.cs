@@ -18,8 +18,8 @@ namespace LoginServer
             //Console.WriteLine("client: strings inited");
             loginServer testServer = new loginServer();
             //Console.WriteLine("loginserver inited");
-            var accountSpace = new RemoteSpace("tcp://10.16.169.224:5001/accountCreation");
-            var loginSpace = new RemoteSpace("tcp://10.16.169.224:5001/loginAttempts");
+            var accountSpace = new RemoteSpace("tcp://10.16.162.161:5001/accountCreation");
+            var loginSpace = new RemoteSpace("tcp://10.16.162.161:5001/loginAttempts");
          
 
             //CREATE NEW USER
