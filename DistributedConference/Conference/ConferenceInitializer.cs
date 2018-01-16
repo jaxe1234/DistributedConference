@@ -25,20 +25,20 @@ namespace Conference
         public SlideHostFacade Host { get; private set; }
 
         public ConferenceInitializer(string username, string conferenceName, ObservableCollection<string> dataSource, SpaceRepository spaceRepo, ISlideShow slideShower)//For the host
-        {
+        {//for host
             _name = username;
             var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
             _uri = "tcp://" + hostentry + ":5002";
             Chat = new Chat(username, _uri, conferenceName, spaceRepo, dataSource);
             Host = new SlideHostFacade(spaceRepo, username, slideShower);
-
+            Host.Control.Controlling = true;
             tokenSource = new CancellationTokenSource();
 
             Task.Factory.StartNew(InitChat);
         }
 
         public ConferenceInitializer(string username, string conferenceName, string ip, ObservableCollection<string> dataSource, ISlideShow slideShower)//For the client
-        {
+        {//for client
             _name = username;
             _uri = "tcp://" + ip + ":5002";
             Chat = new Chat(username, _uri, conferenceName, dataSource);

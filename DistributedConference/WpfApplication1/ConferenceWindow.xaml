@@ -128,15 +128,18 @@
 
         <Button 
                 Name="OpenPresentaion"
-                Grid.Row="0" VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Width="170"
+                Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Width="110"
+                Margin="10,0,0,0"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Style="{StaticResource MetroButton}"
                 IsEnabled="{Binding IsHost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Height="50">
-            <TextBlock FontSize="20">Open Presentation</TextBlock>
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+
+            Click = "OpenPresentaion_Click">
+            <TextBlock FontSize="12">Open Presentation</TextBlock>
 
 
 
@@ -146,8 +149,7 @@
 
 
 
-
-
+        <Image Source="{Binding ImageToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Image>
 
 
 
