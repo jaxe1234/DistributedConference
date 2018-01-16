@@ -25,9 +25,8 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid >
-        <Grid.Background>
-            <ImageBrush ImageSource="backdrop.jpg" Stretch="Uniform" />
-        </Grid.Background>
+     
+       
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
@@ -36,7 +35,12 @@
             <RowDefinition Height="8*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="backdrop.jpg" Stretch="Uniform" />
+
+        </Grid.Background>
         
+
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   
                     Name="ChatView" 
