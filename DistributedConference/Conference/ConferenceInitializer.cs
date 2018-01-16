@@ -9,41 +9,48 @@ using dotSpace.Objects.Network;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using SlideCommunication;
 
 namespace Conference
 {
     public class ConferenceInitializer
     {
-        private string uri;
-        private string name;
+        private string _uri;
+        private string _name;
         public Chat.ChatSender ChatSender { get; private set; }
         private Chat Chat { get; }
         private CancellationTokenSource tokenSource;
 
-        public ConferenceInitializer(string name, string conferenceName, ObservableCollection<string> dataSource, SpaceRepository spaceRepo)//For the host
+        public SlideClientFacade Client { get; private set; }
+        public SlideHostFacade Host { get; private set; }
+
+        public ConferenceInitializer(string username, string conferenceName, ObservableCollection<string> dataSource, SpaceRepository spaceRepo, ISlideShow slideShower)//For the host
         {
-            this.name = name;
+            _name = username;
             var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
-            this.uri = "tcp://" + hostentry + ":5002";
-            this.Chat = new Chat(name,uri, conferenceName, spaceRepo,dataSource);
+            _uri = "tcp://" + hostentry + ":5002";
+            Chat = new Chat(username, _uri, conferenceName, spaceRepo, dataSource);
+            Host = new SlideHostFacade(spaceRepo, username, slideShower);
+
             tokenSource = new CancellationTokenSource();
 
             Task.Factory.StartNew(InitChat);
         }
 
-        public ConferenceInitializer(string name, string conferenceName, string ip, ObservableCollection<string> dataSource)//For the client
+        public ConferenceInitializer(string username, string conferenceName, string ip, ObservableCollection<string> dataSource, ISlideShow slideShower)//For the client
         {
-            this.name = name;
-            this.uri = "tcp://" + ip + ":5002";
-            this.Chat = new Chat(name, uri, conferenceName, dataSource);
+            _name = username;
+            _uri = "tcp://" + ip + ":5002";
+            Chat = new Chat(username, _uri, conferenceName, dataSource);
             tokenSource = new CancellationTokenSource();
+            Client = new SlideClientFacade(slideShower, _uri, username);
 
             Task.Factory.StartNew(InitChat);
         }
 
         private void InitChat()
         {
-            this.ChatSender = new Chat.ChatSender(name, Chat.ChatSpace, tokenSource, Chat);
+            ChatSender = new Chat.ChatSender(_name, Chat.ChatSpace, tokenSource, Chat);
             Chat.InitializeChat();
         }
     }
