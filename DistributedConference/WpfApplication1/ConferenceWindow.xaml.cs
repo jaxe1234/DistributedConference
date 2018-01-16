@@ -6,8 +6,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,7 +18,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Conference;
-using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 
 namespace WpfApplication1
@@ -39,14 +36,13 @@ namespace WpfApplication1
         private string username;
         private string Password;
         public string ConferenceName { get; set; }
-        public RemoteSpace ConferenceRequests;
 
 
-        public ConferenceWindow(string username, string conferenceName, string password, RemoteSpace conferenceRequests) //For host
+        public ConferenceWindow(string username, string conferenceName, string Password) //For host
         {
             
             DataContext = this;
-            this.Password = password;
+            this.Password = Password;
             this.username = username;
             this.ConferenceName = conferenceName;
             InitializeComponent();
@@ -58,15 +54,6 @@ namespace WpfApplication1
             this.Loaded += MainWindow_Loaded;
             SpaceRepository spaceRepository = new SpaceRepository();
             this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
-            this.ConferenceRequests = conferenceRequests;
-            Closing += OnClosing_Host;
-
-        }
-
-        private void OnClosing_Host(object sender, CancelEventArgs cancelEventArgs)
-        {
-            var ip = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)+"";
-            ConferenceRequests.Put(username, ConferenceName, ip, 0, new RSA().RSAEncrypt(Password));
             
         }
 
@@ -85,14 +72,6 @@ namespace WpfApplication1
             this.Loaded += MainWindow_Loaded;
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
             MsgList.CollectionChanged += NewMessageReceived;
-            Closing += OnClosing_Client;
-            conference.ChatSender.SendMessage("Joined the conference");
-        }
-
-        private void OnClosing_Client(object sender, CancelEventArgs cancelEventArgs)
-        {
-            conference.ChatSender.SendMessage("Left the conference");
-            Environment.Exit(0);
         }
 
         private void NewMessageReceived(object sender, NotifyCollectionChangedEventArgs e)
