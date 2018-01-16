@@ -91,7 +91,7 @@ namespace WpfApplication1
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
             MsgList.CollectionChanged += NewMessageReceived;
 
-            Closed += OnClose_Client            ;
+            Closed += OnClose_Client;
         }
 
         private void OnClose_Client(object sender, EventArgs e)
