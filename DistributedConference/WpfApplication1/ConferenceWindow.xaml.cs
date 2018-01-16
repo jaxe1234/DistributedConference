@@ -45,22 +45,26 @@ namespace WpfApplication1
         public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
         {
             
-            DataContext = this;
-            this.Password = Password;
-            this.username = username;
-            this.ConferenceName = conferenceName;
-            InitializeComponent();
-            this.SizeChanged += Resize;
-            SendButton.Click += SendButton_Click;
-            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
-            SendField.KeyUp += SendField_KeyUp;
-            this.MsgList = new ObservableCollection<string>();
-            this.Loaded += MainWindow_Loaded;
-            SpaceRepository spaceRepository = new SpaceRepository();
-            this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
-            this.ConferenceRequests = ConferenceRequests;
+            DataContext                     = this;
+            this.Password                   = Password;
+            this.username                   = username;
+            this.ConferenceName             = conferenceName;
 
-            Closed += OnClose_Host;
+            InitializeComponent();
+
+            SpaceRepository spaceRepository = new SpaceRepository();
+            this.TxtToSend                  = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            this.MsgList                    = new ObservableCollection<string>();
+            this.conference                 = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
+            this.ConferenceRequests         = ConferenceRequests;
+
+            this.Loaded                    += MainWindow_Loaded;
+            Closed                         += OnClose_Host;
+            SendField.KeyUp                += SendField_KeyUp;
+            this.SizeChanged               += Resize;
+            SendButton.Click               += SendButton_Click;
+
+
 
         }
 
