@@ -100,6 +100,10 @@
       <Project>{269c31d9-e9b6-432b-92f7-3f2b0e11292a}</Project>
       <Name>NamingTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SlideCommunication\SlideCommunication.csproj">
+      <Project>{8b689b6a-0a73-4a72-9ea8-2a89f77237fa}</Project>
+      <Name>SlideCommunication</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

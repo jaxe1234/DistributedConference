@@ -21,13 +21,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Conference;
 using dotSpace.Objects.Network;
+using SlideCommunication;
+using System.IO;
 
 namespace WpfApplication1
 {
     /// <summary>
     /// Interaction logic for ConferenceWindow.xaml
     /// </summary>
-    public partial class ConferenceWindow : Window, INotifyPropertyChanged
+    public partial class ConferenceWindow : Window, INotifyPropertyChanged, ISlideShow
     {
 
         public int SndBttnHeight { get; set; }
@@ -88,7 +90,7 @@ namespace WpfApplication1
             SendField.KeyUp += SendField_KeyUp;
             this.MsgList = new ObservableCollection<string>();
             this.Loaded += MainWindow_Loaded;
-            this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
+            this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList, this);
             MsgList.CollectionChanged += NewMessageReceived;
 
             Closed += OnClose_Client;
@@ -157,6 +159,44 @@ namespace WpfApplication1
 
 
 
+        }
+
+        public void UpdateSlide(FramePayload payload)
+        {
+            var page = payload.PageNumber;
+            System.Drawing.Bitmap bitmap = null;
+            using (var stream = new MemoryStream(payload.Bitstream))
+            {
+                bitmap = new System.Drawing.Bitmap(stream);
+            }
+        }
+
+        public void GrantControl()
+        {
+            IsHost = true;
+        }
+
+        public void RevokeControl()
+        {
+            IsHost = false;
+        }
+
+        // Not in use
+        public void GrantHostStatus()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Not in use
+        public void RevokeHostStatus()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Not in use
+        public void Draw(Shape figure, System.Drawing.Point position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

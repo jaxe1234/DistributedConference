@@ -126,7 +126,7 @@ namespace DistributedConference
             public void GrantControl()
             {
                 Console.WriteLine("{0}: Granted control", Name);
-                Producer.ChangeSlider(1);
+                Producer.ChangeSlide(1);
             }
 
             public void GrantHostStatus()

@@ -65,7 +65,7 @@ namespace SlideCommunication
             SlideShower.RevokeControl();
         }
 
-        public void ChangeSlider(int page)
+        public void ChangeSlide(int page)
         { 
             if (_controlling)
             {
