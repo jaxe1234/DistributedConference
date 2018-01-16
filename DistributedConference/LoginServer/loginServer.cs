@@ -233,8 +233,8 @@ namespace LoginServer
             PrivKey = rsa.ToXmlString(true);
 
             //string DecryptedPasword = RSADecrypt(someThing, prikey);
-
-            loginServerSpaces.AddGate("tcp://10.16.162.161:5001?CONN"); //tjek IP hver dag. just in case.
+            string ip = "" + _Resources.Resources.InternetProtocolAddress +"";
+            loginServerSpaces.AddGate("tcp://" + ip + ":5001?CONN"); //tjek IP hver dag. just in case.
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);

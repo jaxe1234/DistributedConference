@@ -69,11 +69,6 @@
     <Compile Include="Logon.xaml.cs">
       <DependentUpon>Logon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StringResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StringResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="RSA.cs" />
     <Compile Include="SignupWindow.xaml.cs">
       <DependentUpon>SignupWindow.xaml</DependentUpon>
@@ -132,10 +127,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="StringResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -173,6 +164,10 @@
     <ProjectReference Include="..\SlideCommunication\SlideCommunication.csproj">
       <Project>{8b689b6a-0a73-4a72-9ea8-2a89f77237fa}</Project>
       <Name>SlideCommunication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\_Resources\_Resources.csproj">
+      <Project>{f481961e-64a0-4e98-b3aa-e7dc196f77b9}</Project>
+      <Name>_Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

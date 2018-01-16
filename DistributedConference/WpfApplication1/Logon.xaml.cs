@@ -31,8 +31,8 @@ namespace WpfApplication1
         {
             InitializeComponent();
             DataContext = this;
-            AccountCreation = new RemoteSpace("tcp://10.16.162.161:5001/accountCreation?CONN");
-            loginSpace = new RemoteSpace("tcp://10.16.162.161:5001/loginAttempts?CONN");
+            AccountCreation = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/accountCreation?CONN");
+            loginSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/loginAttempts?CONN");
             UsernameInput.KeyUp += PasswordInput_KeyUp;
             PasswordInput.KeyUp += PasswordInput_KeyUp;
             SignupButton.Click += SignupButton_Click;
