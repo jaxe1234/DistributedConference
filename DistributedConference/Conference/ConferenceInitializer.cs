@@ -43,7 +43,7 @@ namespace Conference
             _uri = "tcp://" + ip + ":5002";
             Chat = new Chat(username, _uri, conferenceName, dataSource);
             tokenSource = new CancellationTokenSource();
-            Client = new SlideClientFacade(slideShower, _uri, username);
+            Client = new SlideClientFacade(slideShower, _uri + "/", username);
 
             Task.Factory.StartNew(InitChat);
         }
