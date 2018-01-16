@@ -82,7 +82,7 @@ namespace WpfApplication1
         private string GetIpFromServer(string conferenceClicked)
         {
             
-            ConferenceRequests.Put(Username, conferenceClicked, 0, new RSA().RSAEncrypt(Password));
+            ConferenceRequests.Put(Username, conferenceClicked, 0, RSA.RSAEncrypt(Password));
             var temp = ConferenceRequests.Get(Username, typeof(string), typeof(int));
             var ip = (string)temp[1];
             return ip;
