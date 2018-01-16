@@ -39,6 +39,7 @@ namespace WpfApplication1
         private string Password;
         public string ConferenceName { get; set; }
         private RemoteSpace ConferenceRequests { get; set; }
+        public bool IsHost { get; set; }
 
 
         public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
