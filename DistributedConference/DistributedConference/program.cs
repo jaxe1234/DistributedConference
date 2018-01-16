@@ -32,12 +32,6 @@ namespace DistributedConference
 
             //testJson();
 
-
-
-            //var hostentry = Dns.GetHostEntry("").AddressList
-            //    .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-            //string uri = "tcp://" + hostentry + ":5002";
-            //ChatTest(args, uri);
             new Thread(() => TestSlideServer()).Start();
             new Thread(() => TestSlideClient()).Start();
 

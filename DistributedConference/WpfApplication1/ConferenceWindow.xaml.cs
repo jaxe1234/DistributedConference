@@ -66,7 +66,7 @@ namespace WpfApplication1
 
         private void OnClose_Host(object sender, EventArgs eventArgs)
         {
-            var ip = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) + "";
+            var ip = NamingTools.IpFetcher.GetLocalIpAdress();
             ConferenceRequests.Put(username, ConferenceName, ip, 0, RSA.RSAEncrypt(Password));
             Environment.Exit(0);
         }
