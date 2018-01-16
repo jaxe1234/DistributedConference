@@ -50,7 +50,6 @@
     <Compile Include="FrameTransformer.cs" />
     <Compile Include="FramePayload.cs" />
     <Compile Include="HubConsumer.cs" />
-    <Compile Include="ImageResizer.cs" />
     <Compile Include="ISliderShow.cs" />
     <Compile Include="FrameConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
