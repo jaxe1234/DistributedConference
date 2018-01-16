@@ -13,7 +13,7 @@ namespace WpfApplication1
         
         public static string RSAEncrypt(string Password)
         {
-            var loginSpace = new RemoteSpace("tcp://10.16.162.161:5001/loginAttempts?CONN");
+            var loginSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/loginAttempts?CONN");
             var PubKey = loginSpace.Query(typeof(string))[0] as string;
             byte[] BytePass = Encoding.UTF8.GetBytes(Password);// Convert.FromBase64String(Password);
             byte[] encryptedData;

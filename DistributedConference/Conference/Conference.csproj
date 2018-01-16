@@ -104,6 +104,10 @@
       <Project>{8b689b6a-0a73-4a72-9ea8-2a89f77237fa}</Project>
       <Name>SlideCommunication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\_Resources\_Resources.csproj">
+      <Project>{f481961e-64a0-4e98-b3aa-e7dc196f77b9}</Project>
+      <Name>_Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

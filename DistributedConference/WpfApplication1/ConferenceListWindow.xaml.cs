@@ -100,7 +100,7 @@ namespace WpfApplication1
 
         public void Init()
         {
-            ConferenceRequests = new RemoteSpace("tcp://10.16.162.161:5001/getConferenceList?CONN");
+            ConferenceRequests = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/getConferenceList?CONN");
             conferenceTuple = new ObservableCollection<string>((List<string>)ConferenceRequests.Query(typeof(List<string>))[0]);
             //conferenceTuple = (ObservableCollection < string >) ConferenceRequests.Query(typeof(List<string>))[0];
         }

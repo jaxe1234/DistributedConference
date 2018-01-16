@@ -69,6 +69,10 @@
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>
     </ProjectReference>
+    <ProjectReference Include="..\_Resources\_Resources.csproj">
+      <Project>{f481961e-64a0-4e98-b3aa-e7dc196f77b9}</Project>
+      <Name>_Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
