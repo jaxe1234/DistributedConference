@@ -25,7 +25,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid >
-        
+        <Grid.Background>
+            <ImageBrush ImageSource="backdrop.jpg" Stretch="Uniform" />
+        </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
