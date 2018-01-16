@@ -12,7 +12,7 @@ namespace NamingTools
     {
         public static string GetLocalIpAdress()
         {
-            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IPv4))
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
             {
                 socket.Connect("8.8.8.8", 53);
                 var endPoint = socket.LocalEndPoint as IPEndPoint;
