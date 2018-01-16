@@ -44,39 +44,38 @@ namespace WpfApplication1
         public bool IsHost { get; set; }
         Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
         int CurrentPage;
-        public System.Drawing.Bitmap ImageToShow { get; set; }
-
+        public BitmapImage ImageToShow { get; set; }
 
 
 
         public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
         {
-            
-            DataContext                     = this;
-            this.Password                   = Password;
-            this.username                   = username;
-            this.ConferenceName             = conferenceName;
-            dlg.FileName                    = "Presentation"; // Default file name
-            dlg.DefaultExt                  = ".pdf"; // Default file extension
-            dlg.Filter                      = "PDF documents (.pdf)|*.pdf"; // Filter files by extension
+
+            DataContext = this;
+            this.Password = Password;
+            this.username = username;
+            this.ConferenceName = conferenceName;
+            dlg.FileName = "Presentation"; // Default file name
+            dlg.DefaultExt = ".pdf"; // Default file extension
+            dlg.Filter = "PDF documents (.pdf)|*.pdf"; // Filter files by extension
 
             InitializeComponent();
 
             SpaceRepository spaceRepository = new SpaceRepository();
-            this.TxtToSend                  = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
-            this.MsgList                    = new ObservableCollection<string>();
-            this.conference                 = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository, this);
-            this.ConferenceRequests         = ConferenceRequests;
+            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            this.MsgList = new ObservableCollection<string>();
+            this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository, this);
+            this.ConferenceRequests = ConferenceRequests;
 
-            this.Loaded                    += MainWindow_Loaded;
-            Closed                         += OnClose_Host;
-            SendField.KeyUp                += SendField_KeyUp;
-            this.SizeChanged               += Resize;
-            SendButton.Click               += SendButton_Click;
-            GoBackwards.Click              += GoBackwards_Click;
-            GoForwad.Click                 += GoForwad_Click;
-            OpenPresentaion.MouseDown          += OpenPresentaion_Click;
-            
+            this.Loaded += MainWindow_Loaded;
+            Closed += OnClose_Host;
+            SendField.KeyUp += SendField_KeyUp;
+            this.SizeChanged += Resize;
+            SendButton.Click += SendButton_Click;
+            GoBackwards.Click += GoBackwards_Click;
+            GoForwad.Click += GoForwad_Click;
+            OpenPresentaion.MouseDown += OpenPresentaion_Click;
+
 
 
 
@@ -108,7 +107,7 @@ namespace WpfApplication1
             Closed += OnClose_Client;
 
 
-            
+
 
         }
 
@@ -145,18 +144,18 @@ namespace WpfApplication1
 
         private void NewMessageReceived(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(VisualTreeHelper.GetChildrenCount(ChatView)>0)
+            if (VisualTreeHelper.GetChildrenCount(ChatView) > 0)
             {
                 var b = VisualTreeHelper.GetChild(ChatView, 0);
                 var s = (ScrollViewer)VisualTreeHelper.GetChild(b, 0);
                 s.ScrollToBottom();
             }
-         
+
         }
 
 
 
-      
+
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)
         {
@@ -184,7 +183,7 @@ namespace WpfApplication1
         {
             this.MinWidth = this.Width;
             this.MinHeight = this.Height;
-           
+
         }
 
         void Resize(object sender, RoutedEventArgs e)
@@ -201,12 +200,30 @@ namespace WpfApplication1
 
         public void UpdateSlide(FramePayload payload)
         {
+
             var page = payload.PageNumber;
             //System.Drawing.Bitmap image = null;
-            using (var stream = new MemoryStream(payload.Bitstream))
-            {
-                ImageToShow = new System.Drawing.Bitmap(stream);
-            }
+            // this.ImageToShow = payload.Bitstream;
+            //using (var stream = new MemoryStream(payload.Bitstream))
+            //{
+            //    ImageToShow = new System.Drawing.Bitmap(stream);
+            //}
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    using (var memestreem = new MemoryStream(payload.Bitstream))
+                    {
+
+                        var _imageToShow = new BitmapImage();
+                        //this.ImageToShow = new BitmapImage();
+                        _imageToShow.BeginInit();
+                        _imageToShow.StreamSource = memestreem;//payload.Bitstream;
+                        _imageToShow.CacheOption = BitmapCacheOption.OnLoad;
+                        _imageToShow.EndInit();
+                        // ImageToShow.Freeze();
+                        ImageToShow = _imageToShow;
+                    }
+                });
         }
 
         public void GrantControl()

@@ -51,7 +51,7 @@ namespace SlideCommunication
             using (var me = new ECDiffieHellmanCng())
             {
                 Space.Put("Request", HubRequestType.EstablishSession, Username, Convert.ToBase64String(me.PublicKey.ToByteArray()));
-                var tuple = Space.Get("Response", Username, HubRequestType.EstablishSession, typeof(string));
+                var tuple = Space.Get("Response", Username, typeof(HubRequestType), typeof(string));
                 var herKey = CngKey.Import(Convert.FromBase64String(tuple.Get<string>(3)), CngKeyBlobFormat.EccPublicBlob);
                 var ourKey = Convert.ToBase64String(me.DeriveKeyMaterial(herKey));
                 return ourKey;
