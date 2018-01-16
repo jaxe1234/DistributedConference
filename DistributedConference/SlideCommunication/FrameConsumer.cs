@@ -32,7 +32,7 @@ namespace SlideCommunication
                 if (hash == token.ResponseToken)
                 {
                     var payload = tuple.Get<FramePayload>(4);
-                    Private.Put("Frame", payload.PageNumber, payload.Bitstream);
+                    Private.Put("Frame", payload.PageNumber, payload);
                 }
             }
         }

@@ -4,7 +4,7 @@ namespace SlideCommunication
 {
     public interface ISlideShow
     {
-        void UpdateSlide(byte[] image);
+        void UpdateSlide(FramePayload payload);
         void GrantHostStatus();
         void RevokeHostStatus();
         void GrantControl();

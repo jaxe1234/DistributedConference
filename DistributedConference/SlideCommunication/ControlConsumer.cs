@@ -28,6 +28,10 @@ namespace SlideCommunication
 
         private void SendToken()
         {
+            if (_lastToken != null)
+            {
+                Space.GetP("SlideChangeToken", Session.Username, _lastToken.Token);
+            }
             _lastToken = Session.CreateToken();
             Space.Put("SlideChangeToken", Session.Username, _lastToken.Token);
         }
@@ -39,9 +43,9 @@ namespace SlideCommunication
             {
                 var tuple = Space.Get("SlideChange", _lastToken.ResponseToken, Session.Username, typeof(int));
                 var page = tuple.Get<int>(3);
-                var ftuple = Session.LocalSpace.Query("Frame", page, typeof(byte[]));
-                var bitstream = ftuple.Get<byte[]>(2);
-                SlideShower.UpdateSlide(bitstream);
+                var ftuple = Session.LocalSpace.Query("Frame", page, typeof(FramePayload));
+                var payload = ftuple.Get<FramePayload>(2);
+                SlideShower.UpdateSlide(payload);
                 SendToken();
             }
         }

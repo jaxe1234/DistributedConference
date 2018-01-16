@@ -124,9 +124,9 @@ namespace DistributedConference
                 throw new NotImplementedException();
             }
 
-            public void UpdateSlide(byte[] image)
+            public void UpdateSlide(FramePayload payload)
             {
-                Console.WriteLine("{0}: Switched slide", Name);
+                Console.WriteLine($"{Name}: Switched slide to page {payload.PageNumber}");
             }
 
             public void GrantControl()
