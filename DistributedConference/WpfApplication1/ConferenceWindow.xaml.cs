@@ -21,13 +21,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Conference;
 using dotSpace.Objects.Network;
+using SlideCommunication;
+using System.IO;
 
 namespace WpfApplication1
 {
     /// <summary>
     /// Interaction logic for ConferenceWindow.xaml
     /// </summary>
-    public partial class ConferenceWindow : Window, INotifyPropertyChanged
+    public partial class ConferenceWindow : Window, INotifyPropertyChanged, ISlideShow
     {
 
         public int SndBttnHeight { get; set; }
@@ -40,27 +42,44 @@ namespace WpfApplication1
         public string ConferenceName { get; set; }
         private RemoteSpace ConferenceRequests { get; set; }
         public bool IsHost { get; set; }
+        Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+        int CurrentPage;
+        public System.Drawing.Bitmap ImageToShow { get; set; }
+
+
 
 
         public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
         {
             
-            DataContext = this;
-            this.Password = Password;
-            this.username = username;
-            this.ConferenceName = conferenceName;
-            InitializeComponent();
-            this.SizeChanged += Resize;
-            SendButton.Click += SendButton_Click;
-            this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
-            SendField.KeyUp += SendField_KeyUp;
-            this.MsgList = new ObservableCollection<string>();
-            this.Loaded += MainWindow_Loaded;
-            SpaceRepository spaceRepository = new SpaceRepository();
-            this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
-            this.ConferenceRequests = ConferenceRequests;
+            DataContext                     = this;
+            this.Password                   = Password;
+            this.username                   = username;
+            this.ConferenceName             = conferenceName;
+            dlg.FileName                    = "Presentation"; // Default file name
+            dlg.DefaultExt                  = ".pdf"; // Default file extension
+            dlg.Filter                      = "PDF documents (.pdf)|*.pdf"; // Filter files by extension
 
-            Closed += OnClose_Host;
+            InitializeComponent();
+
+            SpaceRepository spaceRepository = new SpaceRepository();
+            this.TxtToSend                  = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
+            this.MsgList                    = new ObservableCollection<string>();
+            this.conference                 = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository, this);
+            this.ConferenceRequests         = ConferenceRequests;
+
+            this.Loaded                    += MainWindow_Loaded;
+            Closed                         += OnClose_Host;
+            SendField.KeyUp                += SendField_KeyUp;
+            this.SizeChanged               += Resize;
+            SendButton.Click               += SendButton_Click;
+            GoBackwards.Click              += GoBackwards_Click;
+            GoForwad.Click                 += GoForwad_Click;
+            OpenPresentaion.Click          += OpenPresentaion_Click;
+            
+
+
+
 
         }
 
@@ -84,10 +103,38 @@ namespace WpfApplication1
             SendField.KeyUp += SendField_KeyUp;
             this.MsgList = new ObservableCollection<string>();
             this.Loaded += MainWindow_Loaded;
-            this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
+            this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList, this);
             MsgList.CollectionChanged += NewMessageReceived;
+            Closed += OnClose_Client;
 
-            Closed += OnClose_Client            ;
+
+            
+
+        }
+
+        private void OpenPresentaion_Click(object sender, RoutedEventArgs e)
+        {
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
+            {
+                // Open document
+                string filename = dlg.FileName;
+                var stream = new FileStream(filename, FileMode.Open);
+                conference.Host.PrepareToHost(stream);
+                CurrentPage = 0;
+                GoForwad_Click(null, null);
+
+            }
+        }
+
+        private void GoForwad_Click(object sender, RoutedEventArgs e)
+        {
+            conference.Host.Control.ChangeSlide(++CurrentPage);
+        }
+
+        private void GoBackwards_Click(object sender, RoutedEventArgs e)
+        {
+            conference.Host.Control.ChangeSlide(--CurrentPage);
         }
 
         private void OnClose_Client(object sender, EventArgs e)
@@ -104,13 +151,10 @@ namespace WpfApplication1
                 var s = (ScrollViewer)VisualTreeHelper.GetChild(b, 0);
                 s.ScrollToBottom();
             }
-           //((ListView)sender).ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
-            //var selectedIndex = ChatView.Items.Count - 1;
-            //if (selectedIndex < 0) return;
-            //ChatView.SelectedIndex = selectedIndex;
-            //ChatView.UpdateLayout();
-            //ChatView.ScrollIntoView(ChatView.SelectedItem);
+         
         }
+
+
 
       
 
@@ -153,6 +197,44 @@ namespace WpfApplication1
 
 
 
+        }
+
+        public void UpdateSlide(FramePayload payload)
+        {
+            var page = payload.PageNumber;
+            //System.Drawing.Bitmap image = null;
+            using (var stream = new MemoryStream(payload.Bitstream))
+            {
+                ImageToShow = new System.Drawing.Bitmap(stream);
+            }
+        }
+
+        public void GrantControl()
+        {
+            IsHost = true;
+        }
+
+        public void RevokeControl()
+        {
+            IsHost = false;
+        }
+
+        // Not in use
+        public void GrantHostStatus()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Not in use
+        public void RevokeHostStatus()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Not in use
+        public void Draw(Shape figure, System.Drawing.Point position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -95,7 +95,10 @@
 
 
 
-        <Button Grid.Row="1"
+        <Button 
+                Name="GoBackwards"
+
+                Grid.Row="1"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="35"
@@ -106,7 +109,9 @@
             <TextBlock>&lt;&lt;</TextBlock>
         </Button>
 
-        <Button Grid.Row="1" VerticalAlignment="Center"
+        <Button
+                Name="GoForwad"
+                Grid.Row="1" VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="35"
                 Margin="50,0,0,0"
@@ -120,13 +125,31 @@
             
         </Button>
 
-      
+
+        <Button 
+                Name="OpenPresentaion"
+                Grid.Row="1" VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Width="110"
+                Margin="10,0,0,0"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Style="{StaticResource MetroButton}"
+                IsEnabled="{Binding IsHost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+
+            Click = "OpenPresentaion_Click">
+            <TextBlock FontSize="12">Open Presentation</TextBlock>
 
 
 
 
+        </Button>
 
 
+
+
+        <Image Source="{Binding ImageToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Image>
 
 
 
