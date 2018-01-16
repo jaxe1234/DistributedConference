@@ -117,9 +117,8 @@ namespace WpfApplication1
                 string filename = dlg.FileName;
                 var stream = new FileStream(filename, FileMode.Open);
                 conference.Host.PrepareToHost(stream);
-                CurrentPage = 0;
-                GoForwad_Click(null, null);
-
+                //CurrentPage = 0;
+                //GoForwad_Click(null, null);
             }
         }
 

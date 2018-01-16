@@ -32,7 +32,10 @@ namespace SlideCommunication
                     return;
                 }
                 _pageNumber = value;
-                ConcealedSpace?.Put("SlideChange", CollectionIdentifier, _pageNumber);
+                var colTuple = ConcealedSpace.Query("ActiveCollection", typeof(string), typeof(int));
+                CollectionIdentifier = colTuple.Get<string>(1);
+                NumberOfPages = colTuple.Get<int>(2);
+                ConcealedSpace?.Put("SlideChange", CollectionIdentifier, _pageNumber, NumberOfPages);
                 var tuple = ConcealedSpace.QueryP("Frame", _pageNumber, typeof(FramePayload));
                 SlideShower.UpdateSlide(tuple.Get<FramePayload>(2));
             }

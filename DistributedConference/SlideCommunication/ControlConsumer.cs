@@ -62,13 +62,13 @@ namespace SlideCommunication
             while (true)
             {
                 SendToken();
-                var tuple = Space.Get("SlideChange", typeof(string),  _lastToken.ResponseToken, Session.Username, typeof(int));
+                var tuple = Space.Get("SlideChange", typeof(string),  _lastToken.ResponseToken, Session.Username, typeof(int), typeof(int));
                 var page = tuple.Get<int>(4);
+                NumberOfPages = tuple.Get<int>(5);
                 var collectionId = tuple.Get<string>(1);
 
                 if (_lastCollection != collectionId)
                 {
-                    NumberOfPages = page;
                     SetupRequest(collectionId);
                 }
 
@@ -80,6 +80,7 @@ namespace SlideCommunication
 
         private void SetupRequest(string collectionId)
         {
+            Session.LocalSpace.GetAll("Frame", typeof(int), typeof(FramePayload));
             _lastCollection = collectionId;
             SlideShower.NewCollection(NumberOfPages);
             foreach (var page in Enumerable.Range(1, NumberOfPages))

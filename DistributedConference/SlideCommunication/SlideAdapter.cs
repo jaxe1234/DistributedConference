@@ -72,6 +72,7 @@ namespace SlideCommunication
             PdfRasterizerService.ConvertToPngBitstream(bitmaps, ref bitstream);
             Frame.Bitstreams = bitstream;
             Frame.Running = true;
+            Control.PageNumber = 1;
         }
 
         public void Dispose()

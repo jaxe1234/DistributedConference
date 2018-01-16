@@ -63,9 +63,10 @@ namespace SlideCommunication
         {
             while (true)
             {
-                var slideChangeTuple = ConcealedSpace.Get("SlideChange", typeof(string), typeof(int));
+                var slideChangeTuple = ConcealedSpace.Get("SlideChange", typeof(string), typeof(int), typeof(int));
                 var collectionId = slideChangeTuple.Get<string>(1);
                 var page = slideChangeTuple.Get<int>(2);
+                var pages = slideChangeTuple.Get<int>(3);
                 var tokens = ExposedSpace.GetAll("ControlConsumerToken", typeof(string), typeof(string));
                 
                 foreach (var tuple in tokens)
@@ -74,7 +75,7 @@ namespace SlideCommunication
                     var username = tuple.Get<string>(1);
                     var key = GetSharedSecret(username);
                     var resposeToken = NamingTools.NameHashingTool.GetSHA256String(key + token);
-                    ExposedSpace.Put("SlideChange", collectionId, resposeToken, username, page);
+                    ExposedSpace.Put("SlideChange", collectionId, resposeToken, username, page, pages);
                 }
 
                 _lastPage = page;

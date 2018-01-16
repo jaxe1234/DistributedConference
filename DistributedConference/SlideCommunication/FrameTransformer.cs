@@ -52,11 +52,13 @@ namespace SlideCommunication
             CollectionIdentifier = Guid.NewGuid().ToString();
             ConcealedSpace.Put("ControlLock", CollectionIdentifier, imageBitstreams.Count());
             ConcealedSpace.Put("ActiveCollection", CollectionIdentifier, imageBitstreams.Count() );
+            SlideShower.NewCollection(imageBitstreams.Count());
             var i = 1;
             foreach (var bs in imageBitstreams)
             {
                 ConcealedSpace.Put("Frame", i, new FramePayload { PageNumber = i++, Bitstream = bs });
             }
+            Running = true;
         }
     }
 }

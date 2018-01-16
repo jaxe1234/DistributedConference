@@ -21,18 +21,16 @@ namespace SlideCommunication
         public bool Running {
             get { return _running; }
             set {
-                if (value != _running)
+                _running = value;
+                if (_running)
                 {
-                    _running = value;
-                    if (_running)
-                    {
-                        Cacelation = new CancellationTokenSource();
-                        Task.Run(GetHostAction(), Cacelation.Token);
-                    }
-                    else
-                    {
-                        Dispose();
-                    }
+                    Cacelation?.Cancel();
+                    Cacelation = new CancellationTokenSource();
+                    Task.Run(GetHostAction(), Cacelation.Token);
+                }
+                else
+                {
+                    Dispose();
                 }
             }
         }

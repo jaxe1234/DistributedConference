@@ -10,7 +10,6 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using SlideCommunication;
-using Open.Nat;
 
 namespace Conference
 {
