@@ -75,7 +75,7 @@ namespace WpfApplication1
             SendButton.Click               += SendButton_Click;
             GoBackwards.Click              += GoBackwards_Click;
             GoForwad.Click                 += GoForwad_Click;
-            OpenPresentaion.Click          += OpenPresentaion_Click;
+            OpenPresentaion.MouseDown          += OpenPresentaion_Click;
             
 
 
