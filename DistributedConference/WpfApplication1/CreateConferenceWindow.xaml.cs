@@ -61,7 +61,7 @@ namespace WpfApplication1
                 var feedback = ConferenceRequests.Get("Result", typeof(int), Username);
                 if ((int)feedback[1] == 1)
                 {
-                    ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName, Password);
+                    ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName, Password, ConferenceRequests);
                     App.Current.MainWindow = conference;
                     conferenceListWindow.Close();
                     this.Close();

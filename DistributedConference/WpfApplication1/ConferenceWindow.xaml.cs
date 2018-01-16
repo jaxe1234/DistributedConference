@@ -6,6 +6,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,9 +38,10 @@ namespace WpfApplication1
         private string username;
         private string Password;
         public string ConferenceName { get; set; }
+        private RemoteSpace ConferenceRequests { get; set; }
 
 
-        public ConferenceWindow(string username, string conferenceName, string Password) //For host
+        public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
         {
             
             DataContext = this;
@@ -54,7 +57,17 @@ namespace WpfApplication1
             this.Loaded += MainWindow_Loaded;
             SpaceRepository spaceRepository = new SpaceRepository();
             this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository);
-            
+            this.ConferenceRequests = ConferenceRequests;
+
+            Closed += OnClose_Host;
+
+        }
+
+        private void OnClose_Host(object sender, EventArgs eventArgs)
+        {
+            var ip = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) + "";
+            ConferenceRequests.Put(username, ConferenceName, ip, 0, new RSA().RSAEncrypt(Password));
+            Environment.Exit(0);
         }
 
         public ConferenceWindow(string username, string conferenceName, string ip, string Password) //For client
@@ -72,6 +85,14 @@ namespace WpfApplication1
             this.Loaded += MainWindow_Loaded;
             this.conference = new ConferenceInitializer(username, conferenceName, ip, MsgList);
             MsgList.CollectionChanged += NewMessageReceived;
+
+            Closed += OnClose_Client            ;
+        }
+
+        private void OnClose_Client(object sender, EventArgs e)
+        {
+            conference.ChatSender.SendMessage("Left the chat");
+            Environment.Exit(0);
         }
 
         private void NewMessageReceived(object sender, NotifyCollectionChangedEventArgs e)
