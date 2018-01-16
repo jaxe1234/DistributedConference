@@ -42,17 +42,18 @@ namespace WpfApplication1
         public string ConferenceName { get; set; }
         private RemoteSpace ConferenceRequests { get; set; }
         public bool IsHost { get; set; }
+        public bool InControl { get; set; }
+        public int? CurrentPage { get; private set; }
+        public int? NumberOfPages { get; private set; }
         Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-        int CurrentPage;
         public BitmapImage ImageToShow { get; set; }
 
 
-
-        public ConferenceWindow(string username, string conferenceName, string Password, RemoteSpace ConferenceRequests) //For host
+        public ConferenceWindow(string username, string conferenceName, string password, RemoteSpace conferenceRequests) //For host
         {
 
             DataContext = this;
-            this.Password = Password;
+            this.Password = password;
             this.username = username;
             this.ConferenceName = conferenceName;
             dlg.FileName = "Presentation"; // Default file name
@@ -65,21 +66,17 @@ namespace WpfApplication1
             this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
             this.MsgList = new ObservableCollection<string>();
             this.conference = new ConferenceInitializer(username, conferenceName, MsgList, spaceRepository, this);
-            this.ConferenceRequests = ConferenceRequests;
+            this.ConferenceRequests = conferenceRequests;
 
-            this.Loaded += MainWindow_Loaded;
-            Closed += OnClose_Host;
-            SendField.KeyUp += SendField_KeyUp;
-            this.SizeChanged += Resize;
-            SendButton.Click += SendButton_Click;
-            GoBackwards.Click += GoBackwards_Click;
-            GoForwad.Click += GoForwad_Click;
-            OpenPresentaion.MouseDown += OpenPresentaion_Click;
-
-
-
-
-
+            this.Loaded                    += MainWindow_Loaded;
+            Closed                         += OnClose_Host;
+            SendField.KeyUp                += SendField_KeyUp;
+            this.SizeChanged               += Resize;
+            SendButton.Click               += SendButton_Click;
+            GoBackwards.Click              += GoBackwards_Click;
+            GoForwad.Click                 += GoForwad_Click;
+            OpenPresentaion.MouseDown      += OpenPresentaion_Click;
+            
         }
 
         private void OnClose_Host(object sender, EventArgs eventArgs)
@@ -113,7 +110,7 @@ namespace WpfApplication1
 
         private void OpenPresentaion_Click(object sender, RoutedEventArgs e)
         {
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
             if (result == true)
             {
                 // Open document
@@ -128,12 +125,12 @@ namespace WpfApplication1
 
         private void GoForwad_Click(object sender, RoutedEventArgs e)
         {
-            conference.Host.Control.ChangeSlide(++CurrentPage);
+            conference.Host.Control.PageNumber++;
         }
 
         private void GoBackwards_Click(object sender, RoutedEventArgs e)
         {
-            conference.Host.Control.ChangeSlide(--CurrentPage);
+            conference.Host.Control.PageNumber--;
         }
 
         private void OnClose_Client(object sender, EventArgs e)
@@ -152,10 +149,6 @@ namespace WpfApplication1
             }
 
         }
-
-
-
-
 
         private void SendField_KeyUp(object sender, KeyEventArgs e)
         {
@@ -193,64 +186,36 @@ namespace WpfApplication1
                 SndBttnHeight = (int)(this.Height / 12) - 5;
                 ChtFldHeight = SndBttnHeight - 5;
             }
-
-
-
         }
 
         public void UpdateSlide(FramePayload payload)
         {
+            CurrentPage = payload.PageNumber;
 
-            var page = payload.PageNumber;
-            //System.Drawing.Bitmap image = null;
-            // this.ImageToShow = payload.Bitstream;
-            //using (var stream = new MemoryStream(payload.Bitstream))
-            //{
-            //    ImageToShow = new System.Drawing.Bitmap(stream);
-            //}
-
-                Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                using (var memestreem = new MemoryStream(payload.Bitstream))
                 {
-                    using (var memestreem = new MemoryStream(payload.Bitstream))
-                    {
 
-                        var _imageToShow = new BitmapImage();
-                        //this.ImageToShow = new BitmapImage();
-                        _imageToShow.BeginInit();
-                        _imageToShow.StreamSource = memestreem;//payload.Bitstream;
-                        _imageToShow.CacheOption = BitmapCacheOption.OnLoad;
-                        _imageToShow.EndInit();
-                        // ImageToShow.Freeze();
-                        ImageToShow = _imageToShow;
-                    }
-                });
+                    var _imageToShow = new BitmapImage();
+                    _imageToShow.BeginInit();
+                    _imageToShow.StreamSource = memestreem;//payload.Bitstream;
+                    _imageToShow.CacheOption = BitmapCacheOption.OnLoad;
+                    _imageToShow.EndInit();
+                    ImageToShow = _imageToShow;
+                }
+            });
         }
 
-        public void GrantControl()
+        public void NewCollection(int pages)
         {
-            IsHost = true;
-        }
-
-        public void RevokeControl()
-        {
-            IsHost = false;
-        }
-
-        // Not in use
-        public void GrantHostStatus()
-        {
-            throw new NotImplementedException();
-        }
-
-        // Not in use
-        public void RevokeHostStatus()
-        {
-            throw new NotImplementedException();
+            NumberOfPages = pages;
         }
 
         // Not in use
         public void Draw(Shape figure, System.Drawing.Point position)
         {
+            
             throw new NotImplementedException();
         }
     }

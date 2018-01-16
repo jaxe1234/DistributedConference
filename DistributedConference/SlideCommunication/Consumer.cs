@@ -14,8 +14,7 @@ namespace SlideCommunication
     public abstract class Consumer : IDisposable
     {
         protected ISpace Space { get; }
-        protected ISpace PrivateSpace { get; }
-        
+
         private CancellationTokenSource Cacelation { get; set; }
 
         private bool _running;
@@ -43,7 +42,6 @@ namespace SlideCommunication
         public Consumer(ISpace space)
         {
             Space = space;
-            PrivateSpace = new SequentialSpace();
         }
 
         public virtual void Dispose()

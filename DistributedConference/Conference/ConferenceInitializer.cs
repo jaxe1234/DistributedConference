@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using SlideCommunication;
+using Open.Nat;
 
 namespace Conference
 {
@@ -27,8 +28,10 @@ namespace Conference
         public ConferenceInitializer(string username, string conferenceName, ObservableCollection<string> dataSource, SpaceRepository spaceRepo, ISlideShow slideShower)//For the host
         {//for host
             _name = username;
+
             var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
-            _uri = "tcp://" + hostentry + ":5002";
+            _uri = $"tcp://{hostentry}:5002";
+            spaceRepo.AddGate(_uri + "?CONN");
             Chat = new Chat(username, _uri, conferenceName, spaceRepo, dataSource);
             Host = new SlideHostFacade(spaceRepo, username, slideShower);
             Host.Control.Controlling = true;

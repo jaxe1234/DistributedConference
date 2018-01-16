@@ -10,11 +10,13 @@ namespace SlideCommunication
     public class FrameTransformer : Consumer
     {
         public string CollectionIdentifier { get; private set; }
+        public ISlideShow SlideShower { get; set; }
 
         private ISpace ConcealedSpace { get; set; }
-        public FrameTransformer(ISpace space, ISpace concealedSpace) : base(space)
+        public FrameTransformer(ISpace space, ISpace concealedSpace, ISlideShow slideShower) : base(space)
         {
             ConcealedSpace = concealedSpace;
+            SlideShower = slideShower;
         } 
 
         public IEnumerable<byte[]> Bitstreams { set { SetupSlides(value); } }
@@ -32,7 +34,7 @@ namespace SlideCommunication
                 var username = request.Get<string>(2);
                 var page = request.Get<int>(3);
                 var token = Guid.NewGuid().ToString();
-                var tuple = PrivateSpace.QueryP("Frame", page, typeof(FramePayload));
+                var tuple = ConcealedSpace.QueryP("Frame", page, typeof(FramePayload));
                 var payload = tuple.Get<FramePayload>(2);
                 ConcealedSpace.Put("UnauthenticatedFramePayload", username, token, payload);
             }
@@ -40,19 +42,20 @@ namespace SlideCommunication
 
         private void FlushFrames()
         {
-            Space.GetAll("ActiveCollection", typeof(string), typeof(List<int>));
-            PrivateSpace.GetAll("Frame", typeof(int), typeof(FramePayload));
+            ConcealedSpace.GetAll("ActiveCollection", typeof(string), typeof(int));
+            ConcealedSpace.GetAll("Frame", typeof(int), typeof(FramePayload));
         }
 
         private void SetupSlides(IEnumerable<byte[]> imageBitstreams)
         {
             FlushFrames();
             CollectionIdentifier = Guid.NewGuid().ToString();
-            Space.Put("ActiveCollection", CollectionIdentifier, Enumerable.Range(1, imageBitstreams.Count()).ToList() );
+            ConcealedSpace.Put("ControlLock", CollectionIdentifier, imageBitstreams.Count());
+            ConcealedSpace.Put("ActiveCollection", CollectionIdentifier, imageBitstreams.Count() );
             var i = 1;
             foreach (var bs in imageBitstreams)
             {
-                PrivateSpace.Put("Frame", i, new FramePayload { PageNumber = i++, Bitstream = bs });
+                ConcealedSpace.Put("Frame", i, new FramePayload { PageNumber = i++, Bitstream = bs });
             }
         }
     }

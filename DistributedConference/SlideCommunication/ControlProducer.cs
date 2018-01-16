@@ -15,9 +15,29 @@ namespace SlideCommunication
         private ISpace ConcealedSpace { get; set; }
         private ISlideShow SlideShower { get; }
         private string Identifier { get; }
-        private string HostIdentifer { get; set; }
+        private string CollectionIdentifier { get; set; }
         private bool _controlling;
         private CancellationTokenSource _token;
+
+        public int NumberOfPages { get; private set; }
+
+        private int _pageNumber;
+        public int PageNumber { get
+            {
+                return _pageNumber;
+            }
+            set {
+                if (!_controlling || value <= 0 || value > NumberOfPages)
+                {
+                    return;
+                }
+                _pageNumber = value;
+                ConcealedSpace?.Put("SlideChange", CollectionIdentifier, _pageNumber);
+                var tuple = ConcealedSpace.QueryP("Frame", _pageNumber, typeof(FramePayload));
+                SlideShower.UpdateSlide(tuple.Get<FramePayload>(2));
+            }
+        }
+
         public bool Controlling {
             get
             {
@@ -49,28 +69,22 @@ namespace SlideCommunication
 
         private void AssumeControl()
         {
-            var tuple = ConcealedSpace.Get("ControlLock", typeof(string));
-            HostIdentifer = tuple.Get<string>(1);
+            var tuple = ConcealedSpace.Get("ControlLock", typeof(string), typeof(int));
+            CollectionIdentifier = tuple.Get<string>(1);
+            NumberOfPages = tuple.Get<int>(2);
             _controlling = true;
-            SlideShower.GrantControl();
+            SlideShower.InControl = true;
+            SlideShower.NewCollection(NumberOfPages);
         }
 
         private void ReleaseControl()
         {
             if (_controlling)
             {
-                ConcealedSpace.Put("ControlLock", HostIdentifer);
+                ConcealedSpace.Put("ControlLock", CollectionIdentifier, NumberOfPages);
             }
             _controlling = false;
-            SlideShower.RevokeControl();
-        }
-
-        public void ChangeSlide(int page)
-        { 
-            if (_controlling)
-            {
-                ConcealedSpace?.Put("SlideChange", HostIdentifer, page);
-            }
+            SlideShower.InControl = false;
         }
     }
 }

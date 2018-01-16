@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Security.Cryptography;
+using NamingTools;
 
 namespace LoginServer
 {
@@ -233,7 +234,7 @@ namespace LoginServer
             PrivKey = rsa.ToXmlString(true);
 
             //string DecryptedPasword = RSADecrypt(someThing, prikey);
-            string ip = "" + _Resources.Resources.InternetProtocolAddress +"";
+            string ip = IpFetcher.GetLocalIpAdress();
             loginServerSpaces.AddGate("tcp://" + ip + ":5001?CONN"); //tjek IP hver dag. just in case.
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             loginServerSpaces.AddSpace("loginAttempts", loginAttempts);

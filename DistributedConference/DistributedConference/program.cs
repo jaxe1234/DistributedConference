@@ -108,6 +108,32 @@ namespace DistributedConference
 
             public ControlProducer Producer { get; set; }
 
+            public bool InControl
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public bool IsHost
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public SimpleSlideShow(string name)
             {
                 Name = name;
@@ -126,7 +152,7 @@ namespace DistributedConference
             public void GrantControl()
             {
                 Console.WriteLine("{0}: Granted control", Name);
-                Producer.ChangeSlide(1);
+                Producer.PageNumber = 1;
             }
 
             public void GrantHostStatus()
@@ -140,6 +166,11 @@ namespace DistributedConference
             }
 
             public void RevokeHostStatus()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void NewCollection(int pages)
             {
                 throw new NotImplementedException();
             }
@@ -178,7 +209,7 @@ namespace DistributedConference
             ISlideShow slide = new SimpleSlideShow("client");
 
             var client1 = new SlideClientFacade(slide, uri, "aMoe");
-            var control = client1.Running = true;
+            client1.Running = true;
             //client1.UpgradePrivileges("AsgerAsger");
             //var control = client1.Control;
             //control.ChangeSlider(1);

@@ -30,10 +30,8 @@ namespace SlideCommunication
         private FrameTransformer _frame;
         private ControlProducer _controlProducer;
 
-        private string HostIdentifier { get; }
-
         private HubConsumer Hub => _hub ?? (_hub = new HubConsumer(_exposedSpace, _concealedSpace));
-        private FrameTransformer Frame => _frame ?? (_frame = new FrameTransformer(_exposedSpace, _concealedSpace));
+        private FrameTransformer Frame => _frame ?? (_frame = new FrameTransformer(_exposedSpace, _concealedSpace, SlideShower));
         public ControlProducer Control => _controlProducer ?? (_controlProducer = new ControlProducer(_concealedSpace, SlideShower, _identifier));
 
         private string _concealedSpacePassword;
@@ -61,10 +59,9 @@ namespace SlideCommunication
             _identifier = identifier;
             _exposedSpace = new SequentialSpace();
             _concealedSpace = new SequentialSpace();
-            HostIdentifier = Guid.NewGuid().ToString();
             _repo.AddSpace("hub", _exposedSpace);
-            _concealedSpace.Put("ControlLock", HostIdentifier);
             Hub.Running = true;
+            SlideShower.IsHost = true;
         }
 
         public void PrepareToHost(Stream stream)
@@ -83,40 +80,5 @@ namespace SlideCommunication
             _hub?.Dispose();
             _repo?.Dispose();        
         }
-
-        //public void Draw(Shape figure, Point position)
-        //{
-        //    SlideShower.Draw(figure, position);
-        //}
-
-
-        //public void GotoSlide(int page)
-        //{
-        //    SlideShower.GotoSlide(page);
-        //}
-
-        //public void GrantControl()
-        //{
-        //    SlideShower.GrantControl();
-        //}
-
-        //public void GrantHostStatus()
-        //{
-        //    if (!_canHost)
-        //    {
-        //        Frame.HostingMode = HostingMode.Idle;
-        //    }
-        //    SlideShower.GrantHostStatus();
-        //}
-
-        //public void RevokeHostStatus()
-        //{
-        //    SlideShower.RevokeHostStatus();
-        //}
-
-        //public void RevokeControl()
-        //{
-        //    SlideShower.RevokeControl();
-        //}
     }
 }

@@ -4,6 +4,7 @@ using NamingTools;
 using dotSpace.Objects.Network;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SlideCommunication
 {
@@ -13,12 +14,14 @@ namespace SlideCommunication
         private ClientSession Session { get; }
 
         private RequestToken _lastToken;
+        private string _lastCollection;
+
+        public int NumberOfPages { get; private set; }
 
         public ControlConsumer(ClientSession session, ISlideShow slideShow) : base(session.Space)
         {
             Session = session;
             SlideShower = slideShow;
-            SendToken();
         }
 
         protected override Action GetHostAction()
@@ -26,38 +29,62 @@ namespace SlideCommunication
             return Listen;
         }
 
+        private void SyncWithHost()
+        {
+            SendToken();
+            //("SlideSync", collectionId, rtoken.ResponseToken, identifier, _lastPage, pages)
+            var tuple = Space.Get("SlideSync", typeof(string), _lastToken.ResponseToken, Session.Username, typeof(int), typeof(int));
+            NumberOfPages = tuple.Get<int>(5);
+            var page = tuple.Get<int>(4);
+            var collectionId = tuple.Get<string>(1);
+            if (string.IsNullOrEmpty(_lastCollection) || collectionId != _lastCollection)
+            {
+                SetupRequest(collectionId);
+            }
+            var ftuple = Session.LocalSpace.Query("Frame", page, typeof(FramePayload));
+            var payload = ftuple.Get<FramePayload>(2);
+            SlideShower.UpdateSlide(payload);
+        }
+
         private void SendToken()
         {
             if (_lastToken != null)
             {
-                Space.GetP("SlideChangeToken", Session.Username, _lastToken.Token);
+                Space.GetAll("ControlConsumerToken", Session.Username, _lastToken.Token);
             }
             _lastToken = Session.CreateToken();
-            Space.Put("SlideChangeToken", Session.Username, _lastToken.Token);
+            Space.Put("ControlConsumerToken", Session.Username, _lastToken.Token);
         }
 
         private void Listen()
         {
-            SetupRequest();
+            SyncWithHost();
             while (true)
             {
-                var tuple = Space.Get("SlideChange", _lastToken.ResponseToken, Session.Username, typeof(int));
-                var page = tuple.Get<int>(3);
+                SendToken();
+                var tuple = Space.Get("SlideChange", typeof(string),  _lastToken.ResponseToken, Session.Username, typeof(int));
+                var page = tuple.Get<int>(4);
+                var collectionId = tuple.Get<string>(1);
+
+                if (_lastCollection != collectionId)
+                {
+                    NumberOfPages = page;
+                    SetupRequest(collectionId);
+                }
+
                 var ftuple = Session.LocalSpace.Query("Frame", page, typeof(FramePayload));
                 var payload = ftuple.Get<FramePayload>(2);
                 SlideShower.UpdateSlide(payload);
-                SendToken();
             }
         }
 
-        private void SetupRequest()
+        private void SetupRequest(string collectionId)
         {
-            var tuple = Space.Query("ActiveCollection", typeof(string), typeof(List<int>));
-            var id = tuple.Get<string>(1);
-            var pages = tuple.Get<List<int>>(2);
-            foreach (var page in pages)
+            _lastCollection = collectionId;
+            SlideShower.NewCollection(NumberOfPages);
+            foreach (var page in Enumerable.Range(1, NumberOfPages))
             {
-                Space.Put("FramePayloadRequest", id, Session.Username, page);
+                Space.Put("FramePayloadRequest", collectionId, Session.Username, page);
             }
         }
     }

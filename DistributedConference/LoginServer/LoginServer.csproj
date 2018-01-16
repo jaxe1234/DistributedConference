@@ -69,6 +69,10 @@
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NamingTools\NamingTools.csproj">
+      <Project>{269C31D9-E9B6-432B-92F7-3F2B0E11292A}</Project>
+      <Name>NamingTools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\_Resources\_Resources.csproj">
       <Project>{f481961e-64a0-4e98-b3aa-e7dc196f77b9}</Project>
       <Name>_Resources</Name>

@@ -5,16 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using dotSpace.Interfaces.Space;
 using System.Security.Cryptography;
+using dotSpace.Objects.Space;
 
 namespace SlideCommunication
 {
     public class HubConsumer : Consumer
     {
         public ISpace ConcealedSpace { get; }
+        protected ISpace PrivateSpace { get; }
         private PublishTransformer Proxy { get; set; }
         public HubConsumer(ISpace space, ISpace concealedSpace) : base(space)
         {
             ConcealedSpace = concealedSpace;
+            PrivateSpace = new SequentialSpace();
         }
 
         protected override Action GetHostAction()
@@ -39,17 +42,19 @@ namespace SlideCommunication
                 if (requestType == HubRequestType.EstablishSession)
                 {
                     var t = PrivateSpace.QueryP("SessionSecret", typeof(string), identifier);
-                    if (t == null)
+                    if (t != null)
                     {
-                        using (var me = new ECDiffieHellmanCng())
-                        {
-                            var herKey = CngKey.Import(Convert.FromBase64String(secret), CngKeyBlobFormat.EccPublicBlob);
-                            var ourKey = Convert.ToBase64String(me.DeriveKeyMaterial(herKey));
-                            PrivateSpace.Put("SessionSecret", ourKey, identifier);
-                            var myKey = Convert.ToBase64String(me.PublicKey.ToByteArray());
-                            Space.Put("Response", identifier, HubRequestType.EstablishSession, myKey);
-                        }
-                    } 
+                        PrivateSpace.GetAll("SessionSecret", typeof(string), identifier);
+                    }
+                    using (var me = new ECDiffieHellmanCng())
+                    {
+                        var herKey = CngKey.Import(Convert.FromBase64String(secret), CngKeyBlobFormat.EccPublicBlob);
+                        var ourKey = Convert.ToBase64String(me.DeriveKeyMaterial(herKey));
+                        PrivateSpace.Put("SessionSecret", ourKey, identifier);
+                        var myKey = Convert.ToBase64String(me.PublicKey.ToByteArray());
+                        Space.Put("Response", identifier, HubRequestType.EstablishSession, myKey);
+                    }
+                    Proxy.SyncIncomingUser(identifier);
                 } else if (requestType == HubRequestType.TerminateSession)
                 {
                     PrivateSpace.GetP("SessionSecret", typeof(string), identifier);
