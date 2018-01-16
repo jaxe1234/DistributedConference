@@ -56,7 +56,7 @@ namespace WpfApplication1
             string newConferenceName = new TextRange(NewConferenceName.Document.ContentStart, NewConferenceName.Document.ContentEnd).Text.Trim();
             if (!string.IsNullOrWhiteSpace(newConferenceName))
             {
-                string ipAddress = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) + "";
+                var ipAddress = NamingTools.IpFetcher.GetLocalIpAdress();
                 ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1, RSA.RSAEncrypt(Password));
                 var feedback = ConferenceRequests.Get("Result", typeof(int), Username);
                 if ((int)feedback[1] == 1)

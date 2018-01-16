@@ -23,7 +23,7 @@ namespace Conference
         public ConferenceInitializer(string name, string conferenceName, ObservableCollection<string> dataSource, SpaceRepository spaceRepo)//For the host
         {
             this.name = name;
-            var hostentry = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+            var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
             this.uri = "tcp://" + hostentry + ":5002";
             this.Chat = new Chat(name,uri, conferenceName, spaceRepo,dataSource);
             tokenSource = new CancellationTokenSource();
