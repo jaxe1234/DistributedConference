@@ -95,7 +95,10 @@
 
 
 
-        <Button Grid.Row="1"
+        <Button 
+                Name="GoBackwards"
+
+                Grid.Row="1"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="35"
@@ -106,7 +109,9 @@
             <TextBlock>&lt;&lt;</TextBlock>
         </Button>
 
-        <Button Grid.Row="1" VerticalAlignment="Center"
+        <Button
+                Name="GoForwad"
+                Grid.Row="1" VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="35"
                 Margin="50,0,0,0"
@@ -120,7 +125,23 @@
             
         </Button>
 
-      
+
+        <Button 
+                Name="OpenPresentaion"
+                Grid.Row="0" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="170"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Style="{StaticResource MetroButton}"
+                IsEnabled="{Binding IsHost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Height="50">
+            <TextBlock FontSize="20">Open Presentation</TextBlock>
+
+
+
+
+        </Button>
 
 
 
