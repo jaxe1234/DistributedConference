@@ -123,7 +123,7 @@ namespace WpfApplication1
 
             
             //string EncryptedPassword = ;
-            loginSpace.Put(Username, new RSA().RSAEncrypt(Password));
+            loginSpace.Put(Username, RSA.RSAEncrypt(Password));
             var result = loginSpace.Get(Username, typeof(int)); 
             if (result != null)
             {

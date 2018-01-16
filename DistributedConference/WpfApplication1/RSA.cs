@@ -10,7 +10,8 @@ namespace WpfApplication1
 {
     public class RSA
     {
-        public string RSAEncrypt(string Password)
+        
+        public static string RSAEncrypt(string Password)
         {
             var loginSpace = new RemoteSpace("tcp://10.16.162.161:5001/loginAttempts?CONN");
             var PubKey = loginSpace.Query(typeof(string))[0] as string;

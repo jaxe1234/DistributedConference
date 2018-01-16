@@ -57,7 +57,7 @@ namespace WpfApplication1
             if (!string.IsNullOrWhiteSpace(newConferenceName))
             {
                 string ipAddress = Dns.GetHostEntry("").AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) + "";
-                ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1, new RSA().RSAEncrypt(Password));
+                ConferenceRequests.Put(Username, newConferenceName, ipAddress, 1, RSA.RSAEncrypt(Password));
                 var feedback = ConferenceRequests.Get("Result", typeof(int), Username);
                 if ((int)feedback[1] == 1)
                 {
