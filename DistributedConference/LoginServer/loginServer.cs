@@ -79,7 +79,7 @@ namespace LoginServer
                     try
                     {
                         var userAccount = selectAccount(user);
-                        if (boolFromRawPassAndUser(pass, user))
+                        if (boolFromRawPassAndUser(pass, user) && (loggedInUsers.QueryP(user) == null))
                         {
                             loggedInUsers.Put(user);
                             loginAttempts.Put(user, 1);
@@ -109,6 +109,53 @@ namespace LoginServer
             }
 
         }
+
+
+        private void GetLogoutAttemptsService()
+        {
+            while (true)
+            {
+
+                //spoghetti
+                ITuple attempt = loginAttempts.Get("logout", typeof(string), typeof(string)); //get er blocking = ingen null return
+                if (attempt != null)// <---
+                {
+                    Console.WriteLine("saw logout request");
+                    string user = (string)attempt[1];
+                    string pass = attempt[2] as string;
+
+                    try
+                    {
+                        if(boolFromRawPassAndUser(pass, user) && !(loggedInUsers.QueryP(user) == null))
+                        {
+                            loggedInUsers.Get(user);
+                            Console.WriteLine("logged out " + user);
+                        }
+                       
+                     
+
+                    }
+                    catch (Exception)
+                    {
+                        loginAttempts.Put(user, 0);
+                        Console.WriteLine("malformed logout request");
+                    }
+
+                }
+                //spohetti
+
+
+
+
+
+                attempt = null;
+            }
+
+        }
+
+
+
+
 
         private bool IsAuthorized(string username, string password)
         {
@@ -252,6 +299,7 @@ namespace LoginServer
             Task.Factory.StartNew(() => GetLoginAttemptsService());
             Task.Factory.StartNew(() => GetConferenceListService());
             Task.Factory.StartNew(() => GetIPService());
+            Task.Factory.StartNew(() => GetLogoutAttemptsService());
 
 
         }
