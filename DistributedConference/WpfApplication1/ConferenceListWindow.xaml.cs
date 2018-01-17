@@ -59,9 +59,15 @@ namespace WpfApplication1
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
             this.Loaded += Hack;
+            CloseButton.Click += CloseButton_Click;
 
             
 
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void Hack(object sender, RoutedEventArgs e) 

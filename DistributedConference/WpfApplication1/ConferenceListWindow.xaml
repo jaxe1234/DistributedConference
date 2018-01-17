@@ -54,7 +54,8 @@
             Foreground="Transparent"
             Margin="5,5,0,0"
             BorderThickness="0"
-            
+            Style="{DynamicResource SignupButton}"
+
             
           >
             <Image Source="close.png"></Image>
