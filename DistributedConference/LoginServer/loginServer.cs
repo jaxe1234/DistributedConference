@@ -15,50 +15,41 @@ using NamingTools;
 
 namespace LoginServer
 {
-    class loginServer
+    class LoginServer
     {
-
-        string PrivKey;
-        SpaceRepository loginServerSpaces = new SpaceRepository();
-        private SequentialSpace userAccounts = new SequentialSpace();
-        private SequentialSpace conferences = new SequentialSpace();
-        private SequentialSpace getConferences = new SequentialSpace();
-        private SequentialSpace loginAttempts = new SequentialSpace();
-        private SequentialSpace accountCreation = new SequentialSpace();
-        private SequentialSpace loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
-
-
+        readonly string _privKey;
+        readonly SpaceRepository _loginServerSpaces = new SpaceRepository();
+        private readonly SequentialSpace _userAccounts = new SequentialSpace();
+        private readonly SequentialSpace _conferences = new SequentialSpace();
+        private readonly SequentialSpace _getConferences = new SequentialSpace();
+        private readonly SequentialSpace _loginAttempts = new SequentialSpace();
+        private readonly SequentialSpace _accountCreation = new SequentialSpace();
+        private readonly SequentialSpace _loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
 
 
         private void GetAccountCreationService()
         {//To create a user, put at (username, password) tuple in accountCreation and check for confirmation
             while (true)
             {
+                ITuple attempt = _accountCreation.Get(typeof(string), typeof(string));
 
-                //spoghetti
-                ITuple attempt = accountCreation.Get(typeof(string), typeof(string));
-                if (attempt != null)// <---
+                var username = (string)attempt[0];
+                var password = (string)attempt[1];
+
+                Console.WriteLine("server: saw request for user creation. With input " + username + " " + password);
+                try
                 {
-                    var username = (string)attempt[0];
-                    var password = (string)attempt[1];
-
-                    Console.WriteLine("server: saw request for user creation. With input " + username + " " + password);
-                    try
-                    {
-                        var exists = selectAccount(username);
-                        accountCreation.Put(username, 0);
-                        Console.WriteLine("server: rejected user creation");
-                    }
-                    catch (Exception)
-                    {
-                        Account newUser = new Account(username, password);
-                        userAccounts.Put(newUser);
-                        accountCreation.Put(username, 1); //lav 1 til en enum for success
-                        Console.WriteLine("server: created user");
-                    }
-
+                    var exists = SelectAccount(username);
+                    _accountCreation.Put(username, 0);
+                    Console.WriteLine("server: rejected user creation");
                 }
-
+                catch (Exception)
+                {
+                    var newUser = new Account(username, password);
+                    _userAccounts.Put(newUser);
+                    _accountCreation.Put(username, 1); //lav 1 til en enum for success
+                    Console.WriteLine("server: created user");
+                }
             }
         }
 
@@ -67,47 +58,32 @@ namespace LoginServer
         {
             while (true)
             {
+                ITuple attempt = _loginAttempts.Get(typeof(string), typeof(string));
+                Console.WriteLine("saw login request");
+                var user = attempt[0] as string;
+                var pass = attempt[1] as string;
 
-                //spoghetti
-                ITuple attempt = loginAttempts.Get(typeof(string), typeof(string)); //get er blocking = ingen null return
-                if (attempt != null)// <---
+                try
                 {
-                    Console.WriteLine("saw login request");
-                    string user = (string)attempt[0];
-                    string pass = attempt[1] as string;
-
-                    try
+                    SelectAccount(user); // don't remove, used to check whether account exists. Because accountExists(user) is hard
+                    if (BoolFromRawPassAndUser(pass, user) && (_loggedInUsers.QueryP(user) == null))
                     {
-                        var userAccount = selectAccount(user);
-                        if (boolFromRawPassAndUser(pass, user) && (loggedInUsers.QueryP(user) == null))
-                        {
-                            loggedInUsers.Put(user);
-                            loginAttempts.Put(user, 1);
-                            Console.WriteLine("server: deposited results succ");
-                        }
-                        else
-                        {
-                            loginAttempts.Put(user, 0);
-                            Console.WriteLine("server: deposited results fail");
-                        }
-
+                        _loggedInUsers.Put(user);
+                        _loginAttempts.Put(user, 1);
+                        Console.WriteLine("server: deposited results succ");
                     }
-                    catch (Exception)
+                    else
                     {
-                        loginAttempts.Put(user, 0);
-                        Console.WriteLine("server: deposited results null");
+                        _loginAttempts.Put(user, 0);
+                        Console.WriteLine("server: deposited results fail");
                     }
-
                 }
-                //spohetti
-
-
-
-
-
-                attempt = null;
+                catch (Exception)
+                {
+                    _loginAttempts.Put(user, 0);
+                    Console.WriteLine("server: deposited results null");
+                }
             }
-
         }
 
 
@@ -115,205 +91,149 @@ namespace LoginServer
         {
             while (true)
             {
+                ITuple attempt = _loginAttempts.Get("logout", typeof(string), typeof(string));
+                Console.WriteLine("saw logout request");
+                var user = attempt[1] as string;
+                var pass = attempt[2] as string;
 
-                //spoghetti
-                ITuple attempt = loginAttempts.Get("logout", typeof(string), typeof(string)); //get er blocking = ingen null return
-                if (attempt != null)// <---
+                try
                 {
-                    Console.WriteLine("saw logout request");
-                    string user = (string)attempt[1];
-                    string pass = attempt[2] as string;
-
-                    try
+                    if (BoolFromRawPassAndUser(pass, user) && _loggedInUsers.QueryP(user) != null)
                     {
-                        if(boolFromRawPassAndUser(pass, user) && !(loggedInUsers.QueryP(user) == null))
-                        {
-                            loggedInUsers.Get(user);
-                            Console.WriteLine("logged out " + user);
-                        }
-                       
-                     
-
+                        _loggedInUsers.Get(user);
+                        Console.WriteLine("logged out " + user);
                     }
-                    catch (Exception)
-                    {
-                        
-                        Console.WriteLine("malformed logout request");
-                    }
-
                 }
-                //spohetti
-
-
-
-
-
-                attempt = null;
+                catch (Exception)
+                {
+                    Console.WriteLine("malformed logout request");
+                }
             }
-
         }
-
-
-
 
 
         private bool IsAuthorized(string username, string password)
         {
-
             //string RawPass = RSADecrypt(password, PrivKey);
-            var foundUser = selectAccount(username);
-            if (foundUser != null && boolFromRawPassAndUser(password, username) && loggedInUsers.QueryP(username) != null)
-            {
-                return true;
-            }
-            return false;
-
-
+            var foundUser = SelectAccount(username);
+            return foundUser != null && BoolFromRawPassAndUser(password, username) && _loggedInUsers.QueryP(username) != null;
         }
-        private bool boolFromRawPassAndUser(string raw, string Username)
+        private bool BoolFromRawPassAndUser(string raw, string Username)
         {
-            raw = RSADecrypt(raw, PrivKey);
-            var foundUser = selectAccount(Username);
-            return foundUser.Hash == (Account.GeneratePassHash(Encoding.UTF8.GetBytes(raw), foundUser.Salt));
+            raw = RSADecrypt(raw, _privKey);
+            var foundUser = SelectAccount(Username);
+            return foundUser.Hash == Account.GeneratePassHash(Encoding.UTF8.GetBytes(raw), foundUser.Salt);
         }
-        private Account selectAccount(string Username)
+        private Account SelectAccount(string Username)
         {
-            var list = userAccounts.QueryAll(typeof(Account));
+            var list = _userAccounts.QueryAll(typeof(Account));
             var returnVal = list.Select(t => t[0] as Account).FirstOrDefault(a => a.Username == Username);
             if (returnVal != null)
             {
                 return returnVal;
             }
-            else
-            {
-                throw new Exception("no such user");
-            }
+            throw new Exception("no such user");
+
         }
 
 
         private void GetConferenceListService()
         {
-
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int), typeof(string));
+                var request = _getConferences.Get(typeof(string), typeof(string), typeof(string), typeof(int), typeof(string));
                 var username = (string)request[0];
                 var conferenceName = (string)request[1];
                 var ipOfConference = (string)request[2];
                 var requestType = (int)request[3];
                 var pass = (string)request[4];
 
-                var account = selectAccount(username);
+                SelectAccount(username); // don't remove
 
                 Console.WriteLine("got request to create or delete conference");
                 if (!IsAuthorized(username, pass))
                 {
                     Console.WriteLine("User was not authorized");
-                    getConferences.Put("Result", 0, username);
+                    _getConferences.Put("Result", 0, username);
                     break;
                 }
                 if (requestType == 1)
                 {
                     //add
-                    conferences.Put(username, conferenceName, ipOfConference);
-                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
-                    getConferences.Get(typeof(List<string>));
-                    getConferences.Put(confList);
+                    _conferences.Put(username, conferenceName, ipOfConference);
+                    List<string> confList = _conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
+                    _getConferences.Get(typeof(List<string>));
+                    _getConferences.Put(confList);
                     Console.WriteLine("added conference " + conferenceName);
-                    getConferences.Put("Result", 1, username);
+                    _getConferences.Put("Result", 1, username);
                 }
                 if ((int)request[3] == 0)
                 {
                     //remove
-                    conferences.Get(username, conferenceName, ipOfConference);
-                    List<string> confList = conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
-                    getConferences.Get(typeof(List<string>));
-                    getConferences.Put(confList);
+                    _conferences.Get(username, conferenceName, ipOfConference);
+                    List<string> confList = _conferences.QueryAll(typeof(string), typeof(string), typeof(string)).Select(t => t.Get<string>(1)).ToList();
+                    _getConferences.Get(typeof(List<string>));
+                    _getConferences.Put(confList);
                     Console.WriteLine("removed conference " + conferenceName);
-
-
                 }
             }
         }
 
-        private void GetIPService()
+        private void GetIpService()
         {
             while (true)
             {
-                var request = getConferences.Get(typeof(string), typeof(string), 0, typeof(string));
+                var request = _getConferences.Get(typeof(string), typeof(string), 0, typeof(string));
                 var username = (string)request[0];
                 var conferenceName = (string)request[1];
                 var pass = (string)request[3];
                 if (!IsAuthorized(username, pass))
                 {
                     Console.WriteLine("User was not authorized");
-                    getConferences.Put(username, "", 0);
+                    _getConferences.Put(username, "", 0);
 
                     break;
                 }
 
-                var result = conferences.Query(typeof(string), conferenceName, typeof(string));
+                var result = _conferences.Query(typeof(string), conferenceName, typeof(string));
                 var ipOfConference = (string)result[2];
-                getConferences.Put(username, ipOfConference, 1);
+                _getConferences.Put(username, ipOfConference, 1);
             }
         }
 
-
-
-
-        public static string RSADecrypt(string Password, string PrivKey)
+        public static string RSADecrypt(string password, string privKey)
         {
-            byte[] BytePass = Convert.FromBase64String(Password);// Encoding.ASCII.GetBytes(Password);
-            byte[] decryptedData;
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.FromXmlString(PrivKey);
-            decryptedData = rsa.Decrypt(BytePass, true);
+            byte[] bytePass = Convert.FromBase64String(password);
+            var rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(privKey);
+            byte[] decryptedData = rsa.Decrypt(bytePass, true);
             rsa.Dispose();
             return Encoding.UTF8.GetString(decryptedData);
-
         }
 
-        public loginServer()
+        public LoginServer()
         {
-
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            string PubKey = rsa.ToXmlString(false);
-            PrivKey = rsa.ToXmlString(true);
+            var rsa = new RSACryptoServiceProvider();
+            var pubKey = rsa.ToXmlString(false);
+            _privKey = rsa.ToXmlString(true);
 
             //string DecryptedPasword = RSADecrypt(someThing, prikey);
-            string ip = IpFetcher.GetLocalIpAdress();
-            loginServerSpaces.AddGate("tcp://" + ip + ":5001?CONN"); //tjek IP hver dag. just in case.
+            var ip = IpFetcher.GetLocalIpAdress();
+            _loginServerSpaces.AddGate("tcp://" + ip + ":5001?CONN");
             //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
-            loginServerSpaces.AddSpace("loginAttempts", loginAttempts);
+            _loginServerSpaces.AddSpace("loginAttempts", _loginAttempts);
             //loginServerSpaces.AddSpace("userAccounts", userAccounts);
-            loginServerSpaces.AddSpace("accountCreation", accountCreation);
-            loginServerSpaces.AddSpace("getConferenceList", getConferences);
-            loginAttempts.Put(PubKey);
-            //Not good. ikke alle spaces skal være remote. How do we into security?
+            _loginServerSpaces.AddSpace("accountCreation", _accountCreation);
+            _loginServerSpaces.AddSpace("getConferenceList", _getConferences);
+            _loginAttempts.Put(pubKey);
 
-            getConferences.Put(new List<string>());
+            _getConferences.Put(new List<string>());
 
-
-
-            Task.Factory.StartNew(() => GetAccountCreationService());
-            Task.Factory.StartNew(() => GetLoginAttemptsService());
-            Task.Factory.StartNew(() => GetConferenceListService());
-            Task.Factory.StartNew(() => GetIPService());
-            Task.Factory.StartNew(() => GetLogoutAttemptsService());
-
-
+            Task.Factory.StartNew(GetAccountCreationService);
+            Task.Factory.StartNew(GetLoginAttemptsService);
+            Task.Factory.StartNew(GetConferenceListService);
+            Task.Factory.StartNew(GetIpService);
+            Task.Factory.StartNew(GetLogoutAttemptsService);
         }
-
-
     }
-
 }
-
-
-
-
-
-
-
-
-

@@ -16,7 +16,7 @@ namespace LoginServer
             //string password = "hunter2";
 
             //Console.WriteLine("client: strings inited");
-            loginServer testServer = new loginServer();
+            LoginServer testServer = new LoginServer();
             //Console.WriteLine("loginserver inited");
             var accountSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/accountCreation");
             var loginSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress +":5001/loginAttempts");

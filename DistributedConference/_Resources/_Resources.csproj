@@ -55,9 +55,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ConferenceIcon.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\arrow.png" />
   </ItemGroup>
   <ItemGroup>
