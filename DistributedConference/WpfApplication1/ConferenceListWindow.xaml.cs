@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using dotSpace.Objects.Network;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace WpfApplication1
 {
@@ -33,6 +35,17 @@ namespace WpfApplication1
         private string Password;
         private string PubKey;
 
+        //*****************************************************************************************//
+        //from https://stackoverflow.com/questions/743906/how-to-hide-close-button-in-wpf-window   //
+        private const int GWL_STYLE = -16;                                                         //
+        private const int WS_SYSMENU = 0x80000;                                                    //
+        [DllImport("user32.dll", SetLastError = true)]                                             //
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);                          //
+        [DllImport("user32.dll")]                                                                  //
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);           //
+        //from https://stackoverflow.com/questions/743906/how-to-hide-close-button-in-wpf-window   //
+        //*****************************************************************************************//
+
         public ConferenceListWindow(string Username, string Password, string PubKey, RemoteSpace LoginSpace)
         {
             DataContext = this;
@@ -46,8 +59,20 @@ namespace WpfApplication1
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
             Closed += OnClosed;
+            this.Loaded += Hack;
 
             
+
+        }
+
+        private void Hack(object sender, RoutedEventArgs e) 
+        {
+            //*****************************************************************************************//
+            //from https://stackoverflow.com/questions/743906/how-to-hide-close-button-in-wpf-window   //
+            var hwnd = new WindowInteropHelper(this).Handle;                                           //
+            SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);              //                                                                                                         
+            //from https://stackoverflow.com/questions/743906/how-to-hide-close-button-in-wpf-window   //
+            //*****************************************************************************************//
 
         }
 
