@@ -159,10 +159,10 @@ namespace ChatApp
                 try
                 {
                     Chat.K++;
-                    if (msg == "!quit" || msg == "!exit")
-                        CancelTokenSource.Cancel();
-                    else
-                        ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
+                    //if (msg == "!quit" || msg == "!exit")
+                    //    CancelTokenSource.Cancel();
+                    //else
+                    ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
                 }
                 catch (SocketException ex)
                 {
