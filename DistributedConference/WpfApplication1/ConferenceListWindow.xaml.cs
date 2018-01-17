@@ -59,9 +59,16 @@ namespace WpfApplication1
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
             this.Loaded += Hack;
+            CloseButton.Click += CloseButton_Click;
 
             
 
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoginSpace.Put("logout", Username, RSA.RSAEncrypt(Password));
+            Environment.Exit(0);
         }
 
         private void Hack(object sender, RoutedEventArgs e) 

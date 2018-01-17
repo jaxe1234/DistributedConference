@@ -11,6 +11,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <ImageBrush x:Key="closepng" ImageSource="close.png" />
     <Style x:Key="{x:Type ListBoxItem}" TargetType="{x:Type ListBoxItem}">
         <!-- Possibly other setters -->
         <Setter Property="Focusable" Value="False" />
