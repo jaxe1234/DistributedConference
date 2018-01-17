@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
         mc:Ignorable="d"
-        Title="Webinarium Lobby" Height="800" Width="500"  Icon="icon.ico"
+        Title="Webinarium Lobby" Height="300" Width="500"  Icon="icon.ico"
         MinHeight="150" MinWidth="300">
     <Window.Resources>
 
