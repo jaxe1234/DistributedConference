@@ -45,15 +45,10 @@ namespace WpfApplication1
             NewConferenceName.KeyDown += EnterPressed;
             CreateButton.Click += CreateButton_Click;
             cancelButton.Click += CancelClick;
-            Closed += OnClosed;
 
         }
 
-        private void OnClosed(object sender, EventArgs eventArgs)
-        {
-            LoginSpace.Put("logout", Username, RSA.RSAEncrypt(Password));
-            Environment.Exit(0);
-        }
+
 
 
         private void CancelClick(object sender, RoutedEventArgs e)
