@@ -24,20 +24,11 @@ namespace ChatApp
             LoggedInUser = name;
 
             // Console.WriteLine("You are host!");
-            var LocalChatSpace = new SequentialSpace();
             //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
-            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), LocalChatSpace);
-            string remoteName;
-            try
-            {
-                remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
-                ChatSpace = new RemoteSpace(remoteName);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            
+            chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), new SequentialSpace());
+            string remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
+            ChatSpace = new RemoteSpace(remoteName);
+
             DataSource = dataSource;
         }
 
@@ -47,17 +38,8 @@ namespace ChatApp
             // Console.WriteLine("You are a slave!");
             //Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
-            string remoteName;
-            try
-            {
-                remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
-                ChatSpace = new RemoteSpace(remoteName);
-            }
-            catch (Exception exception)
-            {
-                //Console.WriteLine(exception + "\t" + exception.Message);
-                throw;
-            }
+            string remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
+            ChatSpace = new RemoteSpace(remoteName);
         }
 
 
@@ -126,9 +108,9 @@ namespace ChatApp
                 }
 
                 K = (int)received[0];
-                string receivedName = (string)received[2];
-                string message = (string)received[3];
-                string finalMsg = FormatMessage(receivedName, message);
+                var receivedName = (string)received[2];
+                var message = (string)received[3];
+                var finalMsg = FormatMessage(receivedName, message);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     dataSource.Add(finalMsg);
@@ -155,7 +137,7 @@ namespace ChatApp
 
             public string SendMessage(string msg)
             {
-                string formattedTimeString = DateTime.Now.ToString("HH':'mm':'ss");
+                var formattedTimeString = DateTime.Now.ToString("HH':'mm':'ss");
                 try
                 {
                     Chat.K++;
@@ -168,7 +150,7 @@ namespace ChatApp
                 {
                     Console.WriteLine(ex.Message);
                     CancelTokenSource.Cancel();
-                    return String.Empty;
+                    return string.Empty;
                 }
                 catch (Exception ex)
                 {
@@ -182,7 +164,7 @@ namespace ChatApp
                 Console.WriteLine("Making chat-sender...");
                 while (!CancelTokenSource.Token.IsCancellationRequested)
                 {
-                    string message = Console.ReadLine();
+                    var message = Console.ReadLine();
                     SendMessage(message);
                 }
                 return Task.FromResult(true);

@@ -15,11 +15,10 @@ namespace Conference
 {
     public class ConferenceInitializer
     {
-        private string _uri;
-        private string _name;
+        private readonly string _name;
         public Chat.ChatSender ChatSender { get; private set; }
         private Chat Chat { get; }
-        private CancellationTokenSource tokenSource;
+        private readonly CancellationTokenSource _tokenSource;
 
         public SlideClientFacade Client { get; private set; }
         public SlideHostFacade Host { get; private set; }
@@ -29,12 +28,12 @@ namespace Conference
             _name = username;
 
             var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
-            _uri = $"tcp://{hostentry}:5002";
-            spaceRepo.AddGate(_uri + "?CONN");
-            Chat = new Chat(username, _uri, conferenceName, spaceRepo, dataSource);
+            var uri = $"tcp://{hostentry}:5002";
+            spaceRepo.AddGate(uri + "?CONN");
+            Chat = new Chat(username, uri, conferenceName, spaceRepo, dataSource);
             Host = new SlideHostFacade(spaceRepo, username, slideShower);
             Host.Control.Controlling = true;
-            tokenSource = new CancellationTokenSource();
+            _tokenSource = new CancellationTokenSource();
 
             Task.Factory.StartNew(InitChat);
         }
@@ -42,10 +41,10 @@ namespace Conference
         public ConferenceInitializer(string username, string conferenceName, string ip, ObservableCollection<string> dataSource, ISlideShow slideShower)//For the client
         {//for client
             _name = username;
-            _uri = "tcp://" + ip + ":5002";
-            Chat = new Chat(username, _uri, conferenceName, dataSource);
-            tokenSource = new CancellationTokenSource();
-            Client = new SlideClientFacade(slideShower, _uri + "/?CONN", username);
+            var uri = "tcp://" + ip + ":5002";
+            Chat = new Chat(username, uri, conferenceName, dataSource);
+            _tokenSource = new CancellationTokenSource();
+            Client = new SlideClientFacade(slideShower, uri + "/?CONN", username);
             Client.Running = true;
 
             Task.Factory.StartNew(InitChat);
@@ -53,7 +52,7 @@ namespace Conference
 
         private void InitChat()
         {
-            ChatSender = new Chat.ChatSender(_name, Chat.ChatSpace, tokenSource, Chat);
+            ChatSender = new Chat.ChatSender(_name, Chat.ChatSpace, _tokenSource, Chat);
             Chat.InitializeChat();
         }
     }
