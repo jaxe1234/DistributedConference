@@ -61,7 +61,7 @@ namespace _Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 10.16.162.161.
+        ///   Looks up a localized string similar to 10.16.165.70.
         /// </summary>
         public static string InternetProtocolAddress {
             get {
