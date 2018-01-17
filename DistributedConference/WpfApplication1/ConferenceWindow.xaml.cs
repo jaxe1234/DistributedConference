@@ -47,6 +47,8 @@ namespace WpfApplication1
         public int? NumberOfPages { get; private set; }
         Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
         public BitmapImage ImageToShow { get; set; }
+        public bool backBool { get; set; }
+        public bool forwardBool { get; set; }
 
 
         public ConferenceWindow(string username, string conferenceName, string password, RemoteSpace conferenceRequests) //For host
@@ -59,6 +61,7 @@ namespace WpfApplication1
             dlg.FileName = "Presentation"; // Default file name
             dlg.DefaultExt = ".pdf"; // Default file extension
             dlg.Filter = "PDF documents (.pdf)|*.pdf"; // Filter files by extension
+            
 
             InitializeComponent();
 
@@ -74,7 +77,7 @@ namespace WpfApplication1
             this.SizeChanged               += Resize;
             SendButton.Click               += SendButton_Click;
             GoBackwards.Click              += GoBackwards_Click;
-            GoForwad.Click                 += GoForwad_Click;
+            GoForward.Click                 += GoForwad_Click;
             OpenPresentaion.MouseDown      += OpenPresentaion_Click;
             
         }
@@ -93,6 +96,8 @@ namespace WpfApplication1
             this.username = username;
             this.ConferenceName = conferenceName;
             InitializeComponent();
+           
+            OpenPresentaion.Visibility = Visibility.Hidden;
             this.SizeChanged += Resize;
             SendButton.Click += SendButton_Click;
             this.TxtToSend = new TextRange(SendField.Document.ContentStart, SendField.Document.ContentEnd);
@@ -117,6 +122,7 @@ namespace WpfApplication1
                 string filename = dlg.FileName;
                 var stream = new FileStream(filename, FileMode.Open);
                 conference.Host.PrepareToHost(stream);
+                forwardBool = true;
                 //CurrentPage = 0;
                 //GoForwad_Click(null, null);
             }
@@ -125,11 +131,21 @@ namespace WpfApplication1
         private void GoForwad_Click(object sender, RoutedEventArgs e)
         {
             conference.Host.Control.PageNumber++;
+            if(CurrentPage == NumberOfPages)
+            {
+                forwardBool = false;
+            }
+            backBool = true;
         }
 
         private void GoBackwards_Click(object sender, RoutedEventArgs e)
         {
             conference.Host.Control.PageNumber--;
+            if (CurrentPage == 1)
+            {
+                backBool= false;
+            }
+            forwardBool = true;
         }
 
         private void OnClose_Client(object sender, EventArgs e)

@@ -103,37 +103,37 @@
                 Width="35"
                 Margin="-50,0,0,0"
                 Style="{StaticResource MetroButton}"
-                IsEnabled="{Binding InControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding backBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <TextBlock>&lt;&lt;</TextBlock>
         </Button>
 
-        <TextBox                 
+        <TextBlock                 
                 Name="GoSpecific"
                 Grid.Row="1"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="85"
                 Margin="95,0,0,0"
-                IsReadOnly="True"
             >
-            <TextBox.Text>
+            <TextBlock.Text >
+                
                 <MultiBinding StringFormat="{}{0} of {1}">
-                    <Binding Path="CurrentPage" Mode="OneWay" TargetNullValue="Null" UpdateSourceTrigger="PropertyChanged"/>
-                    <Binding Path="NumberOfPages" Mode="OneWay" TargetNullValue="Null" UpdateSourceTrigger="PropertyChanged"/>
+                    <Binding Path="CurrentPage" Mode="OneWay" TargetNullValue="0" UpdateSourceTrigger="PropertyChanged"/>
+                    <Binding Path="NumberOfPages" Mode="OneWay" TargetNullValue="0" UpdateSourceTrigger="PropertyChanged"/>
                 </MultiBinding>
-            </TextBox.Text>
-        </TextBox>
+            </TextBlock.Text>
+        </TextBlock>
 
 
         <Button
-                Name="GoForwad"
+                Name="GoForward"
                 Grid.Row="1" VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Width="35"
                 Margin="245,0,0,0"
                 Style="{StaticResource MetroButton}"
-                IsEnabled="{Binding InControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding forwardBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="1.198,0.576">
             <TextBlock>&gt;&gt;</TextBlock>
 
