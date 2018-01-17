@@ -58,7 +58,6 @@ namespace WpfApplication1
             RefreshButton.Click += RefreshButton_Click;
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
-            Closed += OnClosed;
             this.Loaded += Hack;
 
             
@@ -76,11 +75,7 @@ namespace WpfApplication1
 
         }
 
-        private void OnClosed(object sender, EventArgs eventArgs)
-        {
-            LoginSpace.Put("logout", Username, RSA.RSAEncrypt(Password));
-            Environment.Exit(0);
-        }
+
 
         private void NewConferenceButton_Click(object sender, RoutedEventArgs e)
         {
