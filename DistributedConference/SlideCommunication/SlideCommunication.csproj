@@ -64,13 +64,13 @@
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NamingTools\NamingTools.csproj">
-      <Project>{269c31d9-e9b6-432b-92f7-3f2b0e11292a}</Project>
-      <Name>NamingTools</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PdfHandler\PdfHandler.csproj">
       <Project>{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}</Project>
       <Name>PdfHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectUtilities\_Utilities.csproj">
+      <Project>{269c31d9-e9b6-432b-92f7-3f2b0e11292a}</Project>
+      <Name>_Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

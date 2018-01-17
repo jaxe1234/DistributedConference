@@ -27,7 +27,7 @@ namespace Conference
         {//for host
             _name = username;
 
-            var hostentry = NamingTools.IpFetcher.GetLocalIpAdress();
+            var hostentry = ProjectUtilities.IpFetcher.GetLocalIpAdress();
             var uri = $"tcp://{hostentry}:5002";
             spaceRepo.AddGate(uri + "?CONN");
             Chat = new Chat(username, uri, conferenceName, spaceRepo, dataSource);

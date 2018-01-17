@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Security.Cryptography;
-using NamingTools;
+using ProjectUtilities;
 
 namespace LoginServer
 {

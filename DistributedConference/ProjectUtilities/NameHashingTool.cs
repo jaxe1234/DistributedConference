@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NamingTools
+namespace ProjectUtilities
 {
     public class NameHashingTool
     {

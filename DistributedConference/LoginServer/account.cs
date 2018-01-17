@@ -11,12 +11,12 @@ namespace LoginServer
     {
         public string Username { get; }
         public string Hash { get; }
-        public byte[] Salt { get;}
+        public byte[] Salt { get; }
 
         public Account(string username, string password)
         {
             Username = username;
-            Salt = getSalt();
+            Salt = GetSalt();
             Hash = GeneratePassHash(Encoding.UTF8.GetBytes(password), Salt);
         }
 
@@ -28,7 +28,7 @@ namespace LoginServer
             return Encoding.UTF8.GetString(new SHA512Managed().ComputeHash(data));
         }
 
-        private byte[] getSalt()
+        private byte[] GetSalt()
         {
             var saltInitArr = new byte[16];
             var saltGen = new RNGCryptoServiceProvider();

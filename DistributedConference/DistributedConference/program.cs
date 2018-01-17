@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Space;
-using NamingTools;
+using ProjectUtilities;
 using SlideCommunication;
 
 //using SlideCommunication;

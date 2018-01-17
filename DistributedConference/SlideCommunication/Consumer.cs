@@ -1,7 +1,7 @@
 ﻿using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Space;
-using NamingTools;
+using ProjectUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

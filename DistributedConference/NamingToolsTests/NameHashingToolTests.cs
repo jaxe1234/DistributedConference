@@ -6,7 +6,7 @@ using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Space;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NamingTools;
+using ProjectUtilities;
 
 namespace NamingToolsTests
 {

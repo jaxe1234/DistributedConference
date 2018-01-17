@@ -47,8 +47,8 @@ namespace WpfApplication1
         public int? NumberOfPages { get; private set; }
         Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
         public BitmapImage ImageToShow { get; set; }
-        public bool backBool { get; set; }
-        public bool forwardBool { get; set; }
+        public bool BackBool { get; set; }
+        public bool ForwardBool { get; set; }
         private RemoteSpace LoginSpace;
 
 
@@ -86,7 +86,7 @@ namespace WpfApplication1
 
         private void OnClose_Host(object sender, EventArgs eventArgs)
         {
-            var ip = NamingTools.IpFetcher.GetLocalIpAdress();
+            var ip = ProjectUtilities.IpFetcher.GetLocalIpAdress();
             ConferenceRequests.Put(username, ConferenceName, ip, 0, RSA.RSAEncrypt(Password));
             LoginSpace.Put("logout",username,RSA.RSAEncrypt(Password));
             conference.ChatSender.SendMessage("Host has left the server");
@@ -127,7 +127,7 @@ namespace WpfApplication1
                 string filename = dlg.FileName;
                 var stream = new FileStream(filename, FileMode.Open);
                 conference.Host.PrepareToHost(stream);
-                forwardBool = true;
+                ForwardBool = true;
                 //CurrentPage = 0;
                 //GoForwad_Click(null, null);
             }
@@ -138,9 +138,9 @@ namespace WpfApplication1
             conference.Host.Control.PageNumber++;
             if(CurrentPage == NumberOfPages)
             {
-                forwardBool = false;
+                ForwardBool = false;
             }
-            backBool = true;
+            BackBool = true;
         }
 
         private void GoBackwards_Click(object sender, RoutedEventArgs e)
@@ -148,9 +148,9 @@ namespace WpfApplication1
             conference.Host.Control.PageNumber--;
             if (CurrentPage == 1)
             {
-                backBool= false;
+                BackBool= false;
             }
-            forwardBool = true;
+            ForwardBool = true;
         }
 
         private void OnClose_Client(object sender, EventArgs e)

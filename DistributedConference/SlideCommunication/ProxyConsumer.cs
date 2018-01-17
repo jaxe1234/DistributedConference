@@ -49,7 +49,7 @@ namespace SlideCommunication
                 var token = tuple.Get<string>(2);
                 var payload = tuple.Get<FramePayload>(3);
                 var key = GetSharedSecret(username);
-                var hash = NamingTools.NameHashingTool.GetSHA256String(key + token);
+                var hash = ProjectUtilities.NameHashingTool.GetSHA256String(key + token);
                 ExposedSpace.Put("FramePayload", username, token, hash, payload);
             }
         }
@@ -74,7 +74,7 @@ namespace SlideCommunication
                     var token = tuple.Get<string>(2);
                     var username = tuple.Get<string>(1);
                     var key = GetSharedSecret(username);
-                    var resposeToken = NamingTools.NameHashingTool.GetSHA256String(key + token);
+                    var resposeToken = ProjectUtilities.NameHashingTool.GetSHA256String(key + token);
                     ExposedSpace.Put("SlideChange", collectionId, resposeToken, username, page, pages);
                 }
 

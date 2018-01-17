@@ -8,7 +8,7 @@ using dotSpace.Interfaces.Network;
 using dotSpace.Interfaces.Space;
 using dotSpace.Objects.Network;
 using dotSpace.Objects.Space;
-using NamingTools;
+using ProjectUtilities;
 
 
 namespace ChatApp

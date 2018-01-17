@@ -79,9 +79,9 @@
       <Project>{004f2eec-9d5c-43fe-8e9a-fae2e956f35b}</Project>
       <Name>LoginServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NamingTools\NamingTools.csproj">
-      <Project>{269C31D9-E9B6-432B-92F7-3F2B0E11292A}</Project>
-      <Name>NamingTools</Name>
+    <ProjectReference Include="..\ProjectUtilities\_Utilities.csproj">
+      <Project>{269c31d9-e9b6-432b-92f7-3f2b0e11292a}</Project>
+      <Name>_Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

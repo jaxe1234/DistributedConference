@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageResizer.cs" />
     <Compile Include="IPFetcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NameHashingTool.cs" />
