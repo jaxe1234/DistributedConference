@@ -12,48 +12,29 @@ namespace LoginServer
         public string Username { get; }
         public string Hash { get; }
         public byte[] Salt { get;}
-        
-
-       
 
         public Account(string username, string password)
         {
-            
-
             Username = username;
             Salt = getSalt();
             Hash = GeneratePassHash(Encoding.UTF8.GetBytes(password), Salt);
-            
-            
-
-
         }
 
         public static string GeneratePassHash(byte[] password, byte[] salt)
         {
-            byte[] data = new byte[password.Length + salt.Length];
+            var data = new byte[password.Length + salt.Length];
             password.CopyTo(data, 0);
             salt.CopyTo(data, password.Length);
-            SHA512Managed hasher = new SHA512Managed();
-            return Encoding.UTF8.GetString(hasher.ComputeHash(data));
-
-            
-            
-           
+            return Encoding.UTF8.GetString(new SHA512Managed().ComputeHash(data));
         }
 
         private byte[] getSalt()
         {
-
-            byte[] saltInitArr = new byte[16];
-            RNGCryptoServiceProvider saltGen = new RNGCryptoServiceProvider();
+            var saltInitArr = new byte[16];
+            var saltGen = new RNGCryptoServiceProvider();
             saltGen.GetBytes(saltInitArr);
             saltGen.Dispose();
             return saltInitArr;
-            
-            
-
-
         }
     }
 }

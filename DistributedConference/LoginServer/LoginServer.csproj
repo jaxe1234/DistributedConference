@@ -56,9 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="account.cs" />
-    <Compile Include="LoginServerTests.cs" />
-    <Compile Include="loginServer.cs" />
+    <Compile Include="Account.cs" />
+    <Compile Include="LoginServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
