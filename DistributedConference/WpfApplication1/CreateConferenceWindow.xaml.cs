@@ -38,6 +38,7 @@ namespace WpfApplication1
             this.Username = Username;
             this.Password = Password;
             InitializeComponent();
+            NewConferenceName.Focus();
             NewConferenceName.KeyUp += EnterPressed;
             NewConferenceName.KeyDown += EnterPressed;
             CreateButton.Click += CreateButton_Click;
