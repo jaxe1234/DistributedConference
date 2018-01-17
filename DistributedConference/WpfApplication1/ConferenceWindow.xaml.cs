@@ -77,7 +77,7 @@ namespace WpfApplication1
             this.SizeChanged               += Resize;
             SendButton.Click               += SendButton_Click;
             GoBackwards.Click              += GoBackwards_Click;
-            GoForward.Click                 += GoForwad_Click;
+            GoForward.Click                += GoForwad_Click;
             OpenPresentaion.MouseDown      += OpenPresentaion_Click;
             
         }
