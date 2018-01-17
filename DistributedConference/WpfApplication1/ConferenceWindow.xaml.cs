@@ -77,7 +77,7 @@ namespace WpfApplication1
             this.SizeChanged               += Resize;
             SendButton.Click               += SendButton_Click;
             GoBackwards.Click              += GoBackwards_Click;
-            GoForward.Click                 += GoForwad_Click;
+            GoForward.Click                += GoForwad_Click;
             OpenPresentaion.MouseDown      += OpenPresentaion_Click;
             
         }
@@ -86,6 +86,7 @@ namespace WpfApplication1
         {
             var ip = NamingTools.IpFetcher.GetLocalIpAdress();
             ConferenceRequests.Put(username, ConferenceName, ip, 0, RSA.RSAEncrypt(Password));
+            conference.ChatSender.SendMessage("Host has left the server");
             Environment.Exit(0);
         }
 
@@ -209,12 +210,12 @@ namespace WpfApplication1
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                using (var memestreem = new MemoryStream(payload.Bitstream))
+                using (var memoryStream = new MemoryStream(payload.Bitstream))
                 {
 
                     var _imageToShow = new BitmapImage();
                     _imageToShow.BeginInit();
-                    _imageToShow.StreamSource = memestreem;//payload.Bitstream;
+                    _imageToShow.StreamSource = memoryStream;//payload.Bitstream;
                     _imageToShow.CacheOption = BitmapCacheOption.OnLoad;
                     _imageToShow.EndInit();
                     ImageToShow = _imageToShow;
