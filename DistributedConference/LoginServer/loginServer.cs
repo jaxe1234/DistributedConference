@@ -137,7 +137,7 @@ namespace LoginServer
                     }
                     catch (Exception)
                     {
-                        loginAttempts.Put(user, 0);
+                        
                         Console.WriteLine("malformed logout request");
                     }
 
