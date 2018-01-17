@@ -43,10 +43,26 @@
           >
             <Image Source="arrow.png"></Image>
         </Button>
-        
-        
-        
-        
+        <Button
+            Name="CloseButton"
+            Height="50"
+            Width="50" 
+          
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Foreground="Transparent"
+            Margin="5,5,0,0"
+            BorderThickness="0"
+            
+            
+          >
+            <Image Source="close.png"></Image>
+
+        </Button>
+
+
+
         <ListBox 
            
                      Name="ConfList"

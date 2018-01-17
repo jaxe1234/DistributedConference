@@ -1,0 +1,36 @@
+﻿<Page x:Class="WpfApplication1.OpenPresentationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApplication1"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="OpenPresentationPage">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Assets/Dictionary1.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Button 
+                Name="OpenPresentaion"
+                Grid.Row="0" VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Width="170"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Style="{StaticResource MetroButton}"
+                IsEnabled="{Binding IsHost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Height="50"
+            Click = "OpenPresentaion_Click">
+            <TextBlock FontSize="20">Open Presentation</TextBlock>
+
+
+
+
+        </Button>
+    </Grid>
+</Page>
