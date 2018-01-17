@@ -80,7 +80,7 @@ namespace ChatApp
             var reader = Task.Run(async () =>
             {
                 var temp = await ChatReader(ChatSpace, cancellationTokenSource, DataSource);
-                Console.WriteLine("Reader was terminated");
+                //Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
 
@@ -159,10 +159,10 @@ namespace ChatApp
                 try
                 {
                     Chat.K++;
-                    if (msg == "!quit" || msg == "!exit")
-                        CancelTokenSource.Cancel();
-                    else
-                        ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
+                    //if (msg == "!quit" || msg == "!exit")
+                    //    CancelTokenSource.Cancel();
+                    //else
+                    ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
                 }
                 catch (SocketException ex)
                 {

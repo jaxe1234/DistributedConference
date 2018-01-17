@@ -66,8 +66,6 @@ namespace WpfApplication1
         {
           if(e.Key == Key.Enter)
             {
-               
-              
                 ParseInput(UsernameInput.Text.Trim(), PasswordInput.Password.Trim());
             }
         }
@@ -98,7 +96,7 @@ namespace WpfApplication1
 
                 if (outcome)
                 {
-                    ConferenceListWindow main = new ConferenceListWindow(Username, Password, PubKey);
+                    ConferenceListWindow main = new ConferenceListWindow(Username, Password, PubKey, loginSpace);
                     App.Current.MainWindow = main;
                     this.Close();
                     main.Show();

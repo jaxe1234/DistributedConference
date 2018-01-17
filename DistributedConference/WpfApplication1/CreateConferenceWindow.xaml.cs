@@ -28,13 +28,15 @@ namespace WpfApplication1
         string Username;
         ConferenceListWindow conferenceListWindow;
         string Password;
+        private RemoteSpace LoginSpace;
 
-        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow conferenceListWindow, string Password)
+        public CreateConferenceWindow(RemoteSpace ConferenceRequests, string Username, ConferenceListWindow conferenceListWindow, string Password, RemoteSpace LoginSpace)
         {
 
             DataContext = this;
             this.conferenceListWindow = conferenceListWindow;
             this.ConferenceRequests = ConferenceRequests;
+            this.LoginSpace = LoginSpace;
             this.Username = Username;
             this.Password = Password;
             InitializeComponent();
@@ -45,6 +47,9 @@ namespace WpfApplication1
             cancelButton.Click += CancelClick;
 
         }
+
+
+
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
@@ -62,7 +67,7 @@ namespace WpfApplication1
                 var feedback = ConferenceRequests.Get("Result", typeof(int), Username);
                 if ((int)feedback[1] == 1)
                 {
-                    ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName, Password, ConferenceRequests);
+                    ConferenceWindow conference = new ConferenceWindow(Username, newConferenceName, Password, ConferenceRequests, LoginSpace);
                     App.Current.MainWindow = conference;
                     conferenceListWindow.Close();
                     this.Close();

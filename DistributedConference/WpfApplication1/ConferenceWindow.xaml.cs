@@ -49,15 +49,17 @@ namespace WpfApplication1
         public BitmapImage ImageToShow { get; set; }
         public bool backBool { get; set; }
         public bool forwardBool { get; set; }
+        private RemoteSpace LoginSpace;
 
 
-        public ConferenceWindow(string username, string conferenceName, string password, RemoteSpace conferenceRequests) //For host
+        public ConferenceWindow(string username, string conferenceName, string password, RemoteSpace conferenceRequests, RemoteSpace LoginSpace) //For host
         {
 
             DataContext = this;
             this.Password = password;
             this.username = username;
             this.ConferenceName = conferenceName;
+            this.LoginSpace = LoginSpace;
             dlg.FileName = "Presentation"; // Default file name
             dlg.DefaultExt = ".pdf"; // Default file extension
             dlg.Filter = "PDF documents (.pdf)|*.pdf"; // Filter files by extension
@@ -77,7 +79,7 @@ namespace WpfApplication1
             this.SizeChanged               += Resize;
             SendButton.Click               += SendButton_Click;
             GoBackwards.Click              += GoBackwards_Click;
-            GoForward.Click                 += GoForwad_Click;
+            GoForward.Click                += GoForwad_Click;
             OpenPresentaion.MouseDown      += OpenPresentaion_Click;
             
         }
@@ -86,15 +88,18 @@ namespace WpfApplication1
         {
             var ip = NamingTools.IpFetcher.GetLocalIpAdress();
             ConferenceRequests.Put(username, ConferenceName, ip, 0, RSA.RSAEncrypt(Password));
+            LoginSpace.Put("logout",username,RSA.RSAEncrypt(Password));
+            conference.ChatSender.SendMessage("Host has left the server");
             Environment.Exit(0);
         }
 
-        public ConferenceWindow(string username, string conferenceName, string ip, string Password) //For client
+        public ConferenceWindow(string username, string conferenceName, string ip, string Password, RemoteSpace LoginSpace) //For client
         {
             DataContext = this;
             this.Password = Password;
             this.username = username;
             this.ConferenceName = conferenceName;
+            this.LoginSpace = LoginSpace;
             InitializeComponent();
            
             OpenPresentaion.Visibility = Visibility.Hidden;
@@ -151,6 +156,7 @@ namespace WpfApplication1
         private void OnClose_Client(object sender, EventArgs e)
         {
             conference.ChatSender.SendMessage("Left the chat");
+            LoginSpace.Put("logout", username, RSA.RSAEncrypt(Password));
             Environment.Exit(0);
         }
 
@@ -209,12 +215,12 @@ namespace WpfApplication1
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                using (var memestreem = new MemoryStream(payload.Bitstream))
+                using (var memoryStream = new MemoryStream(payload.Bitstream))
                 {
 
                     var _imageToShow = new BitmapImage();
                     _imageToShow.BeginInit();
-                    _imageToShow.StreamSource = memestreem;//payload.Bitstream;
+                    _imageToShow.StreamSource = memoryStream;//payload.Bitstream;
                     _imageToShow.CacheOption = BitmapCacheOption.OnLoad;
                     _imageToShow.EndInit();
                     ImageToShow = _imageToShow;
