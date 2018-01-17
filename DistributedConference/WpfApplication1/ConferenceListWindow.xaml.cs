@@ -67,7 +67,8 @@ namespace WpfApplication1
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            LoginSpace.Put("logout", Username, RSA.RSAEncrypt(Password));
+            Environment.Exit(0);
         }
 
         private void Hack(object sender, RoutedEventArgs e) 
