@@ -80,7 +80,7 @@ namespace ChatApp
             var reader = Task.Run(async () =>
             {
                 var temp = await ChatReader(ChatSpace, cancellationTokenSource, DataSource);
-                Console.WriteLine("Reader was terminated");
+                //Console.WriteLine("Reader was terminated");
                 return temp;
             }, cancellationTokenSource.Token);
 

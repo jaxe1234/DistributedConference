@@ -25,6 +25,7 @@ namespace WpfApplication1
     {
         public ObservableCollection<string> conferenceTuple { get; set; }
         public RemoteSpace ConferenceRequests;
+        public RemoteSpace LoginSpace;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -32,26 +33,34 @@ namespace WpfApplication1
         private string Password;
         private string PubKey;
 
-        public ConferenceListWindow(string Username, string Password, string PubKey)
+        public ConferenceListWindow(string Username, string Password, string PubKey, RemoteSpace LoginSpace)
         {
             DataContext = this;
             Task.Factory.StartNew(Init);
             this.Username = Username;
             this.Password = Password;
             this.PubKey = PubKey;
+            this.LoginSpace = LoginSpace;
             InitializeComponent();
             RefreshButton.Click += RefreshButton_Click;
             //ConfList.MouseDoubleClick += ConfList_MouseDoubleClick;
             NewConferenceButton.Click += NewConferenceButton_Click;
+            Closed += OnClosed;
 
             
 
         }
 
+        private void OnClosed(object sender, EventArgs eventArgs)
+        {
+            LoginSpace.Put("logout", Username, RSA.RSAEncrypt(Password));
+            Environment.Exit(0);
+        }
+
         private void NewConferenceButton_Click(object sender, RoutedEventArgs e)
         {
             
-            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, Username, this, Password);
+            CreateConferenceWindow NewConfWin = new CreateConferenceWindow(ConferenceRequests, Username, this, Password, LoginSpace);
             NewConfWin.Show();
         }
 
@@ -66,7 +75,7 @@ namespace WpfApplication1
             var IPconnect = await Task<string>.Factory.StartNew(()=> GetIpFromServer(conferenceClicked));
             if (!IPconnect.Equals(""))
             {
-                ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect, Password);
+                ConferenceWindow conference = new ConferenceWindow(Username, conferenceClicked, IPconnect, Password, LoginSpace);
                 App.Current.MainWindow = conference;
                 this.Close();
                 conference.Show();
