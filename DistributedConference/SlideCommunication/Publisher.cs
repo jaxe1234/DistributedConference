@@ -7,13 +7,13 @@ using dotSpace.Interfaces.Space;
 
 namespace SlideCommunication
 {
-    public class PublishTransformer : Consumer
+    public class Publisher : Consumer
     {
         private int _lastPage = 1;
 
         private ISpace ExposedSpace { get; }
         private ISpace ConcealedSpace { get; }
-        public PublishTransformer(ISpace space, ISpace exposedSpace, ISpace concealedSpace) : base(space)
+        public Publisher(ISpace space, ISpace exposedSpace, ISpace concealedSpace) : base(space)
         {
             ExposedSpace = exposedSpace;
             ConcealedSpace = concealedSpace;

@@ -37,7 +37,7 @@ namespace SlideCommunication
 
         private FrameTransformer _frameTransformer;
         private FrameConsumer _frameConsumer;
-        private ControlConsumer _controlConsumer;
+        private ClientControlUnit _controlConsumer;
         private ControlProducer _controlProducer;
         public ControlProducer ControlProducer {
             get {
@@ -64,7 +64,7 @@ namespace SlideCommunication
             Space = new RemoteSpace(string.Format(UriFormat, "hub"));
             Session = new ClientSession(Space, Username);
             _frameConsumer = new FrameConsumer(Session);
-            _controlConsumer = new ControlConsumer(Session, SlideShower);
+            _controlConsumer = new ClientControlUnit(Session, SlideShower);
         }
 
         public void UpgradePrivileges(string passwd)

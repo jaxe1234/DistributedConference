@@ -11,11 +11,16 @@ using System.Threading.Tasks;
 
 namespace SlideCommunication
 {
+    /// <summary>
+    /// This class is not in a 1:1 relation to pattern described in the course. 
+    /// Classes derived from this class could implemented other pattern than the 
+    /// consumer pattern and in some cases not even implement the consumer pattern at all.
+    /// </summary>
     public abstract class Consumer : IDisposable
     {
         protected ISpace Space { get; }
 
-        private CancellationTokenSource Cacelation { get; set; }
+        private CancellationTokenSource Cancelation { get; set; }
 
         private bool _running;
         public bool Running {
@@ -24,9 +29,9 @@ namespace SlideCommunication
                 _running = value;
                 if (_running)
                 {
-                    Cacelation?.Cancel();
-                    Cacelation = new CancellationTokenSource();
-                    Task.Run(GetHostAction(), Cacelation.Token);
+                    Cancelation?.Cancel();
+                    Cancelation = new CancellationTokenSource();
+                    Task.Run(GetHostAction(), Cancelation.Token);
                 }
                 else
                 {
@@ -44,7 +49,7 @@ namespace SlideCommunication
 
         public virtual void Dispose()
         {
-            Cacelation?.Cancel();
+            Cancelation?.Cancel();
         }
     }
 

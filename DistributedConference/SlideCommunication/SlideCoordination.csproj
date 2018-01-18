@@ -45,18 +45,17 @@
   <ItemGroup>
     <Compile Include="ClientSession.cs" />
     <Compile Include="Consumer.cs" />
-    <Compile Include="ControlConsumer.cs" />
+    <Compile Include="ClientControlUnit.cs" />
     <Compile Include="ControlProducer.cs" />
     <Compile Include="FrameTransformer.cs" />
     <Compile Include="FramePayload.cs" />
-    <Compile Include="HubConsumer.cs" />
-    <Compile Include="ISliderShow.cs" />
+    <Compile Include="HubTransformer.cs" />
+    <Compile Include="ISlideShow.cs" />
     <Compile Include="FrameConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyConsumer.cs" />
+    <Compile Include="Publisher.cs" />
     <Compile Include="RequestToken.cs" />
-    <Compile Include="SlideAdapter.cs" />
-    <Compile Include="SlideBitstreamRequest.cs" />
+    <Compile Include="SlideHostFacade.cs" />
     <Compile Include="SlideClientFacade.cs" />
   </ItemGroup>
   <ItemGroup>

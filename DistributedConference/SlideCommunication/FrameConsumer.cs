@@ -21,7 +21,7 @@ namespace SlideCommunication
             Private = Session.LocalSpace;
         }
 
-        public void Listen()
+        public void Consumer()
         {
             while (true)
             {
@@ -39,7 +39,7 @@ namespace SlideCommunication
 
         protected override Action GetHostAction()
         {
-            return Listen;
+            return Consumer;
         }
     }
 }

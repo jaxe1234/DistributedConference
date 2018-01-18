@@ -9,12 +9,12 @@ using dotSpace.Objects.Space;
 
 namespace SlideCommunication
 {
-    public class HubConsumer : Consumer
+    public class HubTransformer : Consumer
     {
         public ISpace ConcealedSpace { get; }
         protected ISpace PrivateSpace { get; }
-        private PublishTransformer Proxy { get; set; }
-        public HubConsumer(ISpace space, ISpace concealedSpace) : base(space)
+        private Publisher Proxy { get; set; }
+        public HubTransformer(ISpace space, ISpace concealedSpace) : base(space)
         {
             ConcealedSpace = concealedSpace;
             PrivateSpace = new SequentialSpace();
@@ -29,7 +29,7 @@ namespace SlideCommunication
         {
             if (Proxy == null)
             {
-                Proxy = new PublishTransformer(PrivateSpace, Space, ConcealedSpace);
+                Proxy = new Publisher(PrivateSpace, Space, ConcealedSpace);
             }
             Proxy.Running = true;
             while (true)

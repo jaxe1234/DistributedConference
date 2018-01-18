@@ -26,11 +26,11 @@ namespace SlideCommunication
 
         private string _identifier;
 
-        private HubConsumer _hub;
+        private HubTransformer _hub;
         private FrameTransformer _frame;
         private ControlProducer _controlProducer;
 
-        private HubConsumer Hub => _hub ?? (_hub = new HubConsumer(_exposedSpace, _concealedSpace));
+        private HubTransformer Hub => _hub ?? (_hub = new HubTransformer(_exposedSpace, _concealedSpace));
         private FrameTransformer Frame => _frame ?? (_frame = new FrameTransformer(_exposedSpace, _concealedSpace, SlideShower));
         public ControlProducer Control => _controlProducer ?? (_controlProducer = new ControlProducer(_concealedSpace, SlideShower, _identifier));
 

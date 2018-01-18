@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SlideCommunication
 {
-    public class ControlConsumer : Consumer
+    public class ClientControlUnit : Consumer
     {
         public ISlideShow SlideShower { get; }
         private ClientSession Session { get; }
@@ -18,7 +18,7 @@ namespace SlideCommunication
 
         public int NumberOfPages { get; private set; }
 
-        public ControlConsumer(ClientSession session, ISlideShow slideShow) : base(session.Space)
+        public ClientControlUnit(ClientSession session, ISlideShow slideShow) : base(session.Space)
         {
             Session = session;
             SlideShower = slideShow;
@@ -26,7 +26,7 @@ namespace SlideCommunication
 
         protected override Action GetHostAction()
         {
-            return Listen;
+            return Consumer;
         }
 
         private void SyncWithHost()
@@ -56,7 +56,7 @@ namespace SlideCommunication
             Space.Put("ControlConsumerToken", Session.Username, _lastToken.Token);
         }
 
-        private void Listen()
+        private void Consumer()
         {
             SyncWithHost();
             while (true)
