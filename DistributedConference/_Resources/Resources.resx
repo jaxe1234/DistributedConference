@@ -122,7 +122,7 @@
     <value>Resources\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="InternetProtocolAddress" xml:space="preserve">
-    <value>10.16.165.70</value>
+    <value>10.16.163.225</value>
     <comment>JENS YOU BETTER FUCKING USE THIS</comment>
   </data>
   <data name="RefreshImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
