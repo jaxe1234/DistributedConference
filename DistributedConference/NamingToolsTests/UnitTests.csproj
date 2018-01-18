@@ -67,10 +67,6 @@
       <Project>{8c54a2f8-fd0d-47c1-a056-b75c828a311a}</Project>
       <Name>ChatApp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DistributedConference\ConferenceMain.csproj">
-      <Project>{084ee1ec-45f0-446d-a48a-c4732986d8cc}</Project>
-      <Name>ConferenceMain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
       <Project>{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}</Project>
       <Name>dotSpace</Name>
