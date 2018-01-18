@@ -1,2 +1,2 @@
 # DistributedConference
-Big memes are not for broken dreems. LEts make an program guise
+This is the git repository for group 2 of the course 02148
