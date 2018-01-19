@@ -103,7 +103,7 @@
                 Width="35"
                 Margin="-50,0,0,0"
                 Style="{StaticResource MetroButton}"
-                IsEnabled="{Binding backBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding BackBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <TextBlock>&lt;&lt;</TextBlock>
         </Button>
@@ -136,7 +136,7 @@
                 Width="35"
                 Margin="235,0,0,0"
                 Style="{StaticResource MetroButton}"
-                IsEnabled="{Binding forwardBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding ForwardBool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Height="{Binding SndBttnHeight, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="1.198,0.576">
             <TextBlock>&gt;&gt;</TextBlock>
 
