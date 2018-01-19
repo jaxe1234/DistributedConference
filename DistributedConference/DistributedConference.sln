@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp", "ChatApp\ChatApp.csproj", "{8C54A2F8-FD0D-47C1-A056-B75C828A311A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotSpace", "dotSpace\dotSpa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfHandler", "PdfHandler\PdfHandler.csproj", "{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication1", "WpfApplication1\WpfApplication1.csproj", "{882FC1CE-C3CB-45F2-AED0-66F47115B873}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedConferenceGUI", "WpfApplication1\DistributedConferenceGUI.csproj", "{882FC1CE-C3CB-45F2-AED0-66F47115B873}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlideCoordination", "SlideCommunication\SlideCoordination.csproj", "{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}"
 EndProject
