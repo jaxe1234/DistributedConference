@@ -12,9 +12,7 @@ namespace LoginServer
     {
         public static void Main(string[] args)
         {
-            LoginServer testServer = new LoginServer();
-            var accountSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress + ":5001/accountCreation");
-            var loginSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress + ":5001/loginAttempts");
+            LoginServer.Initialize();
         }
     }
 }

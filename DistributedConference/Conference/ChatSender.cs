@@ -29,9 +29,6 @@ namespace Conference
                 try
                 {
                     Chat.K++;
-                    //if (msg == "!quit" || msg == "!exit")
-                    //    CancelTokenSource.Cancel();
-                    //else
                     ChatSpace.Put(Chat.K, formattedTimeString, LoggedInUser, msg);
                 }
                 catch (SocketException ex)
@@ -54,6 +51,10 @@ namespace Conference
                 {
                     var message = Console.ReadLine();
                     SendMessage(message);
+                    if (message == "!quit" || message == "!exit")
+                    {
+                        CancelTokenSource.Cancel();
+                    }
                 }
                 return Task.FromResult(true);
             }

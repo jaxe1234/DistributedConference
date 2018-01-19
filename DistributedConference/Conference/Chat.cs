@@ -22,8 +22,6 @@ namespace Conference
         {   //For host
             LoggedInUser = name;
 
-            // Console.WriteLine("You are host!");
-            //Console.WriteLine("Conference name: " + conferenceName + " with hash: " + NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName));
             chatRepo.AddSpace(NameHashingTool.GenerateUniqueSequentialSpaceName(conferenceName), new SequentialSpace());
             string remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
             ChatSpace = new RemoteSpace(remoteName);
@@ -34,8 +32,6 @@ namespace Conference
         public Chat(string name, string uri, string conferenceName, ObservableCollection<string> dataSource)
         {   //For client
             LoggedInUser = name;
-            // Console.WriteLine("You are a slave!");
-            //Console.WriteLine(NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName));
             DataSource = dataSource;
             string remoteName = NameHashingTool.GenerateUniqueRemoteSpaceUri(uri, conferenceName);
             ChatSpace = new RemoteSpace(remoteName);
@@ -74,10 +70,8 @@ namespace Conference
 
         public Task<bool> ChatReader(ISpace chatSpace, CancellationTokenSource cancelTokenSource, ObservableCollection<string> dataSource)
         {
-            //Console.WriteLine("Making chat-reader...");
             while (!cancelTokenSource.Token.IsCancellationRequested)
-            {
-                //Console.WriteLine("Getting messages...");
+            { 
                 ITuple received = null;
 
                 received = Task.Run(() =>
@@ -98,7 +92,6 @@ namespace Conference
 
                     return null;
                 }, cancelTokenSource.Token).Result;
-                //Console.WriteLine("received message");
 
                 if (received == null)
                 {
@@ -114,7 +107,6 @@ namespace Conference
                 {
                     dataSource.Add(finalMsg);
                 });
-                //Console.WriteLine(finalMsg);
             }
             return Task.FromResult(true);
         }
