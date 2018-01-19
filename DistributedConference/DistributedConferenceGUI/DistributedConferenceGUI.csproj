@@ -141,10 +141,6 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatApp\ChatApp.csproj">
-      <Project>{8c54a2f8-fd0d-47c1-a056-b75c828a311a}</Project>
-      <Name>ChatApp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Conference\Conference.csproj">
       <Project>{80ef452b-6f90-406b-9e85-8ef211a14a0e}</Project>
       <Name>Conference</Name>

@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp", "ChatApp\ChatApp.csproj", "{8C54A2F8-FD0D-47C1-A056-B75C828A311A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{269C31D9-E9B6-432B-92F7-3F2B0E11292A} = {269C31D9-E9B6-432B-92F7-3F2B0E11292A}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotSpace", "dotSpace\dotSpace\dotSpace.csproj", "{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfHandler", "PdfHandler\PdfHandler.csproj", "{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}"
@@ -33,12 +28,6 @@ Global
 		Run|Any CPU = Run|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Run|Any CPU.ActiveCfg = Run|Any CPU
-		{8C54A2F8-FD0D-47C1-A056-B75C828A311A}.Run|Any CPU.Build.0 = Run|Any CPU
 		{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA07D9C8-E59A-4C8F-BD98-1EC1EECD3351}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ChatApp;
 using System.Collections.ObjectModel;
 using dotSpace.Objects.Network;
 using System.Net.Sockets;

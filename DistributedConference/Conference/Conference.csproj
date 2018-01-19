@@ -55,6 +55,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chat.cs" />
+    <Compile Include="ChatSender.cs" />
     <Compile Include="ConferenceInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,10 +90,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatApp\ChatApp.csproj">
-      <Project>{8c54a2f8-fd0d-47c1-a056-b75c828a311a}</Project>
-      <Name>ChatApp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\dotSpace\dotSpace\dotSpace.csproj">
       <Project>{ea07d9c8-e59a-4c8f-bd98-1ec1eecd3351}</Project>
       <Name>dotSpace</Name>
