@@ -13,7 +13,7 @@ namespace PdfHandler
 {
     public class PdfRasterizerService
     {
-        public static void GetImages(Stream stream, int dpi, ref IList<Image> images)
+        public static void GetImages(Stream stream, int dpi, ref IList<byte[]> images)
         {
             var gvi = new GhostscriptVersionInfo("lib/gsdll32.dll");
 
@@ -24,19 +24,11 @@ namespace PdfHandler
                 for (var pageNumber = 1; pageNumber <= rasterizer.PageCount; pageNumber++)
                 {
                     var img = rasterizer.GetPage(dpi, dpi, pageNumber);
-                    images.Add(img);
-                }
-            }
-        }
-
-        public static void ConvertToPngBitstream(IEnumerable<Image> images, ref IList<byte[]> bitstreams)
-        {
-            foreach (var img in images)
-            {
-                using (var stream = new MemoryStream())
-                {
-                    img.Save(stream, ImageFormat.Png);
-                    bitstreams.Add(stream.ToArray());
+                    using (var mstream = new MemoryStream())
+                    {
+                        img.Save(mstream, ImageFormat.Png);
+                        images.Add(mstream.ToArray());
+                    }
                 }
             }
         }
