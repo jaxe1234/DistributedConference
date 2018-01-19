@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotSpace", "dotSpace\dotSpa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfHandler", "PdfHandler\PdfHandler.csproj", "{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedConferenceGUI", "WpfApplication1\DistributedConferenceGUI.csproj", "{882FC1CE-C3CB-45F2-AED0-66F47115B873}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlideCoordination", "SlideCommunication\SlideCoordination.csproj", "{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "LoginServer\LoginServer.csproj", "{004F2EEC-9D5C-43FE-8E9A-FAE2E956F35B}"
@@ -25,6 +23,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_Resources", "_Resources\_Resources.csproj", "{F481961E-64A0-4E98-B3AA-E7DC196F77B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_Utilities", "ProjectUtilities\_Utilities.csproj", "{269C31D9-E9B6-432B-92F7-3F2B0E11292A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedConferenceGUI", "DistributedConferenceGUI\DistributedConferenceGUI.csproj", "{882FC1CE-C3CB-45F2-AED0-66F47115B873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,12 +51,6 @@ Global
 		{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}.Run|Any CPU.ActiveCfg = Release|Any CPU
 		{C835E8CD-4D73-4DE1-93C3-3B55C3A91AFD}.Run|Any CPU.Build.0 = Release|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Release|Any CPU.Build.0 = Release|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Run|Any CPU.ActiveCfg = Release|Any CPU
-		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Run|Any CPU.Build.0 = Release|Any CPU
 		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B689B6A-0A73-4A72-9EA8-2A89F77237FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,6 +87,12 @@ Global
 		{269C31D9-E9B6-432B-92F7-3F2B0E11292A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{269C31D9-E9B6-432B-92F7-3F2B0E11292A}.Run|Any CPU.ActiveCfg = Release|Any CPU
 		{269C31D9-E9B6-432B-92F7-3F2B0E11292A}.Run|Any CPU.Build.0 = Release|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Run|Any CPU.ActiveCfg = Release|Any CPU
+		{882FC1CE-C3CB-45F2-AED0-66F47115B873}.Run|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
