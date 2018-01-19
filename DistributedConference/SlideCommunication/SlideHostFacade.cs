@@ -66,11 +66,9 @@ namespace SlideCommunication
 
         public void PrepareToHost(Stream stream)
         {
-            IList<Image> bitmaps = new List<Image>();
-            PdfRasterizerService.GetImages(stream, 96, ref bitmaps);
-            IList<byte[]> bitstream = new List<byte[]>();
-            PdfRasterizerService.ConvertToPngBitstream(bitmaps, ref bitstream);
-            Frame.Bitstreams = bitstream;
+            IList<byte[]> bitstreams = new List<byte[]>();
+            PdfRasterizerService.GetImages(stream, 96, ref bitstreams);
+            Frame.Bitstreams = bitstreams;
             Frame.Running = true;
             Control.PageNumber = 1;
         }
