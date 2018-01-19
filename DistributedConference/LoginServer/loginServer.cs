@@ -15,17 +15,23 @@ using ProjectUtilities;
 
 namespace LoginServer
 {
-    class LoginServer
+    internal class LoginServer
     {
-        readonly string _privKey;
-        readonly SpaceRepository _loginServerSpaces = new SpaceRepository();
+        private readonly string _privKey;
+        private readonly SpaceRepository _loginServerSpaces = new SpaceRepository();
         private readonly SequentialSpace _userAccounts = new SequentialSpace();
         private readonly SequentialSpace _conferences = new SequentialSpace();
         private readonly SequentialSpace _getConferences = new SequentialSpace();
         private readonly SequentialSpace _loginAttempts = new SequentialSpace();
         private readonly SequentialSpace _accountCreation = new SequentialSpace();
-        private readonly SequentialSpace _loggedInUsers = new SequentialSpace(); //might need public so the rest of the server can validate who is online. might not matter at all.
+        private readonly SequentialSpace _loggedInUsers = new SequentialSpace();
 
+        internal static void Initialize()
+        {
+            LoginServer testServer = new LoginServer();
+            var accountSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress + ":5001/accountCreation");
+            var loginSpace = new RemoteSpace("tcp://" + _Resources.Resources.InternetProtocolAddress + ":5001/loginAttempts");
+        }
 
         private void GetAccountCreationService()
         {//To create a user, put at (username, password) tuple in accountCreation and check for confirmation
@@ -66,7 +72,7 @@ namespace LoginServer
                 try
                 {
                     SelectAccount(user); // don't remove, used to check whether account exists. Because accountExists(user) is hard
-                    if (BoolFromRawPassAndUser(pass, user) && (_loggedInUsers.QueryP(user) == null))
+                    if (BoolFromRawPassAndUser(pass, user) && _loggedInUsers.QueryP(user) == null)
                     {
                         _loggedInUsers.Put(user);
                         _loginAttempts.Put(user, 1);
@@ -133,7 +139,6 @@ namespace LoginServer
                 return returnVal;
             }
             throw new Exception("no such user");
-
         }
 
 
@@ -216,13 +221,10 @@ namespace LoginServer
             var rsa = new RSACryptoServiceProvider();
             var pubKey = rsa.ToXmlString(false);
             _privKey = rsa.ToXmlString(true);
-
-            //string DecryptedPasword = RSADecrypt(someThing, prikey);
+            
             var ip = IpFetcher.GetLocalIpAdress();
             _loginServerSpaces.AddGate("tcp://" + ip + ":5001?CONN");
-            //loginServerSpaces.AddSpace("loggedInUsers", loggedInUsers);
             _loginServerSpaces.AddSpace("loginAttempts", _loginAttempts);
-            //loginServerSpaces.AddSpace("userAccounts", userAccounts);
             _loginServerSpaces.AddSpace("accountCreation", _accountCreation);
             _loginServerSpaces.AddSpace("getConferenceList", _getConferences);
             _loginAttempts.Put(pubKey);
