@@ -16,7 +16,7 @@ using dotSpace.Objects.Network;
 using SlideCommunication;
 using System.IO;
 
-namespace WpfApplication1
+namespace DistributedConferenceGUI
 {
     /// <summary>
     /// Interaction logic for ConferenceWindow.xaml

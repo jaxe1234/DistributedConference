@@ -18,7 +18,7 @@ using dotSpace.Objects.Network;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
-namespace WpfApplication1
+namespace DistributedConferenceGUI
 {
     /// <summary>
     /// Interaction logic for ConferenceListWindow.xaml
